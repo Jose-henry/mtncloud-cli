@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::Instances
-class MorpheusTest::InstancesTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::Instances
+class MtnCloudTest::InstancesTest < MtnCloudTest::TestCase
 
   def test_instances_list
     assert_execute %(instances list)

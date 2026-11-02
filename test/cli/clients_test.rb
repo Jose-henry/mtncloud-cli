@@ -1,6 +1,6 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-class MorpheusTest::ClientsTest < MorpheusTest::TestCase
+class MtnCloudTest::ClientsTest < MtnCloudTest::TestCase
   
   def test_clients_list
     assert_execute %(clients list)

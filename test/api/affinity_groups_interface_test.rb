@@ -1,11 +1,11 @@
 require 'test/unit'
 $LOAD_PATH.unshift(File.expand_path('../../lib', __dir__))
-require 'morpheus/api/affinity_groups_interface'
+require 'mtncloud/api/affinity_groups_interface'
 
 class AffinityGroupsInterfaceTest < Test::Unit::TestCase
 
   def setup
-    @affinity_groups_interface = Morpheus::AffinityGroupsInterface.new(access_token: 'token', url: 'https://example.test', verify_ssl: false)
+    @affinity_groups_interface = MtnCloud::AffinityGroupsInterface.new(access_token: 'token', url: 'https://example.test', verify_ssl: false)
   end
 
   def test_get_builds_bearer_authorization_header

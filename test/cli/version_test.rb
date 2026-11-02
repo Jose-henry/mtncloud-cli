@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::VersionCommand
-class MorpheusTest::VersionTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::VersionCommand
+class MtnCloudTest::VersionTest < MtnCloudTest::TestCase
   
   def requires_authentication
     false

@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::HostVmGroupsCommand and the cloud-scoped
-# host-vm-group subcommands added to Morpheus::Cli::Clouds for MORPH-16326.
+# Tests for MtnCloud::Cli::HostVmGroupsCommand and the cloud-scoped
+# host-vm-group subcommands added to MtnCloud::Cli::Clouds for MORPH-16326.
 #
 # Scope note: these cover only client-side behaviour -- help output and argument
 # validation -- both of which resolve before any API call is made.
@@ -9,7 +9,7 @@ require 'morpheus_test'
 # Tests that would exercise list/get/add/update/remove against the appliance are
 # deliberately omitted until the /api/host-vm-groups request and response
 # contract is confirmed against the MORPH-14136 / MORPH-16074 server work.
-class MorpheusTest::HostVmGroupsTest < MorpheusTest::TestCase
+class MtnCloudTest::HostVmGroupsTest < MtnCloudTest::TestCase
 
   def test_host_vm_groups_help
     assert_execute %(host-vm-groups --help)

@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::View class, corresponds to the `view` CLI command
-class MorpheusTest::ViewTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::View class, corresponds to the `view` CLI command
+class MtnCloudTest::ViewTest < MtnCloudTest::TestCase
   
   def teardown
     # todo: close browser after each test

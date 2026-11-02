@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'stringio'
-require 'morpheus'
+require 'mtncloud'
 
 # Unit tests for MORPH-15042: cluster uuid support in the clusters command.
 #   - clusters get UUID resolves a single cluster via the path endpoint
@@ -125,7 +125,7 @@ class ClustersUuidTest < Test::Unit::TestCase
 
   def build_command(managed_clusters = [], get_result: nil)
     clusters = FakeClustersInterface.new(clusters: managed_clusters, get_result: get_result)
-    command = Morpheus::Cli::Clusters.new
+    command = MtnCloud::Cli::Clusters.new
     command.instance_variable_set(:@clusters_interface, clusters)
     command.define_singleton_method(:connect) do |_options|
       @clusters_interface = clusters
@@ -134,7 +134,7 @@ class ClustersUuidTest < Test::Unit::TestCase
   end
 
   def capture_stdout
-    terminal = Morpheus::Terminal.instance
+    terminal = MtnCloud::Terminal.instance
     original = terminal.stdout
     buffer = StringIO.new
     terminal.set_stdout(buffer)

@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::DistributedWorkers
-class MorpheusTest::DistributedWorkersTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::DistributedWorkers
+class MtnCloudTest::DistributedWorkersTest < MtnCloudTest::TestCase
 
   def test_distributed_workers_list
     assert_execute %(distributed-workers list)

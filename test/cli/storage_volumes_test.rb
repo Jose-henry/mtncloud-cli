@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::StorageVolumes
-class MorpheusTest::StorageVolumesTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::StorageVolumes
+class MtnCloudTest::StorageVolumesTest < MtnCloudTest::TestCase
 
   def test_storage_volumes_list
     assert_execute %(storage-volumes list)

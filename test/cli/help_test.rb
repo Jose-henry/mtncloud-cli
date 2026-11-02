@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
 # Tests for help command and global --help option
-class MorpheusTest::HelpTest < MorpheusTest::TestCase
+class MtnCloudTest::HelpTest < MtnCloudTest::TestCase
   
   def requires_authentication
     false

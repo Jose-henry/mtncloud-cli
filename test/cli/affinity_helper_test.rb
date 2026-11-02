@@ -1,12 +1,12 @@
 require 'test/unit'
 require 'stringio'
 require 'json'
-require 'morpheus'
+require 'mtncloud'
 
-# Unit tests for Morpheus::Cli::AffinityHelper
+# Unit tests for MtnCloud::Cli::AffinityHelper
 #
 # These are pure unit tests of the shared affinity enums and formatters.
-# They deliberately do NOT extend MorpheusTest::TestCase because they require
+# They deliberately do NOT extend MtnCloudTest::TestCase because they require
 # no appliance, no remote and no authentication - they must always be runnable.
 #
 # These tests exist to guard a real regression: the affinity type enum was
@@ -17,7 +17,7 @@ class AffinityHelperTest < Test::Unit::TestCase
 
   # Bare host for the mixin under test
   class HelperHost
-    include Morpheus::Cli::AffinityHelper
+    include MtnCloud::Cli::AffinityHelper
   end
 
   def setup
@@ -275,9 +275,9 @@ class AffinityHelperTest < Test::Unit::TestCase
   # so callers may switch between MUST and non-MUST behaviour during an edit.
   def test_affinity_type_is_editable_on_update_in_all_commands
     [
-      Morpheus::Cli::AffinityGroupsCommand,
-      Morpheus::Cli::Clouds,
-      Morpheus::Cli::Clusters,
+      MtnCloud::Cli::AffinityGroupsCommand,
+      MtnCloud::Cli::Clouds,
+      MtnCloud::Cli::Clusters,
     ].each do |klass|
       cmd = klass.new
       method_name = all_own_methods(klass).find {|m|
@@ -295,12 +295,12 @@ class AffinityHelperTest < Test::Unit::TestCase
   def test_commands_offer_all_four_types_on_add_and_update
     expected = %w[KEEP_TOGETHER KEEP_SEPARATE KEEP_TOGETHER_MUST KEEP_SEPARATE_MUST].sort
     [
-      [Morpheus::Cli::AffinityGroupsCommand, :add_affinity_group_option_types],
-      [Morpheus::Cli::AffinityGroupsCommand, :update_affinity_group_option_types],
-      [Morpheus::Cli::Clouds,   :add_cloud_affinity_group_option_types],
-      [Morpheus::Cli::Clouds,   :update_cloud_affinity_group_option_types],
-      [Morpheus::Cli::Clusters, :add_affinity_group_option_types],
-      [Morpheus::Cli::Clusters, :update_affinity_group_option_types],
+      [MtnCloud::Cli::AffinityGroupsCommand, :add_affinity_group_option_types],
+      [MtnCloud::Cli::AffinityGroupsCommand, :update_affinity_group_option_types],
+      [MtnCloud::Cli::Clouds,   :add_cloud_affinity_group_option_types],
+      [MtnCloud::Cli::Clouds,   :update_cloud_affinity_group_option_types],
+      [MtnCloud::Cli::Clusters, :add_affinity_group_option_types],
+      [MtnCloud::Cli::Clusters, :update_affinity_group_option_types],
     ].each do |klass, method_name|
       option_types = klass.new.send(method_name)
       affinity_field = option_types.find {|it| it['fieldName'] == 'affinityType' }
@@ -314,28 +314,28 @@ class AffinityHelperTest < Test::Unit::TestCase
   # The enums and formatters must exist in exactly one place.
   def test_commands_do_not_redefine_shared_helpers
     [
-      Morpheus::Cli::AffinityGroupsCommand,
-      Morpheus::Cli::HostVmGroupsCommand,
-      Morpheus::Cli::Clouds,
-      Morpheus::Cli::Clusters,
+      MtnCloud::Cli::AffinityGroupsCommand,
+      MtnCloud::Cli::HostVmGroupsCommand,
+      MtnCloud::Cli::Clouds,
+      MtnCloud::Cli::Clusters,
     ].each do |klass|
       own_methods = all_own_methods(klass)
       [:format_affinity_type, :format_host_vm_group_type, :handle_affinity_rest_exception].each do |shared|
         assert !own_methods.include?(shared),
-          "#{klass} redefines #{shared} - use Morpheus::Cli::AffinityHelper instead to prevent drift"
+          "#{klass} redefines #{shared} - use MtnCloud::Cli::AffinityHelper instead to prevent drift"
       end
     end
   end
 
   def test_affinity_commands_include_the_shared_helper
     [
-      Morpheus::Cli::AffinityGroupsCommand,
-      Morpheus::Cli::HostVmGroupsCommand,
-      Morpheus::Cli::Clouds,
-      Morpheus::Cli::Clusters,
+      MtnCloud::Cli::AffinityGroupsCommand,
+      MtnCloud::Cli::HostVmGroupsCommand,
+      MtnCloud::Cli::Clouds,
+      MtnCloud::Cli::Clusters,
     ].each do |klass|
-      assert klass.include?(Morpheus::Cli::AffinityHelper),
-        "#{klass} does not include Morpheus::Cli::AffinityHelper"
+      assert klass.include?(MtnCloud::Cli::AffinityHelper),
+        "#{klass} does not include MtnCloud::Cli::AffinityHelper"
     end
   end
 
@@ -347,10 +347,10 @@ class AffinityHelperTest < Test::Unit::TestCase
       :add_cloud_affinity_group_option_types,
       :add_cloud_host_vm_group_option_types,
     ].each do |method_name|
-      option_types = Morpheus::Cli::Clouds.new.send(method_name)
+      option_types = MtnCloud::Cli::Clouds.new.send(method_name)
       pool_field = option_types.find {|it| it['fieldName'] == 'pool.id' }
       assert_not_nil pool_field,
-        "Morpheus::Cli::Clouds##{method_name} has no cluster picker (pool.id)"
+        "MtnCloud::Cli::Clouds##{method_name} has no cluster picker (pool.id)"
       assert_equal true, pool_field['required'],
         "#{method_name}: the cluster picker must be required"
     end

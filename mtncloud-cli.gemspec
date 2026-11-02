@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'morpheus/cli/version'
+require 'mtncloud/cli/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "mtncloud-cli"
-  spec.version       = Morpheus::Cli::VERSION
+  spec.version       = MtnCloud::Cli::VERSION
   spec.authors       = ["Joshua Ukpozi", "Joseph Henry", "MTN Cloud"]
   spec.summary       = "Provides CLI Interface to MTN Cloud"
   spec.description   = "Cloud application management & orchestration CLI for MTN Cloud. Easily manage and orchestrate VMs on private or public infrastructure and containerized architectures."

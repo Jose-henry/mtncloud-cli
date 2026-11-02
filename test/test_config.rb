@@ -1,14 +1,14 @@
 # use a different default home directory when running tests
 ENV['MTNCLOUD_CLI_HOME'] = ENV['TEST_CLI_HOME'] || File.join(Dir.home, ".mtncloud_test") unless ENV['MTNCLOUD_CLI_HOME']
-require 'morpheus'
+require 'mtncloud'
 
-module MorpheusTest
+module MtnCloudTest
   
-  # TestConfig handles parsing of the Morpheus test config settings
+  # TestConfig handles parsing of the MTN Cloud test config settings
   # This parses environment variables or a config file, the latter takes priority
   # The default config file named +test_config.yaml+
   class TestConfig
-    include Morpheus::Cli::PrintHelper # for parse_json_or_yaml() todo: remove this include and use a class method
+    include MtnCloud::Cli::PrintHelper # for parse_json_or_yaml() todo: remove this include and use a class method
 
     # The default filename for the test config
     DEFAULT_FILENAME = 'test_config.yaml'
@@ -34,7 +34,7 @@ module MorpheusTest
     #   ENV['MTNCLOUD_CLI_HOME'] = File.join(Dir.home, ".mtncloud_test")
     # end
     # The default name of the remote to create and use for unit testing
-    DEFAULT_HOMEDIR = Morpheus::Cli.home_directory
+    DEFAULT_HOMEDIR = MtnCloud::Cli.home_directory
 
     # raised if the config cannot be parsed or is missing required settings
     class BadConfigError < StandardError
@@ -47,7 +47,7 @@ module MorpheusTest
     def initialize
       # set defaults
       @remote_name = DEFAULT_REMOTE_NAME # 'unit_test'
-      @homedir = DEFAULT_HOMEDIR # Morpheus::Cli.home_directory
+      @homedir = DEFAULT_HOMEDIR # MtnCloud::Cli.home_directory
       
       # load settings from environment variable and set instance variables
       #ENVIRONMENT_VARIABLES.each { |name, value| instance_variable_set("@#{name}", ENV[name]) if ENV[name] }
@@ -106,9 +106,9 @@ module MorpheusTest
       if password.to_s.empty?
         bad_config "Unable to execute unit tests without specifying a password.\nThis can be specified with the environment variable TEST_PASSWORD='SecretPassword123$'\nor in a config file named #{config_filename || 'test_config.yaml'} like this:\n\npassword: 'SecretPassword123$'\n"
       end
-      # debug is not a terminal method right now, set it this way to enable morpheus debugging right away
+      # debug is not a terminal method right now, set it this way to enable mtncloud debugging right away
       if debug
-        Morpheus::Logging.set_log_level(Morpheus::Logging::Logger::DEBUG)
+        MtnCloud::Logging.set_log_level(MtnCloud::Logging::Logger::DEBUG)
       end
       
       # todo: test authentication now...

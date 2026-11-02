@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
 # Tests for top level CLI functionality
-class MorpheusTest::CliTest < MorpheusTest::TestCase
+class MtnCloudTest::CliTest < MtnCloudTest::TestCase
   
   def requires_remote
     false

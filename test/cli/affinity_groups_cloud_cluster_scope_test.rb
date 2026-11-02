@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'stringio'
 require 'json'
-require 'morpheus'
+require 'mtncloud'
 
 # Command-level offline exercise of the MORPH-17279 --cloud + --cluster
 # (vSphere cluster) scope for AffinityGroupsCommand and HostVmGroupsCommand
@@ -15,9 +15,9 @@ require 'morpheus'
 # payload), exactly as it would against a real appliance.
 class AffinityGroupsCloudClusterScopeTest < Test::Unit::TestCase
 
-  # Fake for Morpheus::CloudsInterface -- records every call, answers cloud
+  # Fake for MtnCloud::CloudsInterface -- records every call, answers cloud
   # name/id lookups, and answers .dry.* calls with a print_dry_run-compatible
-  # request hash (mirrors how Morpheus::APIClient#dry / #execute behave).
+  # request hash (mirrors how MtnCloud::APIClient#dry / #execute behave).
   class FakeCloudsInterface
     attr_reader :calls
 
@@ -77,7 +77,7 @@ class AffinityGroupsCloudClusterScopeTest < Test::Unit::TestCase
     end
   end
 
-  # Fake for Morpheus::CloudResourcePoolsInterface -- used by
+  # Fake for MtnCloud::CloudResourcePoolsInterface -- used by
   # find_resource_pool_cluster_by_name_or_id.
   class FakeResourcePoolsInterface
     attr_reader :calls
@@ -151,7 +151,7 @@ class AffinityGroupsCloudClusterScopeTest < Test::Unit::TestCase
   end
 
   def build_affinity_command(managed_clusters: [])
-    cmd = Morpheus::Cli::AffinityGroupsCommand.new
+    cmd = MtnCloud::Cli::AffinityGroupsCommand.new
     fake_clouds = FakeCloudsInterface.new(cloud: cloud)
     fake_pools = FakeResourcePoolsInterface.new(pool: pool)
     fake_clusters = FakeClustersInterface.new(clusters: managed_clusters)
@@ -165,7 +165,7 @@ class AffinityGroupsCloudClusterScopeTest < Test::Unit::TestCase
   end
 
   def build_host_vm_command(managed_clusters: [])
-    cmd = Morpheus::Cli::HostVmGroupsCommand.new
+    cmd = MtnCloud::Cli::HostVmGroupsCommand.new
     fake_clouds = FakeCloudsInterface.new(cloud: cloud)
     fake_pools = FakeResourcePoolsInterface.new(pool: pool)
     fake_clusters = FakeClustersInterface.new(clusters: managed_clusters)
@@ -179,7 +179,7 @@ class AffinityGroupsCloudClusterScopeTest < Test::Unit::TestCase
   end
 
   def capture_stdout
-    terminal = Morpheus::Terminal.instance
+    terminal = MtnCloud::Terminal.instance
     original = terminal.stdout
     buffer = StringIO.new
     terminal.set_stdout(buffer)

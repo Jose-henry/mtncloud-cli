@@ -1,4 +1,4 @@
-module MorpheusTest
+module MtnCloudTest
 
   # Mixin to provide loading test data / fixtures for tests
   module TestDataHelper

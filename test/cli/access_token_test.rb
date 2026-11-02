@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::AccessTokenCommand
-class MorpheusTest::AccessTokenTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::AccessTokenCommand
+class MtnCloudTest::AccessTokenTest < MtnCloudTest::TestCase
   
   def test_access_token
     assert_execute("access-token")

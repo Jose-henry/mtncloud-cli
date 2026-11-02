@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'morpheus'
+require 'mtncloud'
 
 # arguments
 args = ARGV.dup
@@ -21,7 +21,7 @@ end
 
 # end
 
-terminal = Morpheus::Terminal.new
+terminal = MtnCloud::Terminal.new
 exit_code, err = terminal.execute(args)
 # raise err unless err.nil?
 exit exit_code

@@ -3,7 +3,7 @@ require 'stringio'
 require 'timeout'
 require 'tmpdir'
 require 'fileutils'
-require 'morpheus'
+require 'mtncloud'
 
 # Offline branding checks for the MTN Cloud CLI, no appliance needed.
 #
@@ -38,14 +38,14 @@ class BrandingTest < Test::Unit::TestCase
     def startup
       @screens = {}
       @errors = []
-      saved_terminal = Morpheus::Terminal.instance_variable_get(:@morphterm)
-      saved_home = Morpheus::Cli.home_directory
+      saved_terminal = MtnCloud::Terminal.instance_variable_get(:@morphterm)
+      saved_home = MtnCloud::Cli.home_directory
       home = Dir.mktmpdir("mtncloud_branding_test")
       out, err = StringIO.new, StringIO.new
-      # commands print through Morpheus::Terminal.instance, so point a terminal at StringIOs
-      Morpheus::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: err, homedir: home)
+      # commands print through MtnCloud::Terminal.instance, so point a terminal at StringIOs
+      MtnCloud::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: err, homedir: home)
       # include hidden commands, they can still be invoked
-      commands = Morpheus::Cli::CliRegistry.instance.instance_variable_get(:@commands)
+      commands = MtnCloud::Cli::CliRegistry.instance.instance_variable_get(:@commands)
       commands.sort_by {|name, _| name.to_s }.each do |name, klass|
         invocations = [["--help"]] + klass.subcommands.keys.map {|sub| [sub.to_s, "--help"] }
         invocations.each do |args|
@@ -54,8 +54,8 @@ class BrandingTest < Test::Unit::TestCase
         end
       end
     ensure
-      Morpheus::Terminal.instance_variable_set(:@morphterm, saved_terminal)
-      Morpheus::Cli.home_directory = saved_home
+      MtnCloud::Terminal.instance_variable_set(:@morphterm, saved_terminal)
+      MtnCloud::Cli.home_directory = saved_home
       FileUtils.rm_rf(home) if home
     end
 
@@ -116,36 +116,35 @@ class BrandingTest < Test::Unit::TestCase
 
   def test_version_banner_is_mtn_cloud
     out = StringIO.new
-    saved_terminal = Morpheus::Terminal.instance_variable_get(:@morphterm)
-    saved_home = Morpheus::Cli.home_directory
-    Morpheus::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: StringIO.new, homedir: Dir.tmpdir)
-    Morpheus::Cli::VersionCommand.new.handle([])
+    saved_terminal = MtnCloud::Terminal.instance_variable_get(:@morphterm)
+    saved_home = MtnCloud::Cli.home_directory
+    MtnCloud::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: StringIO.new, homedir: Dir.tmpdir)
+    MtnCloud::Cli::VersionCommand.new.handle([])
     assert_include out.string, "MTN Cloud CLI"
-    assert_include out.string, "Client Version: #{Morpheus::Cli::VERSION}"
+    assert_include out.string, "Client Version: #{MtnCloud::Cli::VERSION}"
     # the old banner spelled Morpheus in ASCII art, which a text search cannot see
     assert_not_match(/__  ___/, out.string)
   ensure
-    Morpheus::Terminal.instance_variable_set(:@morphterm, saved_terminal)
-    Morpheus::Cli.home_directory = saved_home
+    MtnCloud::Terminal.instance_variable_set(:@morphterm, saved_terminal)
+    MtnCloud::Cli.home_directory = saved_home
   end
 
-  # update must not query RubyGems, mtncloud-cli is not published there
+  # update must not make network requests, it only prints the update command
   def test_update_prints_manual_instructions_without_network
     out = StringIO.new
-    saved_terminal = Morpheus::Terminal.instance_variable_get(:@morphterm)
-    saved_home = Morpheus::Cli.home_directory
-    Morpheus::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: StringIO.new, homedir: Dir.tmpdir)
+    saved_terminal = MtnCloud::Terminal.instance_variable_get(:@morphterm)
+    saved_home = MtnCloud::Cli.home_directory
+    MtnCloud::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: StringIO.new, homedir: Dir.tmpdir)
     HTTP.define_singleton_method(:get) {|*args| raise "update must not make HTTP requests" }
     # -f and -y are ignored but still accepted
-    exit_code, err = Morpheus::Cli::UpdateCommand.new.handle(["-f", "-y"])
+    exit_code, err = MtnCloud::Cli::UpdateCommand.new.handle(["-f", "-y"])
     assert_equal 0, exit_code
-    assert_include out.string, "Installed version: #{Morpheus::Cli::VERSION}"
-    assert_include out.string, "git clone https://github.com/Jose-henry/mtncloud-cli"
-    assert_include out.string, "gem install ./mtncloud-cli.gem"
+    assert_include out.string, "Installed version: #{MtnCloud::Cli::VERSION}"
+    assert_include out.string, "gem update mtncloud-cli"
   ensure
     HTTP.singleton_class.send(:remove_method, :get) if HTTP.singleton_methods(false).include?(:get)
-    Morpheus::Terminal.instance_variable_set(:@morphterm, saved_terminal)
-    Morpheus::Cli.home_directory = saved_home
+    MtnCloud::Terminal.instance_variable_set(:@morphterm, saved_terminal)
+    MtnCloud::Cli.home_directory = saved_home
   end
 
   def test_prog_name_follows_invoked_name
@@ -153,7 +152,7 @@ class BrandingTest < Test::Unit::TestCase
     { "/usr/local/bin/mcs" => "mcs", "C:/Ruby33-x64/bin/mcs" => "mcs", "bin/mtncloud" => "mtncloud",
       "rake" => "mtncloud", "/usr/bin/morpheus" => "mtncloud" }.each do |program, expected|
       $0 = program
-      assert_equal expected, Morpheus::Cli.prog_name, "prog_name when invoked as #{program}"
+      assert_equal expected, MtnCloud::Cli.prog_name, "prog_name when invoked as #{program}"
     end
   ensure
     $0 = original

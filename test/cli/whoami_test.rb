@@ -1,6 +1,6 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-class MorpheusTest::WhoamiTest < MorpheusTest::TestCase
+class MtnCloudTest::WhoamiTest < MtnCloudTest::TestCase
   
   def test_whoami
     assert_execute("whoami")

@@ -1,14 +1,14 @@
 require 'test/unit'
 require 'stringio'
 require 'json'
-require 'morpheus'
+require 'mtncloud'
 
 # Unit tests for the MORPH-17279 cloud-owned vSphere cluster resolver added to
-# Morpheus::Cli::InfrastructureHelper:
+# MtnCloud::Cli::InfrastructureHelper:
 #   find_resource_pool_cluster_by_name_or_id / _by_id / _by_name
 #
 # These are pure unit tests against a fake CloudResourcePoolsInterface. They
-# deliberately do NOT extend MorpheusTest::TestCase because they require no
+# deliberately do NOT extend MtnCloudTest::TestCase because they require no
 # appliance, no remote and no authentication - they must always be runnable.
 # See test/cli/affinity_helper_test.rb for the established pattern this
 # follows.
@@ -20,7 +20,7 @@ require 'morpheus'
 # fail loudly instead of returning nil silently or the wrong pool.
 class InfrastructureHelperClusterResolverTest < Test::Unit::TestCase
 
-  # Fake standing in for Morpheus::CloudResourcePoolsInterface. Records every
+  # Fake standing in for MtnCloud::CloudResourcePoolsInterface. Records every
   # call so tests can assert exactly what was requested, mirroring the
   # dry-run request assertions used elsewhere in this suite.
   class FakeResourcePoolsInterface
@@ -65,7 +65,7 @@ class InfrastructureHelperClusterResolverTest < Test::Unit::TestCase
 
   # Bare host for the mixin under test.
   class HelperHost
-    include Morpheus::Cli::InfrastructureHelper
+    include MtnCloud::Cli::InfrastructureHelper
 
     def initialize(fake_interface, clusters_interface=nil)
       @cloud_resource_pools_interface = fake_interface

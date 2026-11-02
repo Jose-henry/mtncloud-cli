@@ -1,12 +1,12 @@
 require 'test/unit'
 $LOAD_PATH.unshift(File.expand_path('../../lib', __dir__))
-require 'morpheus'
-require 'morpheus/cli/commands/systems'
+require 'mtncloud'
+require 'mtncloud/cli/commands/systems'
 
 class SystemsCommandTest < Test::Unit::TestCase
 
   def test_systems_registers_network_update_subcommands
-    command_names = Morpheus::Cli::Systems.subcommands.keys.collect(&:to_s)
+    command_names = MtnCloud::Cli::Systems.subcommands.keys.collect(&:to_s)
     assert command_names.include?('list-available-network-updates')
     assert command_names.include?('apply-network-update')
     assert command_names.include?('list-available-network-server-updates')
@@ -14,7 +14,7 @@ class SystemsCommandTest < Test::Unit::TestCase
   end
 
   def test_list_available_network_server_updates_dry_run
-    command = Morpheus::Cli::Systems.new
+    command = MtnCloud::Cli::Systems.new
     captured_request = nil
     command.define_singleton_method(:connect) do |options|
       @systems_interface = Object.new
@@ -40,7 +40,7 @@ class SystemsCommandTest < Test::Unit::TestCase
   end
 
   def test_apply_network_server_update_dry_run
-    command = Morpheus::Cli::Systems.new
+    command = MtnCloud::Cli::Systems.new
     captured_request = nil
     command.define_singleton_method(:connect) do |options|
       @systems_interface = Object.new
@@ -67,7 +67,7 @@ class SystemsCommandTest < Test::Unit::TestCase
   end
 
   def test_update_dry_run_with_components_payload
-    command = Morpheus::Cli::Systems.new
+    command = MtnCloud::Cli::Systems.new
     captured_request = nil
     interface = Object.new
     interface.define_singleton_method(:get) do |id|
@@ -98,7 +98,7 @@ class SystemsCommandTest < Test::Unit::TestCase
   end
 
   def test_update_dry_run_allows_empty_components_array
-    command = Morpheus::Cli::Systems.new
+    command = MtnCloud::Cli::Systems.new
     captured_request = nil
     interface = Object.new
     interface.define_singleton_method(:get) do |id|
@@ -125,7 +125,7 @@ class SystemsCommandTest < Test::Unit::TestCase
   end
 
   def test_render_response_for_get_includes_components_table
-    command = Morpheus::Cli::Systems.new
+    command = MtnCloud::Cli::Systems.new
     captured_rows = nil
     command.define_singleton_method(:render_response) do |json_response, options, key, &block|
       block.call if block
@@ -161,11 +161,11 @@ class SystemsCommandTest < Test::Unit::TestCase
 
 end
 
-# Integration tests for Systems CLI commands against a live Morpheus instance.
-# Requires a configured remote and login (uses MorpheusTest::TestCase).
+# Integration tests for Systems CLI commands against a live MTN Cloud instance.
+# Requires a configured remote and login (uses MtnCloudTest::TestCase).
 # Tests that return no records are skipped with a message rather than failing.
-if defined?(MorpheusTest::TestCase)
-  class SystemsLiveTest < MorpheusTest::TestCase
+if defined?(MtnCloudTest::TestCase)
+  class SystemsLiveTest < MtnCloudTest::TestCase
 
     def test_systems_list_types
       assert_execute %(systems list-types)

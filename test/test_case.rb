@@ -1,14 +1,14 @@
 require 'test/unit'
 # use a different default home directory when running tests
 ENV['MTNCLOUD_CLI_HOME'] = ENV['TEST_CLI_HOME'] || File.join(Dir.home, ".mtncloud_test")
-require 'morpheus'
+require 'mtncloud'
 require 'test_config'
 #require 'securerandom'
 
 # hack needed for unit tests right now
-Morpheus::Cli.enable_test_mode()
+MtnCloud::Cli.enable_test_mode()
 
-module MorpheusTest
+module MtnCloudTest
 
   # TestCase is the base class for all unit tests to provide standard behavior
   # for testing CLI commands and API interfaces.
@@ -20,7 +20,7 @@ module MorpheusTest
   # +client+ is available for executing API requests
   #
   class TestCase < Test::Unit::TestCase
-    include Morpheus::Cli::PrintHelper # printhelper for print_red_alert and what not.. should probably not be included in MorpheusTest
+    include MtnCloud::Cli::PrintHelper # printhelper for print_red_alert and what not.. should probably not be included in MtnCloudTest
 
     # execute test cases in the order they are defined.
     self.test_order = :defined
@@ -60,13 +60,13 @@ module MorpheusTest
 
     protected
 
-     # @return [Morpheus::APIClient] client for executing api requests in our tests and examining the results
+     # @return [MtnCloud::APIClient] client for executing api requests in our tests and examining the results
     def client
       # todo: return terminal.get_api_client()
-      #@api_client ||= Morpheus::APIClient.new(url: @config.url, username: @config.username, password: @config.password_decrypted, verify_ssl: false, client_id: 'morph-api')
+      #@api_client ||= MtnCloud::APIClient.new(url: @config.url, username: @config.username, password: @config.password_decrypted, verify_ssl: false, client_id: 'morph-api')
       #@api_client.login() unless @api_client.logged_in?
       # this only works while logged in, fine for now...
-      @client ||= Morpheus::APIClient.new(url: @config.url, username: @config.username, password: @config.password, access_token: get_access_token(), verify_ssl: false, client_id: 'morph-cli')
+      @client ||= MtnCloud::APIClient.new(url: @config.url, username: @config.username, password: @config.password, access_token: get_access_token(), verify_ssl: false, client_id: 'morph-cli')
     end
 
    
@@ -87,7 +87,7 @@ module MorpheusTest
     #   assert_execute("foobar", exit:1, "Expected unknown command to fail")
     #
     def assert_execute(cmd, opts = {}, failure_message = nil)
-      #Morpheus::Logging::DarkPrinter.puts(cmd)
+      #MtnCloud::Logging::DarkPrinter.puts(cmd)
       opts = opts.is_a?(String) ? {failure_message:opts} : (opts || {})
       result = terminal.execute(cmd)
       assert_command_result(result, opts, failure_message)
@@ -130,7 +130,7 @@ module MorpheusTest
       expected_message = opts[:error]
       failure_message = failure_message || opts[:failure_message] || opts[:failure]
       # parse command result
-      exit_code, err = Morpheus::Cli::CliRegistry.parse_command_result(result)
+      exit_code, err = MtnCloud::Cli::CliRegistry.parse_command_result(result)
       # result assertions
       if success
         assert_equal([0, nil], [exit_code, err], failure_message || "Expected command to succeed with exit code: 0 and instead got exit code: #{exit_code.inspect}, error: #{err.inspect}")
@@ -147,9 +147,9 @@ module MorpheusTest
     end
 
     # Get the shared CLI terminal
-    # @return [Morpheus::Terminal]
+    # @return [MtnCloud::Terminal]
     def terminal
-      # return Morpheus::Terminal.instance
+      # return MtnCloud::Terminal.instance
       establish_test_terminal()
       Thread.current[:terminal]
     end
@@ -168,30 +168,30 @@ module MorpheusTest
     # This requires the user to set environment variables: TEST_URL, TEST_USERNAME and TEST_PASSWORD or TEST_CONFIG
     # By default, test_config.yaml in the current directory can be used.
     # The home directory can be specified with TEST_HOME, and the default TEST_CONFIG filename is ~/.mtncloud_test
-    # returns the Morpheus::Terminal instance for executing CLI commands
+    # returns the MtnCloud::Terminal instance for executing CLI commands
     def establish_test_terminal()
       if Thread.current[:terminal].nil?
         config = get_config()
 
         # create the terminal scoped to our test environment
         terminal_opts = {homedir: config.homedir}
-        Thread.current[:terminal] = Morpheus::Terminal.new(terminal_opts)
+        Thread.current[:terminal] = MtnCloud::Terminal.new(terminal_opts)
 
         # debug is not a terminal option right now, set it this way instead...
-        if config.debug # || Morpheus::Logging.debug?
-          # Morpheus::Logging.set_log_level(Morpheus::Logging::Logger::DEBUG)
+        if config.debug # || MtnCloud::Logging.debug?
+          # MtnCloud::Logging.set_log_level(MtnCloud::Logging::Logger::DEBUG)
           terminal.execute("debug")
         else
           if QUIET
-            #blackhole = Morpheus::Terminal::Blackhole.new('blackhole')
-            blackhole = File.open(Morpheus::Cli.windows? ? 'NUL:' : '/dev/null', 'w')
+            #blackhole = MtnCloud::Terminal::Blackhole.new('blackhole')
+            blackhole = File.open(MtnCloud::Cli.windows? ? 'NUL:' : '/dev/null', 'w')
             terminal.set_stdout(blackhole)
             terminal.set_stderr(blackhole)
           end
         end
         
         #terminal.execute("remote get \"#{config.remote_name}\" -q || remote add \"#{config.remote_name}\" \"#{config.url}\" --insecure --use -N")
-        appliance = Morpheus::Cli::Remote.load_remote(config.remote_name)
+        appliance = MtnCloud::Cli::Remote.load_remote(config.remote_name)
         if appliance
           # appliance already exists, update it if needed
           if appliance[:url] != config.url
@@ -238,12 +238,12 @@ module MorpheusTest
     # @return [String,nil] 
     def get_access_token()
       config = get_config()
-      appliance = Morpheus::Cli::Remote.load_remote(config.remote_name)
+      appliance = MtnCloud::Cli::Remote.load_remote(config.remote_name)
       if appliance.nil?
         #abort("test appliance not found #{config.remote_name}")
         return nil
       end
-      wallet = ::Morpheus::Cli::Credentials.new(appliance[:name], nil).load_saved_credentials()
+      wallet = ::MtnCloud::Cli::Credentials.new(appliance[:name], nil).load_saved_credentials()
       if wallet.nil?
         return nil
       end
@@ -265,7 +265,7 @@ module MorpheusTest
     # def login()
     #   config = get_config()
     #   result = terminal.execute(%(login "#{escape_arg config.username}" "#{escape_arg config.password_decrypted}" --quiet))
-    #   exit_code, err = Morpheus::Cli::CliRegistry.parse_command_result(result)
+    #   exit_code, err = MtnCloud::Cli::CliRegistry.parse_command_result(result)
     #   if exit_code != 0
     #     abort("Failed to login as #{config.username}@#{config.url}")
     #   else
@@ -316,7 +316,7 @@ module MorpheusTest
       messages = messages.flatten #.compact
       original_stdin = $stdin
       #todo: use temp directory...
-      tmpfilename = ".cli_unit_test_shell_input_#{SecureRandom.hex(10)}.morpheus"
+      tmpfilename = ".cli_unit_test_shell_input_#{SecureRandom.hex(10)}.mtncloud"
       file = nil
       begin
         File.open(tmpfilename, 'w+') {|f| f.write(messages.join("\n") + "\n") }

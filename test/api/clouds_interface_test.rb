@@ -1,11 +1,11 @@
 require 'test/unit'
 $LOAD_PATH.unshift(File.expand_path('../../lib', __dir__))
-require 'morpheus/api/clouds_interface'
+require 'mtncloud/api/clouds_interface'
 
 class CloudsInterfaceTest < Test::Unit::TestCase
 
   def setup
-    @clouds_interface = Morpheus::CloudsInterface.new(access_token: 'token', url: 'https://example.test', verify_ssl: false)
+    @clouds_interface = MtnCloud::CloudsInterface.new(access_token: 'token', url: 'https://example.test', verify_ssl: false)
   end
 
   def test_affinity_group_form_options_builds_bearer_authorization_header

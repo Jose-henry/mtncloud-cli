@@ -1,6 +1,6 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-class MorpheusTest::MigrationsTest < MorpheusTest::TestCase
+class MtnCloudTest::MigrationsTest < MtnCloudTest::TestCase
   
   def test_migrations_list
     assert_execute %(migrations list)

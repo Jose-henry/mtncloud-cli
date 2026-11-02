@@ -1,6 +1,6 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-class MorpheusTest::RolesTest < MorpheusTest::TestCase
+class MtnCloudTest::RolesTest < MtnCloudTest::TestCase
   
   def test_roles_list
     assert_execute %(roles list)

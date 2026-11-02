@@ -1,0 +1,30 @@
+require 'mtncloud/cli/cli_command'
+
+# This is for use in dotfile scripts and the shell..
+class MtnCloud::Cli::SourceCommand
+  include MtnCloud::Cli::CliCommand
+  set_command_name :source
+  set_command_hidden
+
+  def handle(args)
+    options = {}
+    optparse = MtnCloud::Cli::OptionParser.new do|opts|
+      opts.banner = "Usage: #{prog_name} #{command_name} [file] [file2]"
+      build_common_options(opts, options, [])
+      opts.footer = "This will execute a file as a script where each line is a #{prog_name} command or expression."
+    end
+    optparse.parse!(args)
+    verify_args!(args:args, optparse:optparse, min:1)
+    exit_code, err = 0, nil
+    source_files = args
+    bad_files = source_files.select { |source_file| !File.exist?(File.expand_path(source_file)) }
+    if !bad_files.empty?
+      raise_command_error("source file(s) not found: #{bad_files.join(', ')}")
+    end
+    source_files.each do |source_file|
+      MtnCloud::Cli::DotFile.new(File.expand_path(source_file)).execute()
+    end
+    return exit_code, err
+  end
+
+end

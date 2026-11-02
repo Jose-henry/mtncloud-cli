@@ -1,9 +1,9 @@
 require 'test/unit'
 $LOAD_PATH.unshift(File.expand_path('../../lib', __dir__))
-require 'morpheus'
-require 'morpheus/cli/commands/backups_command'
+require 'mtncloud'
+require 'mtncloud/cli/commands/backups_command'
 
-# Tests for Morpheus::Cli::BackupsCommand
+# Tests for MtnCloud::Cli::BackupsCommand
 #
 # These tests focus on the human-readable backup detail rendering, which is
 # pure formatting logic and does not require a live appliance. The detail view
@@ -56,7 +56,7 @@ class BackupsCommandTest < Test::Unit::TestCase
     end
   end
 
-  class OfflineBackupsCommand < Morpheus::Cli::BackupsCommand
+  class OfflineBackupsCommand < MtnCloud::Cli::BackupsCommand
     attr_reader :backups_interface, :options_interface
 
     def initialize(backup_type_code, plugin_option_types)
@@ -75,7 +75,7 @@ class BackupsCommandTest < Test::Unit::TestCase
   end
 
   def command
-    @command ||= Morpheus::Cli::BackupsCommand.new
+    @command ||= MtnCloud::Cli::BackupsCommand.new
   end
 
   # snapshot backup with nested backupType/backupProvider/storageProvider names
@@ -176,8 +176,8 @@ class BackupsCommandTest < Test::Unit::TestCase
   private
 
   def with_backup_add_prompts(backup_type_code, plugin_values = {})
-    original_prompt = Morpheus::Cli::OptionTypes.method(:prompt)
-    Morpheus::Cli::OptionTypes.define_singleton_method(:prompt) do |option_types, options = {}, api_client = nil, *args|
+    original_prompt = MtnCloud::Cli::OptionTypes.method(:prompt)
+    MtnCloud::Cli::OptionTypes.define_singleton_method(:prompt) do |option_types, options = {}, api_client = nil, *args|
       if option_types.any? {|option_type| option_type['fieldContext'] == 'domain'}
         prompt_options = options.deep_merge(plugin_values).merge(:no_prompt => true)
         original_prompt.call(option_types, prompt_options, api_client, *args)
@@ -207,6 +207,6 @@ class BackupsCommandTest < Test::Unit::TestCase
     end
     yield
   ensure
-    Morpheus::Cli::OptionTypes.define_singleton_method(:prompt, original_prompt)
+    MtnCloud::Cli::OptionTypes.define_singleton_method(:prompt, original_prompt)
   end
 end

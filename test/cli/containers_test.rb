@@ -1,10 +1,10 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 require 'test_data_helper'
 
-# Tests for Morpheus::Cli::Containers
-class MorpheusTest::ContainersTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::Containers
+class MtnCloudTest::ContainersTest < MtnCloudTest::TestCase
   
-  include MorpheusTest::TestDataHelper  
+  include MtnCloudTest::TestDataHelper  
 
   def setup()
     super

@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::NetworkRouters
-class MorpheusTest::NetworkRoutersTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::NetworkRouters
+class MtnCloudTest::NetworkRoutersTest < MtnCloudTest::TestCase
 
   def test_network_routers_list
     assert_execute %(network-routers list)

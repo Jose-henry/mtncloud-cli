@@ -1,6 +1,6 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::AffinityGroupsCommand
+# Tests for MtnCloud::Cli::AffinityGroupsCommand
 #
 # Scope note: these cover only client-side behaviour -- help output and argument
 # validation -- both of which resolve before any API call is made.
@@ -10,7 +10,7 @@ require 'morpheus_test'
 # contract is confirmed against the MORPH-14136 / MORPH-16074 server work.
 # See test/cli/affinity_helper_test.rb for the offline coverage of the shared
 # affinity enums and formatters.
-class MorpheusTest::AffinityGroupsTest < MorpheusTest::TestCase
+class MtnCloudTest::AffinityGroupsTest < MtnCloudTest::TestCase
 
   def test_affinity_groups_help
     assert_execute %(affinity-groups --help)

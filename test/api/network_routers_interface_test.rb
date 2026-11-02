@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::InstancesInterface
-class MorpheusTest::NetworkRoutersInterfaceTest < MorpheusTest::TestCase
+# Tests for MtnCloud::InstancesInterface
+class MtnCloudTest::NetworkRoutersInterfaceTest < MtnCloudTest::TestCase
   
   def test_network_routers_interface
     @network_routers_interface = client.network_routers

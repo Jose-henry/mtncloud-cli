@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'stringio'
-require 'morpheus'
+require 'mtncloud'
 
 # Command-level offline exercise of the MORPH-17279 --cluster scope for
 # HostVmGroupsCommand#list. Parallels affinity_groups_cluster_scope_test.rb:
@@ -156,7 +156,7 @@ class HostVmGroupsClusterScopeTest < Test::Unit::TestCase
     clouds = FakeCloudsInterface.new(@cloud)
     pools_interface = FakeResourcePoolsInterface.new(pools)
     clusters = FakeClustersInterface.new(managed_clusters)
-    command = Morpheus::Cli::HostVmGroupsCommand.new
+    command = MtnCloud::Cli::HostVmGroupsCommand.new
     command.define_singleton_method(:connect) do |_options|
       @clouds_interface = clouds
       @clusters_interface = clusters
@@ -166,7 +166,7 @@ class HostVmGroupsClusterScopeTest < Test::Unit::TestCase
   end
 
   def capture_stdout
-    terminal = Morpheus::Terminal.instance
+    terminal = MtnCloud::Terminal.instance
     original = terminal.stdout
     buffer = StringIO.new
     terminal.set_stdout(buffer)

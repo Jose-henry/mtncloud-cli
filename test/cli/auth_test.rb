@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
 # Tests for login and logout
-class MorpheusTest::AuthTest < MorpheusTest::TestCase
+class MtnCloudTest::AuthTest < MtnCloudTest::TestCase
   
   def requires_authentication
     false

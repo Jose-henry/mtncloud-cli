@@ -1,0 +1,51 @@
+require 'mtncloud/cli/cli_command'
+
+class MtnCloud::Cli::SetPromptCommand
+  include MtnCloud::Cli::CliCommand
+  set_command_name :'set-prompt'
+  set_command_hidden
+
+  def handle(args)
+    options = {}
+    optparse = MtnCloud::Cli::OptionParser.new do|opts|
+      opts.banner = "Usage: #{prog_name} #{command_name} [prompt]"
+      opts.on('-h', '--help', "Print this help" ) do
+        puts opts
+        exit
+      end
+      variable_map = MtnCloud::Cli::Echo.variable_map
+      formatted_variable_map = "    " + variable_map.keys.join(' ')
+      opts.footer = <<-EOT
+Customize your #{prog_name} shell prompt.
+
+[prompt] is required. This is the string the terminal prints when you interact with it.
+
+Examples: 
+    set-prompt "mtncloud $ "
+    set-prompt "%cyanmtncloud> "
+    set-prompt "[%magenta%remote%reset] %cyan%username> "
+    set-prompt "%green%username%reset@%remote %magenta> %reset"
+    set-prompt "%cyan%username%reset@%magenta%remote %cyanmtncloud> %reset"
+
+The available variables are:
+#{formatted_variable_map}
+
+The default prompt is: "%cyan#{prog_name}> %reset"
+The value may also be set through the enviroment variable MTNCLOUD_PS1.
+EOT
+    end
+    optparse.parse!(args)
+    if args.count != 1
+      print_error MtnCloud::Terminal.angry_prompt
+      puts_error  "wrong number of arguments, expected 1 and got (#{args.count}) #{args.inspect}\n#{optparse}"
+      return 1
+    end
+    # do it
+    self.my_terminal.prompt = args[0]
+    # MtnCloud::Terminal.instance.prompt = args[0]
+    MtnCloud::Cli::Shell.instance.recalculate_prompt()
+    MtnCloud::Cli::Echo.recalculate_variable_map()
+    return 0
+  end
+
+end

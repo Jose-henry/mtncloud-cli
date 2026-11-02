@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::Cli::Remote
-class MorpheusTest::RemoteTest < MorpheusTest::TestCase
+# Tests for MtnCloud::Cli::Remote
+class MtnCloudTest::RemoteTest < MtnCloudTest::TestCase
 
   def requires_remote
     false

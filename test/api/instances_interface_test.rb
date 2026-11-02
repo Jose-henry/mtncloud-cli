@@ -1,7 +1,7 @@
-require 'morpheus_test'
+require 'mtncloud_test'
 
-# Tests for Morpheus::InstancesInterface
-class MorpheusTest::InstancesInterfaceTest < MorpheusTest::TestCase
+# Tests for MtnCloud::InstancesInterface
+class MtnCloudTest::InstancesInterfaceTest < MtnCloudTest::TestCase
   
   def test_instances_interface
     @instances_interface = client.instances

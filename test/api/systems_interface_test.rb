@@ -1,11 +1,11 @@
 require 'test/unit'
 $LOAD_PATH.unshift(File.expand_path('../../lib', __dir__))
-require 'morpheus/api/systems_interface'
+require 'mtncloud/api/systems_interface'
 
 class SystemsInterfaceTest < Test::Unit::TestCase
 
   def setup
-    @systems_interface = Morpheus::SystemsInterface.new(access_token: 'token', url: 'https://example.test', verify_ssl: false)
+    @systems_interface = MtnCloud::SystemsInterface.new(access_token: 'token', url: 'https://example.test', verify_ssl: false)
   end
 
   def test_list_network_server_update_definitions_builds_expected_request

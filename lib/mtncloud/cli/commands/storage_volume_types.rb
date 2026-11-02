@@ -1,0 +1,45 @@
+require 'mtncloud/cli/cli_command'
+
+class MtnCloud::Cli::StorageVolumeTypes
+  include MtnCloud::Cli::CliCommand
+  include MtnCloud::Cli::RestCommand
+  include MtnCloud::Cli::StorageVolumesHelper
+
+  set_command_name :'storage-volume-types'
+  register_subcommands :list, :get
+
+  # register_interfaces :storage_volume_types
+
+  protected
+
+  def build_list_options(opts, options, params)
+    opts.on('--name VALUE', String, "Filter by name") do |val|
+      params['name'] = val
+    end
+    opts.on('--category VALUE', String, "Filter by category") do |val|
+      params['category'] = val
+    end
+    # build_standard_list_options(opts, options)
+    super
+  end
+
+  def storage_volume_type_list_column_definitions(options)
+    {
+      "ID" => 'id',
+      "Name" => 'name',
+      "Code" => 'code',
+      "Description" => 'description',
+    }
+  end
+
+  def storage_volume_type_column_definitions(options)
+    {
+      "ID" => 'id',
+      "Name" => 'name',
+      "Code" => 'code',
+      "Description" => 'description',
+    }
+  end
+
+end
+

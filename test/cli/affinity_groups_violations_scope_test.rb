@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'stringio'
-require 'morpheus'
+require 'mtncloud'
 
 # Offline exercise of the MORPH-17279 --cluster scope for
 # AffinityGroupsCommand#violations. Unlike list/add, the violations endpoint
@@ -109,7 +109,7 @@ class AffinityGroupsViolationsScopeTest < Test::Unit::TestCase
     clouds = FakeCloudsInterface.new(@cloud)
     pools = FakeResourcePoolsInterface.new([@pool])
     clusters = FakeClustersInterface.new(managed_clusters)
-    command = Morpheus::Cli::AffinityGroupsCommand.new
+    command = MtnCloud::Cli::AffinityGroupsCommand.new
     command.define_singleton_method(:connect) do |_options|
       @affinity_groups_interface = affinity
       @clouds_interface = clouds
@@ -120,7 +120,7 @@ class AffinityGroupsViolationsScopeTest < Test::Unit::TestCase
   end
 
   def capture_stdout
-    terminal = Morpheus::Terminal.instance
+    terminal = MtnCloud::Terminal.instance
     original = terminal.stdout
     buffer = StringIO.new
     terminal.set_stdout(buffer)

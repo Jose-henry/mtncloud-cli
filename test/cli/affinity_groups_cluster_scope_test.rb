@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'stringio'
-require 'morpheus'
+require 'mtncloud'
 
 class AffinityGroupsClusterScopeTest < Test::Unit::TestCase
   class FakeCloudsInterface
@@ -149,7 +149,7 @@ class AffinityGroupsClusterScopeTest < Test::Unit::TestCase
     clouds = FakeCloudsInterface.new(@cloud)
     pools = FakeResourcePoolsInterface.new(@pool)
     clusters = FakeClustersInterface.new(managed_clusters)
-    command = Morpheus::Cli::AffinityGroupsCommand.new
+    command = MtnCloud::Cli::AffinityGroupsCommand.new
     command.define_singleton_method(:connect) do |_options|
       @clouds_interface = clouds
       @clusters_interface = clusters
@@ -159,7 +159,7 @@ class AffinityGroupsClusterScopeTest < Test::Unit::TestCase
   end
 
   def capture_stdout
-    terminal = Morpheus::Terminal.instance
+    terminal = MtnCloud::Terminal.instance
     original = terminal.stdout
     buffer = StringIO.new
     terminal.set_stdout(buffer)
