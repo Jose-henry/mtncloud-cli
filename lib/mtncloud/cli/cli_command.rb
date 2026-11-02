@@ -1057,8 +1057,18 @@ module MtnCloud
         self.class.get_subcommand_description(subcmd)
       end
 
+      # The name of the command method that called subcommand_usage or
+      # subcommand_description, for example "get" when called from Clusters#get.
+      # Before Ruby 3.4 the label is "get" or "block in get". From Ruby 3.4 it
+      # includes the class, as in "MtnCloud::Cli::Clusters#get".
+      def calling_method_name
+        label = caller_locations(2, 1)[0].label.to_s
+        label = label.sub(/\Ablock (\(\d+ levels\) )?in /, '')
+        label.split(/[#.]/).last.to_s
+      end
+
       def subcommand_description()
-        calling_method = caller[0][/`([^']*)'/, 1].to_s.sub('block in ', '')
+        calling_method = calling_method_name
         subcommand_name = subcommands.key(calling_method)
         subcommand_name ? get_subcommand_description(subcommand_name) : nil
       end
@@ -1084,7 +1094,7 @@ module MtnCloud
       end
 
       def subcommand_usage(*extra)
-        calling_method = caller[0][/`([^']*)'/, 1].to_s.sub('block in ', '')
+        calling_method = calling_method_name
         subcommand_name = subcommands.key(calling_method)
         extra = extra.flatten
         if !subcommand_name.empty? && extra.first == subcommand_name
