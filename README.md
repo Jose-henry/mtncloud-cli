@@ -166,7 +166,7 @@ The other tests run against a live appliance. Create a `test_config.yaml` in the
 
 ```yaml
 url: 'https://console.cloud.mtn.ng'
-username: testrunner
+username: (accountID/Subdomain)\testrunner
 password: 'SecretPassword123$'
 ```
 
