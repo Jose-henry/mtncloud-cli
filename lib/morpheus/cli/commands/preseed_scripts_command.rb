@@ -54,7 +54,7 @@ class Morpheus::Cli::PreseedScriptsCommand
         return
       end
       preseed_scripts = json_response['preseedScripts']
-      title = "Morpheus Preseed Scripts"
+      title = "Preseed Scripts"
       subtitles = []
       if params[:phrase]
         subtitles << "Search: #{params[:phrase]}".strip

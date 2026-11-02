@@ -1147,7 +1147,7 @@ module Morpheus
         end
         cmd_method = subcommands[subcommand_name]
         if !cmd_method
-          error_msg = "'#{command_name} #{subcommand_name}' is not a #{prog_name} command.\n#{full_command_usage}"
+          error_msg = "'#{command_name} #{subcommand_name}' is not a known command.\n#{full_command_usage}"
           raise CommandNotFoundError.new(error_msg)
         end
         send(cmd_method, args[1..-1])
@@ -2069,7 +2069,7 @@ module Morpheus
         #             :subcommands, :hidden_subcommands, :default_subcommand, :subcommand_aliases, :subcommand_descriptions
 
         def prog_name
-          "morpheus"
+          Morpheus::Cli.prog_name
         end
 
         def set_command_name(cmd_name)

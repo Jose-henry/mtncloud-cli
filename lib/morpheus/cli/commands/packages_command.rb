@@ -250,11 +250,11 @@ class Morpheus::Cli::PackagesCommand
               rows = sorted_versions.collect {|package_version|
                 {
                   "PACKAGE VERSION": package_version['version'],
-                  "MORPHEUS VERSION": package_version['minApplianceVersion'],
+                  "MIN APPLIANCE VERSION": package_version['minApplianceVersion'],
                   "PUBLISH DATE": format_local_dt(package_version['created'] || package_version['dateCreated'])
                 }
               }
-              columns = ["PACKAGE VERSION", "MORPHEUS VERSION", "PUBLISH DATE"]
+              columns = ["PACKAGE VERSION", "MIN APPLIANCE VERSION", "PUBLISH DATE"]
               print cyan
               print as_pretty_table(rows, columns)
               # print reset, "\n"
@@ -313,7 +313,7 @@ class Morpheus::Cli::PackagesCommand
         params['force'] = true
       end
       build_common_options(opts, options, [:options, :json, :dry_run, :remote, :quiet])
-      opts.footer = "Install a morpheus package from the marketplace.\n" + 
+      opts.footer = "Install a package from the marketplace.\n" + 
                     "[code] is required. This is the package code."
     end
     optparse.parse!(args)
@@ -368,7 +368,7 @@ class Morpheus::Cli::PackagesCommand
         params['force'] = true
       end
       build_common_options(opts, options, [:options, :dry_run, :quiet])
-      opts.footer = "Install a morpheus package with a .morpkg file directly.\n" + 
+      opts.footer = "Install a package with a .morpkg file directly.\n" + 
                     "[morpkg-file] is required. This is the local filepath of a .morpkg to be uploaded and installed."
     end
     optparse.parse!(args)
@@ -514,7 +514,7 @@ class Morpheus::Cli::PackagesCommand
         end
       end
       build_common_options(opts, options, [:options, :dry_run, :quiet])
-      opts.footer = "Export one or many instance types as a morpheus package (.morpkg) file.\n" + 
+      opts.footer = "Export one or many instance types as a package (.morpkg) file.\n" + 
                     "[instance-type] is required. This is the instance type code." +
                     "--instance-types can be export multiple instance types at once. This is a list of instance type codes."
     end
@@ -584,7 +584,7 @@ class Morpheus::Cli::PackagesCommand
         return 0
       end
       if !options[:quiet]
-        print cyan + "Downloading morpheus package file #{outfile} ... "
+        print cyan + "Downloading package file #{outfile} ... "
       end
 
       http_response, bad_body = @packages_interface.export(params, outfile)
@@ -660,7 +660,7 @@ class Morpheus::Cli::PackagesCommand
       end
      
       build_common_options(opts, options, [:options, :dry_run, :quiet])
-      opts.footer = "Generate a new morpheus package file. \n" + 
+      opts.footer = "Generate a new package file. \n" + 
                     "[source] is required. This is the source directory of the package.\n" +
                     "[target] is the output filename. The default is [code]-[version].morpkg"
     end
@@ -748,12 +748,12 @@ class Morpheus::Cli::PackagesCommand
       end
 
       if options[:dry_run]
-        print cyan + "Building morpheus package at #{source_directory} ..."
+        print cyan + "Building package at #{source_directory} ..."
         print cyan + "DRY RUN" + reset + "\n"
         return 0
       end
       if !options[:quiet]
-        print cyan + "Building morpheus package at #{source_directory} ... "
+        print cyan + "Building package at #{source_directory} ... "
       end
 
       # build it

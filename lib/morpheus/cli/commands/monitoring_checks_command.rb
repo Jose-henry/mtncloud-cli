@@ -61,7 +61,7 @@ class Morpheus::Cli::MonitoringChecksCommand
         return 0
       end
       checks = json_response['checks']
-      title = "Morpheus Monitoring Checks"
+      title = "Monitoring Checks"
       subtitles = []
       if options[:type]
         subtitles << "Type: #{options[:type].join(',')}"

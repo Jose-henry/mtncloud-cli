@@ -35,7 +35,7 @@ class Morpheus::Cli::Options
     options = {}
     params = {}
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus #{command_name} [source] [option-type]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [source] [option-type]"
       # build_standard_list_options(opts, options)
       build_standard_get_options(opts, options)
       opts.footer = <<-EOT
@@ -99,7 +99,7 @@ EOT
     render_response(json_response, options, "data") do
       records = json_response["data"]
       # print_h1 "Morpheus Options: #{source}", parse_list_subtitles(options), options
-      print_h1 "Morpheus Options", ["Source: #{source_name}"] + parse_list_subtitles(options), options
+      print_h1 "Options", ["Source: #{source_name}"] + parse_list_subtitles(options), options
       if records.nil? || records.empty?
         print cyan,"No options found.",reset,"\n"
       else
@@ -118,7 +118,7 @@ EOT
     params = {}
     source_name = "networkServices"
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus #{command_name} #{source_name} #{args[0]}"
+      opts.banner = "Usage: #{prog_name} #{command_name} #{source_name} #{args[0]}"
       # build_standard_list_options(opts, options)
       build_standard_get_options(opts, options)
       opts.footer = <<-EOT
@@ -138,7 +138,7 @@ EOT
     json_response = @options_interface.options_for_source(source_name, params)
     render_response(json_response, options, "data") do
       records = json_response["data"].collect {|r| r['services']}.compact.flatten
-      print_h1 "Morpheus Options", ["Source: #{source_name}"] + parse_list_subtitles(options), options, ""
+      print_h1 "Options", ["Source: #{source_name}"] + parse_list_subtitles(options), options, ""
       if records.nil? || records.empty?
         print cyan,"No options found.",reset,"\n"
       else
@@ -169,7 +169,7 @@ EOT
     params = {}
     source_name = "zoneNetworkOptions"
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus #{command_name} #{source_name} #{args[0]}"
+      opts.banner = "Usage: #{prog_name} #{command_name} #{source_name} #{args[0]}"
       # build_standard_list_options(opts, options)
       build_standard_get_options(opts, options)
       opts.footer = <<-EOT
@@ -202,7 +202,7 @@ EOT
       network_groups = json_response["data"]["networkGroups"]
       network_subnets = json_response["data"]["networkSubnets"]
       records = [networks, network_groups, network_subnets].compact.flatten
-      print_h1 "Morpheus Options", ["Source: #{source_name}"] + parse_list_subtitles(options), options, ""
+      print_h1 "Options", ["Source: #{source_name}"] + parse_list_subtitles(options), options, ""
       if records.nil? || records.empty?
         print cyan,"No options found.",reset,"\n"
       else

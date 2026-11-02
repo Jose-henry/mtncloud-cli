@@ -74,7 +74,7 @@ class Morpheus::Cli::CloudFoldersCommand
         puts records_as_csv(folders, options)
         return 0
       end
-      title = "Morpheus Resource Folders - Cloud: #{cloud['name']}"
+      title = "Resource Folders - Cloud: #{cloud['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

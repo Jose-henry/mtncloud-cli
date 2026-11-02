@@ -53,7 +53,7 @@ class Morpheus::Cli::Tasks
     json_response = @tasks_interface.list(params)
     tasks = json_response['tasks']
     render_response(json_response, options, 'tasks') do
-      title = "Morpheus Tasks"
+      title = "Tasks"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1103,7 +1103,7 @@ class Morpheus::Cli::Tasks
       render_result = render_with_format(json_response, options, 'taskTypes')
       return 0 if render_result
       
-      title = "Morpheus Task Types"
+      title = "Task Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1162,9 +1162,9 @@ class Morpheus::Cli::Tasks
 
       task_type = json_response['taskType']
 
-      title = "Morpheus Task Type"
+      title = "Task Type"
       
-      print_h1 "Morpheus Task Type", [], options
+      print_h1 "Task Type", [], options
       
       print cyan
       description_cols = {

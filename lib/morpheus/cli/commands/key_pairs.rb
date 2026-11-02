@@ -45,7 +45,7 @@ class Morpheus::Cli::KeyPairs
       return 0 if render_result
       key_pairs = json_response['keyPairs']
       unless options[:quiet]
-        title = "Morpheus Key Pairs"
+        title = "Key Pairs"
         subtitles = []
         if account
           subtitles << "Account: #{account['name']}".strip

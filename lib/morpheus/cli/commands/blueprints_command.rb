@@ -108,7 +108,7 @@ class Morpheus::Cli::BlueprintsCommand
       end
 
       
-      title = "Morpheus Blueprints"
+      title = "Blueprints"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1799,7 +1799,7 @@ class Morpheus::Cli::BlueprintsCommand
       end
 
       
-      title = "Morpheus Blueprint Types"
+      title = "Blueprint Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

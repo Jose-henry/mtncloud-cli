@@ -100,7 +100,7 @@ class Morpheus::Cli::HealthCommand
       if live_health
         subtitles << "(Live)"
       end
-      print_h1 "Morpheus Health", subtitles, options
+      print_h1 "Health", subtitles, options
       # thin print below here
       options.merge!({thin:true})
       
@@ -154,9 +154,9 @@ class Morpheus::Cli::HealthCommand
       print_h2 "Health Levels", options
       print cyan
       health_levels_columns = {
-        "Morpheus CPU" => lambda {|it| format_percent(it['cpu']['cpuLoad'].to_f, 0) rescue '' },
+        "Appliance CPU" => lambda {|it| format_percent(it['cpu']['cpuLoad'].to_f, 0) rescue '' },
         "System CPU" => lambda {|it| format_percent(it['cpu']['cpuTotalLoad'].to_f, 0) rescue '' },
-        "Morpheus Memory" => lambda {|it| format_percent(it['memory']['memoryPercent'].to_f * 100, 0) rescue '' },
+        "Appliance Memory" => lambda {|it| format_percent(it['memory']['memoryPercent'].to_f * 100, 0) rescue '' },
         "System Memory" => lambda {|it| format_percent(it['memory']['systemMemoryPercent'].to_f * 100, 0) rescue '' },
         "Used Swap" => lambda {|it| format_percent(it['memory']['swapPercent'].to_f * 100, 0) rescue '' },
       }
@@ -173,7 +173,7 @@ class Morpheus::Cli::HealthCommand
           cpu_columns = {
             "Processor Count" => lambda {|it| it['processorCount'] rescue '' },
             "Process Time" => lambda {|it| format_human_duration(it['processTime'].to_f / 1000) rescue '' },
-            "Morpheus CPU" => lambda {|it| (it['cpuLoad'].to_f.round(2).to_s + '%') rescue '' },
+            "Appliance CPU" => lambda {|it| (it['cpuLoad'].to_f.round(2).to_s + '%') rescue '' },
             "System CPU" => lambda {|it| (it['cpuTotalLoad'].to_f.round(2).to_s + '%') rescue '' },
             "System Load" => lambda {|it| (it['systemLoad'].to_f.round(3)) rescue '' },
           }
@@ -243,10 +243,10 @@ class Morpheus::Cli::HealthCommand
           print_h2 "Memory", options
           print cyan
           memory_columns = {
-            "Morpheus Memory" => lambda {|it| format_bytes_short(it['totalMemory']) rescue '' },
-            "Morpheus Used Memory" => lambda {|it| format_bytes_short(it['usedMemory']) rescue '' },
-            "Morpheus Free Memory" => lambda {|it| format_bytes_short(it['freeMemory']) rescue '' },
-            "Morpheus Memory Usage" => lambda {|it| format_percent(it['memoryPercent'].to_f * 100) rescue '' },
+            "Appliance Memory" => lambda {|it| format_bytes_short(it['totalMemory']) rescue '' },
+            "Appliance Used Memory" => lambda {|it| format_bytes_short(it['usedMemory']) rescue '' },
+            "Appliance Free Memory" => lambda {|it| format_bytes_short(it['freeMemory']) rescue '' },
+            "Appliance Memory Usage" => lambda {|it| format_percent(it['memoryPercent'].to_f * 100) rescue '' },
             "System Memory" => lambda {|it| format_bytes_short(it['systemMemory']) rescue '' },
             "System Used Memory" => lambda {|it| format_bytes_short(it['committedMemory']) rescue '' },
             "System Free Memory" => lambda {|it| format_bytes_short(it['systemFreeMemory']) rescue '' },
@@ -522,7 +522,7 @@ class Morpheus::Cli::HealthCommand
         options[:details] = true
       end
       build_common_options(opts, options, [:list, :query, :json, :yaml, :csv, :fields, :dry_run, :remote])
-      opts.footer = "List health logs. These are the logs of the morpheus appliance itself."
+      opts.footer = "List health logs. These are the logs of the MTN Cloud appliance itself."
     end
     optparse.parse!(args)
     if args.count > 0
@@ -545,7 +545,7 @@ class Morpheus::Cli::HealthCommand
       render_result = json_response['logs'] ? render_with_format(json_response, options, 'logs') : render_with_format(json_response, options, 'data')
       return 0 if render_result
       logs = json_response['data'] || json_response['logs']
-      title = "Morpheus Health Logs"
+      title = "Health Logs"
       subtitles = []
       if params['level']
         subtitles << "Level: #{[params['level']].flatten.join(',')}"
@@ -598,8 +598,8 @@ class Morpheus::Cli::HealthCommand
         do_mkdir = true
       end
       build_common_options(opts, options, [:list, :query, :dry_run, :remote])
-      opts.footer = "Export morpheus appliance log." + "\n" +
-                    "[file] is required. This is local destination for the downloaded file. Example: morpheus.log"
+      opts.footer = "Export MTN Cloud appliance log." + "\n" +
+                    "[file] is required. This is local destination for the downloaded file. Example: appliance.log"
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, count: 1)
@@ -707,7 +707,7 @@ class Morpheus::Cli::HealthCommand
       render_result = render_with_format(json_response, options, 'alarms')
       return 0 if render_result
       alarms = json_response['alarms']
-      title = "Morpheus Health Alarms"
+      title = "Health Alarms"
       subtitles = []
       # if params['category']
       #   subtitles << "Category: #{params['category']}"

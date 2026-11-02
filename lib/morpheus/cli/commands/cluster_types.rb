@@ -47,7 +47,7 @@ class Morpheus::Cli::ClusterTypes
     json_response = @clusters_interface.cluster_types(params)
     render_response(json_response, options, "clusterTypes") do
       cluster_types = json_response["clusterTypes"]
-      print_h1 "Morpheus Cluster Types", parse_list_subtitles(options), options
+      print_h1 "Cluster Types", parse_list_subtitles(options), options
       if cluster_types.empty?
         print cyan,"No cluster types found.",reset,"\n"
       else

@@ -48,7 +48,7 @@ class Morpheus::Cli::BackupsCommand
     parse_options(options, params)
     execute_api(@backups_interface, :list, [], options, 'backups') do |json_response|
       backups = json_response['backups']
-      print_h1 "Morpheus Backups", parse_list_subtitles(options), options
+      print_h1 "Backups", parse_list_subtitles(options), options
       if backups.empty?
         print cyan,"No backups found.",reset,"\n"
       else

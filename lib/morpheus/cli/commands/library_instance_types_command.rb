@@ -78,7 +78,7 @@ class Morpheus::Cli::LibraryInstanceTypesCommand
         return 0
       end
       instance_types = json_response['instanceTypes']
-      title = "Morpheus Library - Instance Types"
+      title = "Library - Instance Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

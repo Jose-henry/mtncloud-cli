@@ -520,7 +520,7 @@ EOT
     json_response = rest_interface.list(params)
     render_response(json_response, options, rest_list_key) do
       records = json_response[rest_list_key]
-      title = "Morpheus #{rest_label_plural}"
+      title = "#{rest_label_plural}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options
@@ -917,7 +917,7 @@ EOT
     json_response = rest_type_interface.list(params)
     render_response(json_response, options, rest_type_list_key) do
       records = json_response[rest_type_list_key]
-      title = "Morpheus #{rest_type_label_plural}"
+      title = "#{rest_type_label_plural}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

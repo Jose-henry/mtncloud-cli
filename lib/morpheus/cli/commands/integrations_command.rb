@@ -50,7 +50,7 @@ class Morpheus::Cli::IntegrationsCommand
     json_response = @integrations_interface.list(params)
     render_response(json_response, options, integration_list_key) do
       integrations = json_response[integration_list_key]
-      print_h1 "Morpheus Integrations", parse_list_subtitles(options), options
+      print_h1 "Integrations", parse_list_subtitles(options), options
       if integrations.empty?
         print cyan,"No integrations found.",reset,"\n"
       else
@@ -455,7 +455,7 @@ EOT
     json_response = @integration_types_interface.list(params)
     render_response(json_response, options, integration_type_list_key) do
       integration_types = json_response[integration_type_list_key]
-      print_h1 "Morpheus Integration Types", parse_list_subtitles(options), options
+      print_h1 "Integration Types", parse_list_subtitles(options), options
       if integration_types.empty?
         print cyan,"No integration types found.",reset,"\n"
       else

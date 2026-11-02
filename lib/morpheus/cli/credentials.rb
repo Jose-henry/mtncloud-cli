@@ -103,7 +103,7 @@ module Morpheus
           end
           if wallet.nil?
             unless options[:quiet] || options[:no_prompt]
-              print "Enter Morpheus Credentials for #{display_appliance(@appliance_name, @appliance_url)}", "\n", reset
+              print "Enter MTN Cloud Credentials for #{display_appliance(@appliance_name, @appliance_url)}", "\n", reset
               if options[:client_id].empty?
                 # print "Client ID: #{required_blue_prompt} #{options[:client_id]}", "\n", reset
               else

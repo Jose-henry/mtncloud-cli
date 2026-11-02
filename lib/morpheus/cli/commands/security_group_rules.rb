@@ -22,7 +22,7 @@ class Morpheus::Cli::SecurityGroupRules
 
   def add_custom_rule(args)
     usage = <<-EOT
-Usage: morpheus #{command_name} add-custom-rule SOURCE_CIDR PORT_RANGE PROTOCOL [options]
+Usage: #{prog_name} #{command_name} add-custom-rule SOURCE_CIDR PORT_RANGE PROTOCOL [options]
 \tSOURCE_CIDR: CIDR to white-list
 \tPORT_RANGE: Port value (i.e. 123) or port range (i.e. 1-65535)
 \tPROTOCOL: tcp, udp, icmp
@@ -82,7 +82,7 @@ EOT
 
   def add_instance_rule(args)
     usage = <<-EOT
-Usage: morpheus #{command_name} add_instance_rule SOURCE_CIDR INSTANCE_TYPE_ID [options]
+Usage: #{prog_name} #{command_name} add_instance_rule SOURCE_CIDR INSTANCE_TYPE_ID [options]
 \tSOURCE_CIDR: CIDR to white-list
 \tINSTANCE_TYPE_ID: ID of the Instance Type to access
 EOT
@@ -168,7 +168,7 @@ EOT
         return
       end
       rules = json_response['rules']
-      print_h1 "Morpheus Security Group Rules for Security Group ID: #{security_group_id}"
+      print_h1 "Security Group Rules for Security Group ID: #{security_group_id}"
       if rules.empty?
         print yellow,"No security group rules currently configured.",reset,"\n"
       else

@@ -54,7 +54,7 @@ class Morpheus::Cli::MonitoringAppsCommand
         return 0
       end
       monitor_apps = json_response['monitorApps']
-      title = "Morpheus Monitoring Apps"
+      title = "Monitoring Apps"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

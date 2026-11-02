@@ -37,7 +37,7 @@ class Morpheus::Cli::Echo
     append_newline = true
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [<message>]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [<message>]"
       opts.on( '-n', '--nonewline', "do not append a newline to your words" ) do
         append_newline = false
       end

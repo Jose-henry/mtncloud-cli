@@ -68,7 +68,7 @@ class Morpheus::Cli::AccessTokenCommand
     # extra api call though..
 
     #print_h1 "Morpheus Credentials", [display_appliance(@appliance_name, @appliance_url)], options
-    print_h1 "Morpheus Credentials", options
+    print_h1 "Credentials", options
     description_cols = {
       "Username" => lambda {|wallet| wallet['username'] },
       "Access Token" => lambda {|wallet| wallet['access_token'] },

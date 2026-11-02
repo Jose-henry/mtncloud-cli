@@ -71,7 +71,7 @@ class Morpheus::Cli::LibraryClusterLayoutsCommand
         return 0
       end
       layouts = json_response['layouts']
-      title = "Morpheus Library - Cluster Layout"
+      title = "Library - Cluster Layout"
       subtitles = parse_list_subtitles(options)
       print_h1 title, subtitles
       if layouts.empty?

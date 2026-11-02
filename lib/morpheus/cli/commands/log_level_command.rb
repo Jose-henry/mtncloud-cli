@@ -8,7 +8,7 @@ class Morpheus::Cli::LogLevelCommand
   def handle(args)
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [debug|info|0|1]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [debug|info|0|1]"
       #build_common_options(opts, options, [])
       opts.on('-q','--quiet', "No Output, do not print to stdout") do
         options[:quiet] = true
@@ -18,7 +18,7 @@ class Morpheus::Cli::LogLevelCommand
         exit
       end
       opts.footer = <<-EOT
-This is intended for use in your morpheus scripts.
+This is intended for use in your #{prog_name} scripts.
 It allows you to set the global logging level.
 The only available levels right now are debug [0] and info [1].
 The default is info [1].

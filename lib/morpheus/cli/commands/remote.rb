@@ -92,7 +92,7 @@ EOT
           return 2, warning_msg
         end
       else
-        title = "Morpheus Appliances"
+        title = "Remotes"
         subtitles = parse_list_subtitles(options)
         subtitles << "Current" if current_only
         print_h1 title, subtitles, options
@@ -198,9 +198,9 @@ EOT
       # ok, need to be able to pass every option supported by login() and setup()
       build_common_options(opts, options, [:options, :quiet])
       opts.footer = <<-EOT
-Add a new remote to your morpheus client configuration.
+Add a new remote to your #{prog_name} client configuration.
 [name] is required. A unique name for your appliance. eg. demo
-[url] is required. The URL of your appliance eg. https://demo.morpheusdata.com
+[url] is required. The URL of your appliance eg. https://console.cloud.mtn.ng
 First, this inspects the remote url to check the appliance status and version.
 If remote is ready, it will prompt to login, see the command `login`.
 If remote is freshly installed, it will prompt to initialize the appliance, see the command `setup`.
@@ -233,7 +233,7 @@ EOT
         still_prompting = false
       else
         if new_appliance_name.to_s.empty?
-          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'name', 'fieldLabel' => 'Name', 'type' => 'text', 'required' => true, 'description' => 'A unique name for the remote Morpheus appliance. Example: local'}], options[:options])
+          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'name', 'fieldLabel' => 'Name', 'type' => 'text', 'required' => true, 'description' => 'A unique name for the remote MTN Cloud appliance. Example: local'}], options[:options])
           new_appliance_name = v_prompt['name']
         end
       end
@@ -272,7 +272,7 @@ EOT
           if new_appliance_name == "local" || new_appliance_name == "localhost" || new_appliance_name == "dev"
             default_url = "http://localhost:8080"
           end
-          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'url', 'fieldLabel' => 'URL', 'type' => 'text', 'required' => true, 'description' => 'The URL of the remote Morpheus appliance. Example: https://10.0.2.2', 'defaultValue' => default_url}], options[:options])
+          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'url', 'fieldLabel' => 'URL', 'type' => 'text', 'required' => true, 'description' => 'The URL of the remote MTN Cloud appliance. Example: https://console.cloud.mtn.ng', 'defaultValue' => default_url}], options[:options])
           url = v_prompt['url']
         end
       end
@@ -397,7 +397,7 @@ EOT
     end
 
     # print new appliance details
-    print_h1 "Morpheus Appliance", [], options
+    print_h1 "Remote", [], options
     print cyan
     print format_remote_details(appliance, options)
     print reset, "\n"
@@ -565,7 +565,7 @@ EOT
       end
 
       render_response(json_response, options) do
-        print_h1 "Morpheus Appliance", [], options
+        print_h1 "Remote", [], options
         print cyan
         print format_remote_details(appliance, options)
         print reset, "\n"
@@ -884,7 +884,7 @@ EOT
         return exit_code, err
       end
 
-      print_h1 "Morpheus Appliance", [], options
+      print_h1 "Remote", [], options
       print cyan
       print format_remote_details(appliance, options)
       print reset, "\n"
@@ -1058,10 +1058,10 @@ The command `remote current` will return the current remote information.
 Instead of using an active remote, the -r option can be specified with each command.
 
 It is recommeneded to set a custom prompt to show the current remote name.
-For example, add the following to your .morpheusrc file:
+For example, add the following to your .mtncloudrc file:
 
   # set your shell prompt to display the current username and remote
-  set-prompt "%green%username%reset@%magenta%remote %cyanmorpheus> %reset"
+  set-prompt "%green%username%reset@%magenta%remote %cyanmtncloud> %reset"
 
 EOT
     end
@@ -1208,7 +1208,7 @@ EOT
       elsif version_only
         print cyan, appliance[:build_version],"\n",reset
       else
-        print_h1 "Morpheus Appliance", [], options
+        print_h1 "Remote", [], options
         print cyan
         print format_remote_details(appliance, options)
         print reset, "\n"

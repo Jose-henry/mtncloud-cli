@@ -471,7 +471,7 @@ module Morpheus::Cli::InfrastructureHelper
     end
     if resource_pools.empty?
       print_red_alert "Cluster not found by name '#{name}' in cloud '#{cloud['name']}'.\n" \
-        "To look up a Morpheus managed cluster instead, use --cluster '#{name}' without --cloud."
+        "To look up an MTN Cloud managed cluster instead, use --cluster '#{name}' without --cloud."
       return nil
     elsif resource_pools.size > 1
       print_red_alert "#{resource_pools.size} clusters found by name '#{name}' in cloud '#{cloud['name']}'. Use a numeric cluster id instead."

@@ -83,7 +83,7 @@ class Morpheus::Cli::VdiAllocationsCommand
     json_response = @vdi_allocations_interface.list(params)
     render_response(json_response, options, vdi_allocation_list_key) do
       vdi_allocations = json_response[vdi_allocation_list_key]
-      print_h1 "Morpheus VDI Allocations", parse_list_subtitles(options), options
+      print_h1 "VDI Allocations", parse_list_subtitles(options), options
       if vdi_allocations.empty?
         print cyan,"No VDI allocations found.",reset,"\n"
       else

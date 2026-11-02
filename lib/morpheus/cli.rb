@@ -12,9 +12,9 @@ Dir[File.dirname(__FILE__)  + "/ext/*.rb"].each {|file| require file }
 module Morpheus
   module Cli
     
-    # The default is $MORPHEUS_CLI_HOME or $HOME/.morpheus
+    # The default is $MTNCLOUD_CLI_HOME or $HOME/.mtncloud
     unless defined?(@@home_directory)
-      @@home_directory = ENV['MORPHEUS_CLI_HOME'] || File.join(Dir.home, ".morpheus")
+      @@home_directory = ENV['MTNCLOUD_CLI_HOME'] || File.join(Dir.home, ".mtncloud")
     end
     
     # get the home directory, where morpheus-cli stores things
@@ -25,6 +25,13 @@ module Morpheus
     # set the home directory
     def self.home_directory=(fn)
       @@home_directory = fn
+    end
+
+    # the name the CLI was invoked as, "mtncloud" or its short alias "mcs".
+    # Defaults to "mtncloud" when run some other way, eg. under rake or bundle.
+    def self.prog_name
+      invoked_name = File.basename($0.to_s, ".*")
+      ["mtncloud", "mcs"].include?(invoked_name) ? invoked_name : "mtncloud"
     end
 
     # check if this is a Windows environment.

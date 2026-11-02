@@ -5,7 +5,7 @@ class Morpheus::Cli::Deploy
   include Morpheus::Cli::DeploymentsHelper
 
   set_command_name :deploy
-  set_command_description "Deploy to an instance from a morpheus.yml file."
+  set_command_description "Deploy to an instance from a mtncloud.yml file."
 
   def connect(opts)
     @api_client = establish_remote_appliance_connection(opts)
@@ -17,19 +17,20 @@ class Morpheus::Cli::Deploy
   def handle(args)
     options={}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus deploy [environment]"
+      opts.banner = "Usage: #{prog_name} deploy [environment]"
       build_common_options(opts, options, [:auto_confirm, :quiet, :remote, :dry_run])
       opts.footer = <<-EOT
-Deploy to an instance using the morpheus.yml file, located in the working directory.
+Deploy to an instance using the mtncloud.yml file, located in the working directory.
 [environment] is optional. Merge settings under environments.{environment}. Default is no environment.
 
-First the morpheus.yml YAML file is parsed, merging the specified environment's nested settings.
+First the mtncloud.yml YAML file is parsed, merging the specified environment's nested settings.
 The specified instance must exist and the specified deployment version must not exist.
 If the settings are valid, the new deployment version will be created.
 If is a file type deployment, all the discovered files are uploaded to the new deployment version.
 Finally, it deploys the new version to the instance using any specified config options.
 
-The morpheus.yml should be located in the working directory.
+The mtncloud.yml should be located in the working directory.
+A morpheus.yml file is used instead if there is no mtncloud.yml.
 This YAML file contains the settings that specify how to execute the deployment.
 
 File Settings
@@ -70,10 +71,10 @@ environments:
 Git Example
 ==================
 
-name: morpheus-apidoc
+name: my-app
 version: 5.0.0
 type: git
-url: "https://github.com/gomorpheus/morpheus-apidoc"
+url: "https://github.com/example/my-app"
 
 EOT
     end
@@ -88,7 +89,7 @@ EOT
       environment = args[0]
     end
     if load_deploy_file().nil?
-      raise_command_error "Morpheus Deploy File `morpheus.yml` not detected. Please create one and try again."
+      raise_command_error "Deploy File `mtncloud.yml` not detected. Please create one and try again."
     end
 
     # Parse and validate config, need instance + deployment + version + files
@@ -146,7 +147,7 @@ EOT
 
     unless options[:quiet]
 
-      print_h1 "Morpheus Deployment", options
+      print_h1 "Deployment", options
 
       columns = {
         "Instance" => :name,
@@ -444,7 +445,8 @@ EOT
 
   protected
 
-  # Loads a morpheus.yml file from within the current working directory.
+  # Loads a mtncloud.yml file from within the current working directory.
+  # A morpheus.yml file is still read when there is no mtncloud.yml, so existing projects keep working.
   # This file contains information necessary to perform a deployment via the cli.
   #
   # === Example File Attributes
@@ -458,12 +460,13 @@ EOT
   # +NOTE: + It is also possible to nest these properties in an "environments" map to override based on a passed environment deploy name
   #
   def load_deploy_file
-    if !File.exist? "morpheus.yml"
-      puts "No morpheus.yml file detected in the current directory. Nothing to do."
+    deploy_filename = ["mtncloud.yml", "morpheus.yml"].find {|fn| File.exist?(fn) }
+    if deploy_filename.nil?
+      puts "No mtncloud.yml file detected in the current directory. Nothing to do."
       return nil
     end
 
-    @deploy_file = YAML.load_file("morpheus.yml")
+    @deploy_file = YAML.load_file(deploy_filename)
     return @deploy_file
   end
 

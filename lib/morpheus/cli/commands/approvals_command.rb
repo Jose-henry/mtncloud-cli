@@ -45,7 +45,7 @@ class Morpheus::Cli::ApprovalsCommand
       render_result = render_with_format(json_response, options, 'approvals')
       return 0 if render_result
 
-      title = "Morpheus Approvals"
+      title = "Approvals"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -121,7 +121,7 @@ class Morpheus::Cli::ApprovalsCommand
       render_result = render_with_format(json_response, options, 'approval')
       return 0 if render_result
 
-      title = "Morpheus Approval"
+      title = "Approval"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

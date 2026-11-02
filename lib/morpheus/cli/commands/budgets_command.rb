@@ -41,7 +41,7 @@ class Morpheus::Cli::BudgetsCommand
     json_response = @budgets_interface.list(params)
     budgets = json_response['budgets']
     render_response(json_response, options, 'budgets') do
-      title = "Morpheus Budgets"
+      title = "Budgets"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

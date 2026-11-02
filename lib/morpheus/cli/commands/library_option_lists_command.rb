@@ -59,7 +59,7 @@ class Morpheus::Cli::LibraryOptionListsCommand
       option_type_lists = json_response['optionTypeLists']
       subtitles = []
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Option Lists", subtitles, options
+      print_h1 "Option Lists", subtitles, options
       if option_type_lists.empty?
         print cyan,"No option lists found.",reset,"\n"
       else
@@ -422,7 +422,7 @@ class Morpheus::Cli::LibraryOptionListsCommand
   def get_available_option_list_types
     [
       {'name' => 'REST', 'value' => 'rest'}, 
-      {'name' => 'Morpheus Api', 'value' => 'api'}, 
+      {'name' => 'MTN Cloud API', 'value' => 'api'}, 
       {'name' => 'LDAP', 'value' => 'ldap'}, 
       {'name' => 'Manual', 'value' => 'manual'}
     ]

@@ -1,0 +1,20 @@
+# Keep local and generated files out of the Docker build context.
+# Do NOT add .git here: the gem build uses `git ls-files` to list its files.
+# Only exclude files that are not tracked by git, or the gem build will fail.
+
+# test credentials for the live appliance tests
+test_config.yaml
+
+# built gems and bundler state
+*.gem
+pkg
+.bundle
+Gemfile.lock
+
+# temporary and editor files
+tmp
+coverage
+*.log
+.idea
+.vscode
+.DS_Store

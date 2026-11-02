@@ -73,7 +73,7 @@ EOT
     if options[:reset_only] != true
       print_h1 "Forgot Password", [], options unless options[:quiet] || options[:json] || options[:yaml]
       payload = {}
-      payload['username'] = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'username', 'fieldLabel' => 'Username', 'type' => 'text', 'description' => "Enter the username of your Morpheus User.", 'required' => true, :fmt => :natural}], options[:options],@api_client)['username']
+      payload['username'] = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'username', 'fieldLabel' => 'Username', 'type' => 'text', 'description' => "Enter the username of your MTN Cloud user.", 'required' => true, :fmt => :natural}], options[:options],@api_client)['username']
       @forgot_interface.setopts(options)
       if options[:dry_run]
         print_dry_run @forgot_interface.dry.send_email(payload, params)

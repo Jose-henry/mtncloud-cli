@@ -54,7 +54,7 @@ class ClustersUuidTest < Test::Unit::TestCase
       error = assert_raise(SystemExit) { command.get(['--help']) }
       assert_equal 0, error.status
     end
-    assert_match(/Usage: morpheus clusters get \[cluster\.\.\.\]/, output)
+    assert_match(/Usage: mtncloud clusters get \[cluster\.\.\.\]/, output)
     assert_include output, 'Get details about one or more clusters.'
     assert_include output, 'At least one [cluster] is required.'
     assert_include output, 'Each identifier can be an id, name, or uuid.'

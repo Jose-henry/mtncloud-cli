@@ -244,7 +244,7 @@ class Morpheus::Cli::Instances
     render_response(json_response, options, "instances") do
       instances = json_response['instances']
 
-      title = "Morpheus Instances"
+      title = "Instances"
       subtitles = []
       if group
         subtitles << "Group: #{group['name']}".strip
@@ -3390,7 +3390,7 @@ Extend shutdown for an instance.
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do |opts|
       opts.banner = subcommand_usage("[name or id]")
-      opts.footer = "Remove a brownfield instance from Morpheus. This does not delete the cloud instance, only Morpheus' record of it.\n" +
+      opts.footer = "Remove a brownfield instance from MTN Cloud. This does not delete the cloud instance, only MTN Cloud's record of it.\n" +
                     "[name or id] is required. The name or the id of the instance may be listed.\n" +
                     "[name or id] [name or id] [name or id] ...  A list of names or ids, separated by a space, may be used for bulk removal."
       build_common_options(opts, options, [:auto_confirm, :json, :dry_run, :quiet, :remote])
@@ -3524,7 +3524,7 @@ Extend shutdown for an instance.
         return
       end
       securityGroups = json_response['securityGroups']
-      print_h1 "Morpheus Security Groups for Instance: #{instance['name']}", [], options
+      print_h1 "Security Groups for Instance: #{instance['name']}", [], options
       print cyan
       print_description_list({"Firewall Enabled" => lambda {|it| format_boolean it['firewallEnabled'] } }, json_response)
       #print cyan, "Firewall Enabled=#{json_response['firewallEnabled']}\n\n"
@@ -4190,7 +4190,7 @@ List instance scaling threshold schedules.
     list_key = 'instanceSchedules'
     render_response(json_response, options, list_key) do
       records = json_response[list_key]
-      title = "Morpheus Instance Schedules"
+      title = "Instance Schedules"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options
@@ -4404,7 +4404,7 @@ Delete an existing instance scaling threshold schedule
 
   def load_balancer_update(args)
     raise "Not Yet Implemented"
-    usage = "Usage: morpheus instances lb-update [instance] [options]"
+    usage = "Usage: #{prog_name} instances lb-update [instance] [options]"
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = subcommand_usage("[instance]")
@@ -4485,7 +4485,7 @@ Delete an existing instance scaling threshold schedule
   end
 
   def load_balancer_remove(args)
-    usage = "Usage: morpheus instances lb-remove [instance] [options]"
+    usage = "Usage: #{prog_name} instances lb-remove [instance] [options]"
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = subcommand_usage("[instance]")

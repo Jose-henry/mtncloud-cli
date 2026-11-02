@@ -63,7 +63,7 @@ class Morpheus::Cli::Users
     json_response = @account_users_interface.list(account_id, params)
     render_response(json_response, options, "users") do
       users = json_response['users']
-      title = "Morpheus Users"
+      title = "Users"
       subtitles = []
       if account
         subtitles << "Tenant: #{account['name']}".strip

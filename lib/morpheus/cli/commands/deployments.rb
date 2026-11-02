@@ -48,7 +48,7 @@ class Morpheus::Cli::Deployments
     json_response = @deployments_interface.list(params)
     deployments = json_response['deployments']
     render_response(json_response, options, 'deployments') do
-      print_h1 "Morpheus Deployments", parse_list_subtitles(options), options
+      print_h1 "Deployments", parse_list_subtitles(options), options
       if deployments.empty?
         print cyan,"No deployments found.",reset,"\n"
       else

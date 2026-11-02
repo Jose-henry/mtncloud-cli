@@ -54,7 +54,7 @@ class Morpheus::Cli::ReportsCommand
       end
       report_results = json_response['reportResults']
       
-      title = "Morpheus Report History"
+      title = "Report History"
       subtitles = []
       if params['type']
         subtitles << "Type: #{params[:type]}".strip
@@ -144,7 +144,7 @@ class Morpheus::Cli::ReportsCommand
       if render_result
         #return render_result
       else
-        print_h1 "Morpheus Report Details"
+        print_h1 "Report Details"
         print cyan
         
         description_cols = {
@@ -305,7 +305,7 @@ class Morpheus::Cli::ReportsCommand
 
 
       if check_payload_dates(payload)
-         print_green_success "The CLI generates a query that will use only month and year. However, the API does support yyyy-mm-dd from a previous version of Morpheus.\nReplace startMonth/endMonth keys with startDate,endDate ie:"
+         print_green_success "The CLI generates a query that will use only month and year. However, the API does support yyyy-mm-dd from a previous version of the appliance.\nReplace startMonth/endMonth keys with startDate,endDate ie:"
          payload['report'].delete('startMonth')
          payload['report'].delete('endMonth')
          payload['report']['startDate'] = 'yyyy-mm-dd'
@@ -512,7 +512,7 @@ class Morpheus::Cli::ReportsCommand
     json_response = @reports_interface.types(params)
     report_types = json_response['reportTypes']
     render_response(json_response, options, 'reportTypes') do
-      title = "Morpheus Report Types"
+      title = "Report Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

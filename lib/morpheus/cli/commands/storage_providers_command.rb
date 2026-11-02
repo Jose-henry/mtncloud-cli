@@ -59,7 +59,7 @@ class Morpheus::Cli::StorageProvidersCommand
     json_response = @storage_providers_interface.list(params)
     storage_buckets = json_response['storageBuckets']
     render_response(json_response, options, 'storageBuckets') do
-      print_h1 "Morpheus Storage Buckets", parse_list_subtitles(options), options
+      print_h1 "Storage Buckets", parse_list_subtitles(options), options
       if storage_buckets.empty?
         print cyan,"No storage buckets found.",reset,"\n"
       else

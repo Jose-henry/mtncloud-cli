@@ -57,7 +57,7 @@ class Morpheus::Cli::LibraryClusterPackagesCommand
         return 0
       end
       packages = json_response['clusterPackages']
-      title = "Morpheus Library - Cluster Packages"
+      title = "Library - Cluster Packages"
       subtitles = parse_list_subtitles(options)
       print_h1 title, subtitles
       if packages.empty?

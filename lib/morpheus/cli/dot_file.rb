@@ -11,14 +11,14 @@ class Morpheus::Cli::DotFile
 
   # the path of the profile source file
   # this is executed when `morpheus` is run
-  def self.morpheus_profile_filename
-    File.join(Morpheus::Cli.home_directory, ".morpheus_profile")
+  def self.mtncloud_profile_filename
+    File.join(Morpheus::Cli.home_directory, ".mtncloud_profile")
   end
 
   # the path of the shell source file
   # this is executed when `morpheus shell` is run
-  def self.morpheusrc_filename
-    File.join(Morpheus::Cli.home_directory, ".morpheusrc")
+  def self.mtncloudrc_filename
+    File.join(Morpheus::Cli.home_directory, ".mtncloudrc")
   end
 
   attr_reader :filename
@@ -99,7 +99,7 @@ class Morpheus::Cli::DotFile
     existing_alias_definitions = {}
     header_line_index = config_lines.index {|line| line.strip.include?(EXPORTED_ALIASES_HEADER) }
     # JD: there's some bad bug here where it can clear all your aliases!
-    # it would be safer to export to another file at .morpheus/aliases or something.
+    # it would be safer to export to another file at .mtncloud/aliases or something.
     if header_line_index
       # keep everything before the exported alias section
       new_config_lines = config_lines[0..header_line_index-1]

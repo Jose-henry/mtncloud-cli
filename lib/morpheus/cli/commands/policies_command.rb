@@ -112,7 +112,7 @@ class Morpheus::Cli::PoliciesCommand
         puts records_as_csv(policies, options)
         return 0
       end
-      title = "Morpheus Policies"
+      title = "Policies"
       subtitles = []
       if group
         subtitles << "Group: #{group['name']}".strip
@@ -786,7 +786,7 @@ EOT
     json_response = @policies_interface.list_policy_types(params)
     render_response(json_response, options, 'policyTypes') do
       policy_types = json_response['policyTypes']
-      print_h1 "Morpheus Policy Types"
+      print_h1 "Policy Types"
       rows = policy_types.collect {|policy_type| 
         row = {
           id: policy_type['id'],

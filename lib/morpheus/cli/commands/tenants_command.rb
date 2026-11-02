@@ -55,7 +55,7 @@ class Morpheus::Cli::TenantsCommand
     json_response = @accounts_interface.list(params)
     render_response(json_response, options, "accounts") do
       accounts = json_response['accounts']
-      title = "Morpheus Tenants"
+      title = "Tenants"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

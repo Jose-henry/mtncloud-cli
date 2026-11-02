@@ -9,7 +9,7 @@ class Morpheus::Cli::VersionCommand
   end
 
   def usage
-    "morpheus version"
+    "#{prog_name} version"
   end
 
   def handle(args)
@@ -28,13 +28,8 @@ class Morpheus::Cli::VersionCommand
       puts client_version
     else
       print cyan
-      banner = "" +
-        "   __  ___              __              \n" +
-        "  /  |/  /__  _______  / /  ___ __ _____\n" +
-        " / /|_/ / _ \\/ __/ _ \\/ _ \\/ -_) // (_-<\n" +
-        "/_/  /_/\\___/_/ / .__/_//_/\\__/\\_,_/___/\n" +
-        "****************************************"
-      puts(banner)
+      puts("****************************************")
+      puts("  MTN Cloud CLI")
       puts("  Client Version: #{client_version}")
       puts("****************************************")
       print reset

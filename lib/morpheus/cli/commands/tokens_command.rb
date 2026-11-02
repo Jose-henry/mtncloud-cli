@@ -65,7 +65,7 @@ class Morpheus::Cli::TokensCommand
     json_response = @tokens_interface.list(params)
     tokens = json_response['tokens']
     render_response(json_response, options, 'tokens') do
-      print_h1 "Morpheus API Tokens", parse_list_subtitles(options), options
+      print_h1 "API Tokens", parse_list_subtitles(options), options
       if tokens.empty?
         print yellow,"No tokens found.",reset,"\n"
       else

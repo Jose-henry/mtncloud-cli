@@ -60,7 +60,7 @@ class Morpheus::Cli::PricesCommand
     json_response = @prices_interface.list(params)
     prices = json_response['prices']
     render_response(json_response, options, 'prices') do
-      title = "Morpheus Prices"
+      title = "Prices"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -134,7 +134,7 @@ class Morpheus::Cli::PricesCommand
       render_result = render_with_format(json_response, options, 'price')
       return 0 if render_result
 
-      title = "Morpheus Price"
+      title = "Price"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

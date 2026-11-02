@@ -58,7 +58,7 @@ class Morpheus::Cli::LibraryContainerScriptsCommand
         return 0
       end
       container_scripts = json_response['containerScripts']
-      title = "Morpheus Library - Scripts"
+      title = "Library - Scripts"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

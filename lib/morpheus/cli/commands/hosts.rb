@@ -231,7 +231,7 @@ class Morpheus::Cli::Hosts
       
       servers = json_response['servers']
       multi_tenant = json_response['multiTenant'] == true
-      title = "Morpheus Hosts"
+      title = "Hosts"
       subtitles = []
       if account
         subtitles << "Tenant: #{account['name']}".strip
@@ -1887,7 +1887,7 @@ EOT
       print JSON.pretty_generate(cloud_server_types)
       print "\n"
     else
-      print_h1 "Morpheus Server Types - Cloud: #{zone['name']}", [], options
+      print_h1 "Server Types - Cloud: #{zone['name']}", [], options
       if cloud_server_types.nil? || cloud_server_types.empty?
         print cyan,"No server types found for the selected cloud",reset,"\n"
       else
@@ -1932,7 +1932,7 @@ EOT
 
       server_types = json_response['serverTypes']
 
-      title = "Morpheus Server Types"
+      title = "Server Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if options[:cloud]

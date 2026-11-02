@@ -77,7 +77,7 @@ class Morpheus::Cli::Groups
       groups = json_response['groups']
       subtitles = []
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Groups", subtitles, options
+      print_h1 "Groups", subtitles, options
       if groups.empty?
         print cyan,"No groups found.",reset,"\n"
       else

@@ -55,7 +55,7 @@ class Morpheus::Cli::NetworkServicesCommand
         puts records_as_csv(network_services, options)
         return 0
       end
-      title = "Morpheus Network Services"
+      title = "Network Services"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

@@ -49,7 +49,7 @@ class Morpheus::Cli::LibrarySpecTemplatesCommand
       render_result = render_with_format(json_response, options, 'specTemplates')
       return 0 if render_result
       resource_specs = json_response['specTemplates']
-      title = "Morpheus Library - Spec Templates"
+      title = "Library - Spec Templates"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -511,7 +511,7 @@ class Morpheus::Cli::LibrarySpecTemplatesCommand
 
       spec_template_types = json_response['specTemplateTypes']
 
-      title = "Morpheus Spec Template Types"
+      title = "Spec Template Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

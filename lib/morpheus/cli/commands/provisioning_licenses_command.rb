@@ -42,7 +42,7 @@ class Morpheus::Cli::ProvisioningLicensesCommand
       return 0 if render_result
       licenses = json_response['licenses']
 
-      title = "Morpheus Licenses"
+      title = "Licenses"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -392,7 +392,7 @@ class Morpheus::Cli::ProvisioningLicensesCommand
       return 0 if render_result
       license_types = json_response['licenseTypes']
 
-      title = "Morpheus License Types"
+      title = "License Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

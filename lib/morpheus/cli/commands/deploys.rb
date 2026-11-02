@@ -45,7 +45,7 @@ EOT
     json_response = @deploy_interface.list(params)
     app_deploys = json_response[app_deploy_list_key]
     render_response(json_response, options, app_deploy_list_key) do
-      print_h1 "Morpheus Deploys", parse_list_subtitles(options), options
+      print_h1 "Deploys", parse_list_subtitles(options), options
       if app_deploys.empty?
         print cyan,"No deploys found.",reset,"\n"
       else

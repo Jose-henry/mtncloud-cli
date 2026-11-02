@@ -82,7 +82,7 @@ class Morpheus::Cli::ArchivesCommand
         return
       end
       archive_buckets = json_response['archiveBuckets']
-      title = "Morpheus Archive Buckets"
+      title = "Archive Buckets"
       subtitles = []
       # if group
       #   subtitles << "Group: #{group['name']}".strip

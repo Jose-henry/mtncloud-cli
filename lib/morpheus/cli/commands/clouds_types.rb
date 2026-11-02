@@ -46,7 +46,7 @@ EOT
       cloud_types = json_response['zoneTypes']
       subtitles = []        
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Cloud Types", subtitles, options
+      print_h1 "Cloud Types", subtitles, options
       if cloud_types.empty?
         print cyan,"No cloud types found.",reset,"\n"
       else

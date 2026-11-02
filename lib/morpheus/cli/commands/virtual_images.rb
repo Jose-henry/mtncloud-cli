@@ -90,7 +90,7 @@ class Morpheus::Cli::VirtualImages
     images = json_response['virtualImages']
     render_response(json_response, options, 'virtualImages') do
       get_available_virtual_image_types() # preload
-      title = "Morpheus Virtual Images"
+      title = "Virtual Images"
       subtitles = parse_list_subtitles(options)
       if options[:imageType]
         subtitles << "Image Type: #{options[:imageType]}".strip
@@ -457,7 +457,7 @@ EOT
         print JSON.pretty_generate(json_response)
       else
         image_types = json_response['virtualImageTypes']
-        print_h1 "Morpheus Virtual Image Types"
+        print_h1 "Virtual Image Types"
         if image_types.nil? || image_types.empty?
           print cyan,"No image types found.",reset,"\n"
         else

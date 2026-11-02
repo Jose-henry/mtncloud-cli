@@ -72,7 +72,7 @@ class Morpheus::Cli::Roles
 
     render_response(json_response, options, "roles") do
       roles = json_response['roles']
-      title = "Morpheus Roles"
+      title = "Roles"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options
@@ -914,8 +914,8 @@ Validate role permissions without creating or updating a role.
 This is useful for testing permission configurations before applying them.
 All the role permissions and access values can be validated.
 Use --feature-access "CODE=ACCESS,CODE=ACCESS" to validate access levels for specific feature permissions.
-Example: morpheus roles validate --authority "Test Role" --feature-access "admin=full,activity=read"
-Example: morpheus roles validate "Existing Role" --feature-access "activity=full"
+Example: #{prog_name} roles validate --authority "Test Role" --feature-access "admin=full,activity=read"
+Example: #{prog_name} roles validate "Existing Role" --feature-access "activity=full"
 EOT
     end
     optparse.parse!(args)

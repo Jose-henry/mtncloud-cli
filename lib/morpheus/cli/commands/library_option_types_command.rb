@@ -58,7 +58,7 @@ class Morpheus::Cli::LibraryOptionTypesCommand
       option_types = json_response['optionTypes']
       subtitles = []
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Option Types", subtitles
+      print_h1 "Option Types", subtitles
       if option_types.empty?
         print cyan,"No option types found.",reset,"\n"
       else

@@ -7,6 +7,8 @@ require 'morpheus/rest_client'
 
 class Morpheus::APIClient
 
+  # This is the OAuth client ID the appliance accepts for CLI logins.
+  # It is not branding, do not rename it for MTN Cloud or authentication will break.
   CLIENT_ID = 'morph-cli' unless defined?(CLIENT_ID)
 
   # Initialize a new APIClient

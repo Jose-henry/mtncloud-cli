@@ -66,7 +66,7 @@ EOT
     json_response = @projects_interface.list(params)
     projects = json_response['projects']
     render_response(json_response, options, 'projects') do
-      title = "Morpheus Projects"
+      title = "Projects"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

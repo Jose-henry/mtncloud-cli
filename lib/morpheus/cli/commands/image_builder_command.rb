@@ -74,7 +74,7 @@ class Morpheus::Cli::ImageBuilderCommand
         return
       end
       image_builds = json_response['imageBuilds']
-      title = "Morpheus Image Builds"
+      title = "Image Builds"
       subtitles = []
       # if group
       #   subtitles << "Group: #{group['name']}".strip

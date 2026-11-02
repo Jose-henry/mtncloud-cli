@@ -13,7 +13,7 @@ class Morpheus::Cli::Login
   end
 
   def usage
-    "Usage: morpheus login [username] [password]"
+    "Usage: #{prog_name} login [username] [password]"
   end
 
   def handle(args)
@@ -52,8 +52,8 @@ class Morpheus::Cli::Login
       opts.footer = <<-EOT
 Login to a remote appliance with a username and password or using an access token.
 Logging in with username and password will make an authentication api request to obtain an access token.
-[username] is required, this is the username of the Morpheus User
-[password] is required, this is the password of the Morpheus User
+[username] is required, this is the username of the MTN Cloud user
+[password] is required, this is the password of the MTN Cloud user
 Sub-tenant users will need to pass their tenant subdomain prefix. ie. {subdomain}\\{username}
 By default, the subdomain is the tenant account ID. Example: 2\\neo
 The --token option can be used to login with a valid access token instead of username and password.

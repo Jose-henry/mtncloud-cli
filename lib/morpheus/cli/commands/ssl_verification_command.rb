@@ -8,7 +8,7 @@ class Morpheus::Cli::SslVerificationCommand
 
   def usage
     <<-EOT
-Usage: morpheus #{command_name} [on|off]
+Usage: #{prog_name} #{command_name} [on|off]
 
 Set SSL Verification on or off.
 Enable [on] or disable [off] SSL Verification.

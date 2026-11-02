@@ -79,7 +79,7 @@ class Morpheus::Cli::LibraryContainerTypesCommand
         return 0
       end
       container_types = json_response['containerTypes']
-      title = "Morpheus Library - Node Types"
+      title = "Library - Node Types"
       subtitles = []
       if layout_id
         subtitles << "Layout: #{layout_id}".strip

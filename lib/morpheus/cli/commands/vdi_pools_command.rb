@@ -53,7 +53,7 @@ class Morpheus::Cli::VdiPoolsCommand
     json_response = @vdi_pools_interface.list(params)
     render_response(json_response, options, vdi_pool_list_key) do
       vdi_pools = json_response[vdi_pool_list_key]
-      print_h1 "Morpheus VDI Pools", parse_list_subtitles(options), options
+      print_h1 "VDI Pools", parse_list_subtitles(options), options
       if vdi_pools.empty?
         print cyan,"No VDI pools found.",reset,"\n"
       else

@@ -10,7 +10,7 @@ class Morpheus::Cli::OpenCommand
     append_newline = true
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [file ...]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [file ...]"
       build_common_options(opts, options, [:dry_run])
       opts.footer = "Open file(s)." + "\n" +
                     "[file] is required. This is the name of a file. Supports many [file] arguments."

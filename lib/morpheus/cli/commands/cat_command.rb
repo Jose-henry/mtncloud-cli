@@ -10,7 +10,7 @@ class Morpheus::Cli::CatCommand
     append_newline = true
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [file ...]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [file ...]"
       build_common_options(opts, options, [])
       opts.footer = "Concatenate and print files." + "\n" +
                     "[file] is required. This is the name of a file. Supports many [file] arguments."
@@ -32,7 +32,7 @@ class Morpheus::Cli::CatCommand
         return 1
       end
       if File.directory?(arg_file)
-        print_red_alert "morpheus cat: file is a directory: '#{arg_file}'"
+        print_red_alert "#{prog_name} cat: file is a directory: '#{arg_file}'"
         return 1
       end
       file_contents = File.read(arg_file)

@@ -50,7 +50,7 @@ class Morpheus::Cli::ExecuteSchedulesCommand
         return 0
       end
       schedules = json_response['schedules']
-      title = "Morpheus Execute Schedules"
+      title = "Execute Schedules"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

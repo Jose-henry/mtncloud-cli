@@ -44,7 +44,7 @@ class Morpheus::Cli::VdiCommand
     json_response = @vdi_interface.list(params)
     vdi_pools = json_response[vdi_desktop_list_key]
     render_response(json_response, options, vdi_desktop_list_key) do
-      print_h1 "Morpheus Virtual Desktops", parse_list_subtitles(options), options
+      print_h1 "Virtual Desktops", parse_list_subtitles(options), options
       if vdi_pools.empty?
         print cyan,"No virtual desktops found.",reset,"\n"
       else

@@ -63,7 +63,7 @@ class Morpheus::Cli::Workflows
     json_response = @task_sets_interface.get(params)
     task_sets = json_response['taskSets']
     render_response(json_response, options, 'taskSets') do
-      title = "Morpheus Workflows"
+      title = "Workflows"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if params['type']
@@ -511,7 +511,7 @@ class Morpheus::Cli::Workflows
   def remove(args)
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus workflows remove [name]"
+      opts.banner = "Usage: #{prog_name} workflows remove [name]"
       build_common_options(opts, options, [:auto_confirm, :json, :dry_run, :quiet, :remote])
     end
     optparse.parse!(args)

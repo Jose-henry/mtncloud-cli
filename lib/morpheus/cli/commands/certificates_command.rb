@@ -41,7 +41,7 @@ class Morpheus::Cli::CertificatesCommand
     json_response = @certificates_interface.list(params)
     render_response(json_response, options, certificate_list_key) do
       certificates = json_response[certificate_list_key]
-      print_h1 "Morpheus Certificates", parse_list_subtitles(options), options
+      print_h1 "Certificates", parse_list_subtitles(options), options
       if certificates.empty?
         print cyan,"No certificates found.",reset,"\n"
       else
@@ -311,7 +311,7 @@ EOT
     json_response = @certificate_types_interface.list(params)
     render_response(json_response, options, certificate_type_list_key) do
       certificate_types = json_response[certificate_type_list_key]
-      print_h1 "Morpheus Certificate Types", parse_list_subtitles(options), options
+      print_h1 "Certificate Types", parse_list_subtitles(options), options
       if certificate_types.empty?
         print cyan,"No certificate types found.",reset,"\n"
       else
