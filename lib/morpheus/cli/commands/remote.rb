@@ -198,7 +198,7 @@ EOT
       # ok, need to be able to pass every option supported by login() and setup()
       build_common_options(opts, options, [:options, :quiet])
       opts.footer = <<-EOT
-Add a new remote to your morpheus client configuration.
+Add a new remote to your #{prog_name} client configuration.
 [name] is required. A unique name for your appliance. eg. demo
 [url] is required. The URL of your appliance eg. https://demo.morpheusdata.com
 First, this inspects the remote url to check the appliance status and version.
@@ -233,7 +233,7 @@ EOT
         still_prompting = false
       else
         if new_appliance_name.to_s.empty?
-          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'name', 'fieldLabel' => 'Name', 'type' => 'text', 'required' => true, 'description' => 'A unique name for the remote Morpheus appliance. Example: local'}], options[:options])
+          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'name', 'fieldLabel' => 'Name', 'type' => 'text', 'required' => true, 'description' => 'A unique name for the remote MTN Cloud appliance. Example: local'}], options[:options])
           new_appliance_name = v_prompt['name']
         end
       end
@@ -272,7 +272,7 @@ EOT
           if new_appliance_name == "local" || new_appliance_name == "localhost" || new_appliance_name == "dev"
             default_url = "http://localhost:8080"
           end
-          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'url', 'fieldLabel' => 'URL', 'type' => 'text', 'required' => true, 'description' => 'The URL of the remote Morpheus appliance. Example: https://10.0.2.2', 'defaultValue' => default_url}], options[:options])
+          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'url', 'fieldLabel' => 'URL', 'type' => 'text', 'required' => true, 'description' => 'The URL of the remote MTN Cloud appliance. Example: https://10.0.2.2', 'defaultValue' => default_url}], options[:options])
           url = v_prompt['url']
         end
       end
@@ -1061,7 +1061,7 @@ It is recommeneded to set a custom prompt to show the current remote name.
 For example, add the following to your .mtncloudrc file:
 
   # set your shell prompt to display the current username and remote
-  set-prompt "%green%username%reset@%magenta%remote %cyanmorpheus> %reset"
+  set-prompt "%green%username%reset@%magenta%remote %cyanmtncloud> %reset"
 
 EOT
     end

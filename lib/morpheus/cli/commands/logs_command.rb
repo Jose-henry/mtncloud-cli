@@ -19,7 +19,7 @@ class Morpheus::Cli::LogsCommand
   end
 
   def usage
-    "Usage: morpheus #{command_name}"
+    "Usage: #{prog_name} #{command_name}"
   end
 
   def handle(args)

@@ -9,13 +9,13 @@ class Morpheus::Cli::GetPromptCommand
     use_echo = false
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name}"
+      opts.banner = "Usage: #{prog_name} #{command_name}"
       build_common_options(opts, options, [])
       opts.on('-e', '--echo', "Use echo to display the prompt, displaying ansi colors and variables." ) do
         use_echo = true
       end
       opts.footer = <<-EOT
-Display the current morpheus shell prompt value.
+Display the current #{prog_name} shell prompt value.
 This value can be set using `set-prompt [shell-prompt]`.
 EOT
     end

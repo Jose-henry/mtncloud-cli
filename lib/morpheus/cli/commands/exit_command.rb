@@ -15,7 +15,7 @@ class Morpheus::Cli::ExitCommand
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = "Usage: exit [code]"
       build_common_options(opts, options, [])
-      opts.footer = "Exit morpheus . Default is 0"
+      opts.footer = "Exit #{prog_name}. Default is 0"
     end
     optparse.parse!(args)
     

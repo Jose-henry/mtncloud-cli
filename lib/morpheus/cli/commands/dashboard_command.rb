@@ -17,7 +17,7 @@ class Morpheus::Cli::DashboardCommand
   end
 
   def usage
-    "#{yellow}API for this command has been removed starting with appliance version 6.2.6\n#{reset}Usage: morpheus #{command_name}"
+    "#{yellow}API for this command has been removed starting with appliance version 6.2.6\n#{reset}Usage: #{prog_name} #{command_name}"
   end
 
   def handle(args)

@@ -27,7 +27,7 @@ class Morpheus::Cli::ManCommand
       open_as_link = true
     end
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus man"
+      opts.banner = "Usage: #{prog_name} man"
       opts.on('-w','--wiki', "Open the morpheus-cli wiki instead of the local man page") do
         goto_wiki = true
       end

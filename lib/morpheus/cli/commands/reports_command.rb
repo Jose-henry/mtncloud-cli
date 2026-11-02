@@ -305,7 +305,7 @@ class Morpheus::Cli::ReportsCommand
 
 
       if check_payload_dates(payload)
-         print_green_success "The CLI generates a query that will use only month and year. However, the API does support yyyy-mm-dd from a previous version of Morpheus.\nReplace startMonth/endMonth keys with startDate,endDate ie:"
+         print_green_success "The CLI generates a query that will use only month and year. However, the API does support yyyy-mm-dd from a previous version of the appliance.\nReplace startMonth/endMonth keys with startDate,endDate ie:"
          payload['report'].delete('startMonth')
          payload['report'].delete('endMonth')
          payload['report']['startDate'] = 'yyyy-mm-dd'

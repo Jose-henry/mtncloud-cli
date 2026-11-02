@@ -245,8 +245,8 @@ class Morpheus::Cli::CypherCommand
 
   def put(args)
         usage = <<-EOT
-Usage: morpheus #{command_name} put [key] [value] [options] to store a string.
-       morpheus #{command_name} put [key] [k=v] [k=v] [options] to store an object.
+Usage: #{prog_name} #{command_name} put [key] [value] [options] to store a string.
+       #{prog_name} #{command_name} put [key] [k=v] [k=v] [options] to store an object.
 EOT
     options = {}
     params = {}

@@ -10,7 +10,7 @@ class Morpheus::Cli::Sleep
     append_newline = true
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus sleep [seconds]"
+      opts.banner = "Usage: #{prog_name} sleep [seconds]"
       build_common_options(opts, options, [:quiet])
     end
     optparse.parse!(args)

@@ -8,7 +8,7 @@ class Morpheus::Cli::UpdateCommand
   def handle(args)
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name}"
+      opts.banner = "Usage: #{prog_name} #{command_name}"
       opts.on( '-f', '--force', "Force Update, executes update even if latest version is already installed." ) do
         options[:force] = true
       end

@@ -11,7 +11,7 @@ class Morpheus::Cli::ColoringCommand
     append_newline = true
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [on|off]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [on|off]"
       #build_common_options(opts, options, [])
       opts.on('-q','--quiet', "No Output, do not print to stdout") do
         options[:quiet] = true

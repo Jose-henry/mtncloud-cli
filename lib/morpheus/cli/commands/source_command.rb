@@ -9,9 +9,9 @@ class Morpheus::Cli::SourceCommand
   def handle(args)
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [file] [file2]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [file] [file2]"
       build_common_options(opts, options, [])
-      opts.footer = "This will execute a file as a script where each line is a morpheus command or expression."
+      opts.footer = "This will execute a file as a script where each line is a #{prog_name} command or expression."
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, min:1)

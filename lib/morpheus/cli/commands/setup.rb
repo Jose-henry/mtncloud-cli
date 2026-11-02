@@ -333,7 +333,7 @@ EOT
       end
       print_h2 "Appliance Settings", options
       extra_option_types = [
-        {'fieldName' => 'applianceName', 'fieldLabel' => 'Appliance Name', 'type' => 'text', 'required' => true, 'defaultValue' => default_appliance_name, 'description' => 'A name for identifying your morpheus appliance.'},
+        {'fieldName' => 'applianceName', 'fieldLabel' => 'Appliance Name', 'type' => 'text', 'required' => true, 'defaultValue' => default_appliance_name, 'description' => 'A name for identifying your MTN Cloud appliance.'},
         {'fieldName' => 'applianceUrl', 'fieldLabel' => 'Appliance URL', 'type' => 'text', 'required' => true, 'defaultValue' => default_appliance_url, 'description' => 'Appliance URL. Can be used for integrations and callbacks.'},
         {'fieldName' => 'backups', 'fieldLabel' => 'Enable Backups', 'type' => 'checkbox', 'required' => false, 'defaultValue' => 'off', 'description' => 'Backups. Default is off. This means backups are created automatically during provisioning.'},
         {'fieldName' => 'monitoring', 'fieldLabel' => 'Enable Monitoring', 'type' => 'checkbox', 'required' => false, 'defaultValue' => 'on', 'description' => 'Enable Monitoring. This means checks are created automatically during provisioning.'},

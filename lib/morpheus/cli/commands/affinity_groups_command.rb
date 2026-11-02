@@ -455,7 +455,7 @@ class Morpheus::Cli::AffinityGroupsCommand
       return 1 if cluster_scope.nil?
       if cluster_scope[:type] != :managed_cluster
         cloud = cluster_scope[:cloud]
-        print_red_alert "Affinity violations are only available for Morpheus managed clusters.\n" \
+        print_red_alert "Affinity violations are only available for MTN Cloud managed clusters.\n" \
           "'#{options[:cluster]}' is a vSphere cluster owned by cloud '#{cloud['name']}'; " \
           "affinity violation data is not tracked for cloud-owned vSphere clusters."
         return 1

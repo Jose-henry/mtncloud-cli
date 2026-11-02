@@ -8,7 +8,7 @@ class Morpheus::Cli::SetPromptCommand
   def handle(args)
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name} [prompt]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [prompt]"
       opts.on('-h', '--help', "Print this help" ) do
         puts opts
         exit
@@ -16,21 +16,21 @@ class Morpheus::Cli::SetPromptCommand
       variable_map = Morpheus::Cli::Echo.variable_map
       formatted_variable_map = "    " + variable_map.keys.join(' ')
       opts.footer = <<-EOT
-Customize your morpheus shell prompt.
+Customize your #{prog_name} shell prompt.
 
 [prompt] is required. This is the string the terminal prints when you interact with it.
 
 Examples: 
-    set-prompt "morpheus $ "
-    set-prompt "%cyanmorpheus> "
+    set-prompt "mtncloud $ "
+    set-prompt "%cyanmtncloud> "
     set-prompt "[%magenta%remote%reset] %cyan%username> "
     set-prompt "%green%username%reset@%remote %magenta> %reset"
-    set-prompt "%cyan%username%reset@%magenta%remote %cyanmorpheus> %reset"
+    set-prompt "%cyan%username%reset@%magenta%remote %cyanmtncloud> %reset"
 
 The available variables are:
 #{formatted_variable_map}
 
-The default prompt is: "%cyanmorpheus> %reset"
+The default prompt is: "%cyan#{prog_name}> %reset"
 The value may also be set through the enviroment variable MTNCLOUD_PS1.
 EOT
     end

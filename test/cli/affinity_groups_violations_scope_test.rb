@@ -97,7 +97,7 @@ class AffinityGroupsViolationsScopeTest < Test::Unit::TestCase
     end
 
     assert_equal 1, (result.is_a?(Array) ? result[0] : result)
-    assert_match(/only available for Morpheus managed clusters/i, err)
+    assert_match(/only available for MTN Cloud managed clusters/i, err)
     assert_match(/vCenter Cloud/, err)
     assert_empty affinity.calls
   end

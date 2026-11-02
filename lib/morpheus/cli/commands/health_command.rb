@@ -522,7 +522,7 @@ class Morpheus::Cli::HealthCommand
         options[:details] = true
       end
       build_common_options(opts, options, [:list, :query, :json, :yaml, :csv, :fields, :dry_run, :remote])
-      opts.footer = "List health logs. These are the logs of the morpheus appliance itself."
+      opts.footer = "List health logs. These are the logs of the MTN Cloud appliance itself."
     end
     optparse.parse!(args)
     if args.count > 0
@@ -598,8 +598,8 @@ class Morpheus::Cli::HealthCommand
         do_mkdir = true
       end
       build_common_options(opts, options, [:list, :query, :dry_run, :remote])
-      opts.footer = "Export morpheus appliance log." + "\n" +
-                    "[file] is required. This is local destination for the downloaded file. Example: morpheus.log"
+      opts.footer = "Export MTN Cloud appliance log." + "\n" +
+                    "[file] is required. This is local destination for the downloaded file. Example: appliance.log"
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, count: 1)

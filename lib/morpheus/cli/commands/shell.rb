@@ -82,10 +82,10 @@ class Morpheus::Cli::Shell
     @shell_commands = [:clear, :history, :reload, :help, :exit]
     @shell_command_descriptions = {
       :clear => "Clear terminal output and move cursor to the top", 
-      :history => "View morpheus shell command history", 
+      :history => "View shell command history", 
       :reload => "Reload the shell, can be useful when developing", 
       :help => "Print this help", 
-      :exit => "Exit the morpheus shell"
+      :exit => "Exit the shell"
     }
     @alias_commands = Morpheus::Cli::CliRegistry.all_aliases.keys
     @exploded_commands = []
@@ -119,11 +119,11 @@ class Morpheus::Cli::Shell
     @temporary_shell_mode = false
     @temporary_home_directory = nil
     @original_home_directory = nil
-    usage = "Usage: morpheus #{command_name}"
+    usage = "Usage: #{prog_name} #{command_name}"
     optparse = Morpheus::Cli::OptionParser.new do |opts|
       opts.banner = usage
       # change to a temporary home directory, delete it afterwards.
-      opts.on('-e','--exec EXPRESSION', "Execute the command expression and exit. Expression can be a single morpheus command or several by using parenthesis and operators (, ), &&, ||, and ;") do |val|
+      opts.on('-e','--exec EXPRESSION', "Execute the command expression and exit. Expression can be a single #{prog_name} command or several by using parenthesis and operators (, ), &&, ||, and ;") do |val|
         @execute_mode = true
         @execute_mode_command = val
       end
@@ -356,9 +356,9 @@ class Morpheus::Cli::Shell
       elsif input == 'help'
         out = ""
         if @temporary_shell_mode
-          out << "You are in a (temporary) morpheus shell\n"
+          out << "You are in a (temporary) #{prog_name} shell\n"
         else
-          out << "You are in a morpheus shell.\n"
+          out << "You are in a #{prog_name} shell.\n"
         end
         out <<  "See the available commands below.\n"
 

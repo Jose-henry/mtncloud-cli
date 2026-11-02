@@ -17,7 +17,7 @@ class Morpheus::Cli::Deploy
   def handle(args)
     options={}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus deploy [environment]"
+      opts.banner = "Usage: #{prog_name} deploy [environment]"
       build_common_options(opts, options, [:auto_confirm, :quiet, :remote, :dry_run])
       opts.footer = <<-EOT
 Deploy to an instance using the mtncloud.yml file, located in the working directory.

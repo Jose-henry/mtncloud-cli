@@ -9,7 +9,7 @@ class Morpheus::Cli::VersionCommand
   end
 
   def usage
-    "morpheus version"
+    "#{prog_name} version"
   end
 
   def handle(args)

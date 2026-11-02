@@ -38,7 +38,7 @@ class Morpheus::Cli::Ping
       # end
       build_standard_get_options(opts, options, [:quiet])
       opts.footer = <<-EOT
-Ping the remote morpheus appliance.
+Ping the remote MTN Cloud appliance.
 Prints the remote version and status and the time it took to get a response.
 
 EOT

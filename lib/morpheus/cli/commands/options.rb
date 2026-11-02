@@ -35,7 +35,7 @@ class Morpheus::Cli::Options
     options = {}
     params = {}
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus #{command_name} [source] [option-type]"
+      opts.banner = "Usage: #{prog_name} #{command_name} [source] [option-type]"
       # build_standard_list_options(opts, options)
       build_standard_get_options(opts, options)
       opts.footer = <<-EOT
@@ -118,7 +118,7 @@ EOT
     params = {}
     source_name = "networkServices"
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus #{command_name} #{source_name} #{args[0]}"
+      opts.banner = "Usage: #{prog_name} #{command_name} #{source_name} #{args[0]}"
       # build_standard_list_options(opts, options)
       build_standard_get_options(opts, options)
       opts.footer = <<-EOT
@@ -169,7 +169,7 @@ EOT
     params = {}
     source_name = "zoneNetworkOptions"
     optparse = Morpheus::Cli::OptionParser.new do |opts|
-      opts.banner = "Usage: morpheus #{command_name} #{source_name} #{args[0]}"
+      opts.banner = "Usage: #{prog_name} #{command_name} #{source_name} #{args[0]}"
       # build_standard_list_options(opts, options)
       build_standard_get_options(opts, options)
       opts.footer = <<-EOT

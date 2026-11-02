@@ -10,7 +10,7 @@ class Morpheus::Cli::CurlCommand
     show_progress = false
     options = {}
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus curl [path]"
+      opts.banner = "Usage: #{prog_name} curl [path]"
       opts.on( '-p', '--pretty', "Print result as parsed JSON. Alias for -j" ) do
         options[:json] = true
       end
@@ -47,9 +47,9 @@ By default the "/api" prefix is included in the request path.
 The --absolute option ban be used to supress this.
 
 Examples: 
-    morpheus curl "/api/whoami"
-    morpheus curl whoami
-    morpheus curl apps -r demo
+    #{prog_name} curl "/api/whoami"
+    #{prog_name} curl whoami
+    #{prog_name} curl apps -r demo
 
 EOT
     end

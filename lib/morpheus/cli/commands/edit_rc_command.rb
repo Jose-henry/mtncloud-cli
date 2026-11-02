@@ -11,22 +11,22 @@ class Morpheus::Cli::EditRcCommand
     editor = nil
     filename = Morpheus::Cli::DotFile.mtncloudrc_filename
     optparse = Morpheus::Cli::OptionParser.new do|opts|
-      opts.banner = "Usage: morpheus #{command_name}"
+      opts.banner = "Usage: #{prog_name} #{command_name}"
       opts.on( '-e', '--editor PROGRAM', "Editor program to use. The default is $EDITOR." ) do |val|
         editor = val.gsub("'",'')
       end
       build_common_options(opts, options, [])
       opts.footer = <<-EOT
-Edit your .mtncloudrc script located in the morpheus home directory.
-This script runs at the beginning of the interactive morpheus shell command.
-It provides a way to initialize your interactive morpheus shell environment.
+Edit your .mtncloudrc script located in the mtncloud home directory.
+This script runs at the beginning of the interactive #{prog_name} shell command.
+It provides a way to initialize your interactive #{prog_name} shell environment.
 
 Example:
 
-# customize the morpheus shell prompt
-set-prompt "%cyan%username%reset@%magenta%remote %cyanmorpheus> %reset"
+# customize the mtncloud shell prompt
+set-prompt "%cyan%username%reset@%magenta%remote %cyanmtncloud> %reset"
 
-# print the morpheus cli version
+# print the mtncloud cli version
 version
 
 # print the current remote appliance version

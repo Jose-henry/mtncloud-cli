@@ -8,7 +8,7 @@ class Morpheus::Cli::Logout
   end
 
   def usage
-    "Usage: morpheus logout"
+    "Usage: #{prog_name} logout"
   end
 
   def handle(args)
@@ -31,7 +31,7 @@ EOT
 
     if !@appliance_name
       print_error Morpheus::Terminal.angry_prompt
-      puts_error "Please specify a Morpheus Appliance to logout of with -r or see the command `remote use`"
+      puts_error "Please specify an MTN Cloud appliance to logout of with -r or see the command `remote use`"
       return 1
     end
     wallet = Morpheus::Cli::Credentials.new(@appliance_name, @appliance_url).load_saved_credentials
