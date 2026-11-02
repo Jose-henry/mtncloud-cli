@@ -111,24 +111,23 @@ Other environment variables:
 
 ## Development
 
-Install the dependencies with Bundler 2. The gemspec requires Bundler `~> 2.2`, so if your default Bundler is newer, install 2.7.2 and use it explicitly:
+Install the dependencies with Bundler 2.2 or newer:
 
 ```shell
-gem install bundler:2.7.2
-bundle _2.7.2_ install
+bundle install
 ```
 
 Run the CLI from your working copy:
 
 ```shell
-bundle _2.7.2_ exec ruby bin/mtncloud --help
-bundle _2.7.2_ exec ruby bin/mcs --help
+bundle exec ruby bin/mtncloud --help
+bundle exec ruby bin/mcs --help
 ```
 
 To reload your code changes without restarting, start a shell and use `reload`:
 
 ```shell
-bundle _2.7.2_ exec ruby bin/mtncloud shell --debug
+bundle exec ruby bin/mtncloud shell --debug
 ```
 
 Code layout:
@@ -141,7 +140,7 @@ Code layout:
 Offline tests don't need an appliance. CI runs them on every pull request:
 
 ```shell
-bundle _2.7.2_ exec rake test:offline
+bundle exec rake test:offline
 ```
 
 They include:
@@ -160,7 +159,7 @@ password: 'SecretPassword123$'
 Then run all the tests:
 
 ```shell
-bundle _2.7.2_ exec rake test
+bundle exec rake test
 ```
 
 ## Contributing
