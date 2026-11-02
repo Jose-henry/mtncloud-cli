@@ -30,8 +30,6 @@ class BrandingTest < Test::Unit::TestCase
   # Known lines still to be rebranded, keyed by the step that removes them.
   # Remove an entry in the same commit that fixes it, the test fails if an entry no longer appears.
   PENDING = {
-    /^This will update the morpheus command line interface to the latest version\.$/ => "3d",
-    /^This is done by executing the system command: `gem update morpheus-cli`$/ => "3d",
   }
 
   class << self
@@ -127,6 +125,25 @@ class BrandingTest < Test::Unit::TestCase
     # the old banner spelled Morpheus in ASCII art, which a text search cannot see
     assert_not_match(/__  ___/, out.string)
   ensure
+    Morpheus::Terminal.instance_variable_set(:@morphterm, saved_terminal)
+    Morpheus::Cli.home_directory = saved_home
+  end
+
+  # update must not query RubyGems, mtncloud-cli is not published there
+  def test_update_prints_manual_instructions_without_network
+    out = StringIO.new
+    saved_terminal = Morpheus::Terminal.instance_variable_get(:@morphterm)
+    saved_home = Morpheus::Cli.home_directory
+    Morpheus::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: StringIO.new, homedir: Dir.tmpdir)
+    HTTP.define_singleton_method(:get) {|*args| raise "update must not make HTTP requests" }
+    # -f and -y are ignored but still accepted
+    exit_code, err = Morpheus::Cli::UpdateCommand.new.handle(["-f", "-y"])
+    assert_equal 0, exit_code
+    assert_include out.string, "Installed version: #{Morpheus::Cli::VERSION}"
+    assert_include out.string, "git clone https://github.com/Jose-henry/mtncloud-cli"
+    assert_include out.string, "gem install ./mtncloud-cli.gem"
+  ensure
+    HTTP.singleton_class.send(:remove_method, :get) if HTTP.singleton_methods(false).include?(:get)
     Morpheus::Terminal.instance_variable_set(:@morphterm, saved_terminal)
     Morpheus::Cli.home_directory = saved_home
   end
