@@ -9,18 +9,14 @@ It installs two commands that run the same CLI:
 
 ## Installation
 
-The CLI is not published to RubyGems. Build and install it from this repository.
-
 Requirements:
 
-- Ruby. The CLI is tested on Ruby 3.3.
-- Git, which the gem build uses to list the files to package.
+- Ruby. The CLI is tested on Ruby 3.3. On Windows, install Ruby+Devkit from [rubyinstaller.org](https://rubyinstaller.org/downloads/) and select the option to add Ruby to your PATH.
+
+Install the CLI from RubyGems:
 
 ```shell
-git clone https://github.com/Jose-henry/mtncloud-cli
-cd mtncloud-cli
-gem build mtncloud-cli.gemspec -o mtncloud-cli.gem
-gem install ./mtncloud-cli.gem
+gem install mtncloud-cli --no-document
 ```
 
 Check the installation:
@@ -34,9 +30,20 @@ On Windows, a first install from a clean environment took about 17 minutes in ou
 
 ### Updating
 
-Updates are not installed automatically. To update, run `git pull` in your clone, then run the `gem build` and `gem install` steps above again.
+```shell
+gem update mtncloud-cli
+```
 
-The `mtncloud update` command prints the installed version and these instructions. It does not download or install anything.
+### Installing from source
+
+To install an unreleased version, build the gem from a clone of this repository. The build needs Git, which it uses to list the files to package.
+
+```shell
+git clone https://github.com/Jose-henry/mtncloud-cli
+cd mtncloud-cli
+gem build mtncloud-cli.gemspec -o mtncloud-cli.gem
+gem install ./mtncloud-cli.gem
+```
 
 ### Docker
 
@@ -126,15 +133,15 @@ bundle _2.7.2_ exec ruby bin/mtncloud shell --debug
 
 Code layout:
 
-- API interfaces are in the `api/` folder under `lib/`.
-- CLI commands are in the `cli/commands/` folder under `lib/`.
+- API interfaces are in `lib/mtncloud/api/`.
+- CLI commands are in `lib/mtncloud/cli/commands/`.
 
 ### Testing
 
 Offline tests don't need an appliance. Run each file with `bundle _2.7.2_ exec ruby -Ilib -Itest <file>`. They include:
 
 - `test/branding_test.rb`, which checks every command's help for leftover non-MTN Cloud branding
-- the test files under `test/cli/` and `test/api/` that don't load the live-appliance test helper
+- the test files under `test/cli/` and `test/api/` that do not `require 'mtncloud_test'`
 
 The other tests run against a live appliance. Create a `test_config.yaml` in the repository root:
 
@@ -149,6 +156,22 @@ Then run all the tests:
 ```shell
 bundle _2.7.2_ exec rake test
 ```
+
+## Releasing
+
+New versions are published to RubyGems by the [Publish gem](.github/workflows/release.yml) workflow when a version tag is pushed:
+
+1. Update `VERSION` in `lib/mtncloud/cli/version.rb` and push the change to `main`.
+2. Tag the release and push the tag:
+
+   ```shell
+   git tag v9.1.3
+   git push origin v9.1.3
+   ```
+
+The workflow fails if the tag does not match `VERSION`. RubyGems does not accept the same version twice.
+
+The workflow uses RubyGems trusted publishing, so no API key is stored in this repository. On RubyGems.org, the trusted publisher for `mtncloud-cli` names this repository, the `release.yml` workflow and the `release` environment. If the repository moves, update the repository owner and name in that trusted publisher.
 
 ## License
 
