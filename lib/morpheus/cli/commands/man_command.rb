@@ -16,7 +16,6 @@ class Morpheus::Cli::ManCommand
     options = {}
     regenerate = false
     open_as_link = false # true please
-    goto_wiki = false
     editor = @@default_editor
     #todo: windows
     if !$stdin.tty?
@@ -28,9 +27,6 @@ class Morpheus::Cli::ManCommand
     end
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = "Usage: #{prog_name} man"
-      opts.on('-w','--wiki', "Open the morpheus-cli wiki instead of the local man page") do
-        goto_wiki = true
-      end
       opts.on('-e','--editor EDITOR', "Specify which program to open the manual with. Default is '#{editor}'.") do |val|
         editor = val
         open_as_link = false
@@ -62,24 +58,13 @@ class Morpheus::Cli::ManCommand
         exit
       end
       opts.footer = <<-EOT
-Open the morpheus manual located at #{Morpheus::Cli::ManCommand.man_file_path}
+Open the #{prog_name} manual located at #{Morpheus::Cli::ManCommand.man_file_path}
 The -g option can be used to regenerate the file.
 The --out FILE option be used to write the manual file to a custom location.
 EOT
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, count:0)
-    if goto_wiki
-      link = "https://github.com/gomorpheus/morpheus-cli/wiki/CLI-Manual"
-      if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
-        system "start #{link}"
-      elsif RbConfig::CONFIG['host_os'] =~ /darwin/
-        system "open #{link}"
-      elsif RbConfig::CONFIG['host_os'] =~ /linux|bsd/
-        system "xdg-open #{link}"
-      end
-      return 0, nil
-    end
 
     fn = Morpheus::Cli::ManCommand.man_file_path
     if options[:outfile]
@@ -195,33 +180,30 @@ EOT
 
 ## NAME
 
-    morpheus - the command line interface for interacting with the Morpheus appliance
+    mtncloud - the command line interface for MTN Cloud
+
+    mcs is a short alias for mtncloud. Both commands run the same CLI.
 
 ## SYNOPSIS
 
-    morpheus [command] [<args>] [options]
+    mtncloud [command] [<args>] [options]
+    mcs [command] [<args>] [options]
 
 ## DESCRIPTION
 
-    Morpheus CLI
+    MTN Cloud CLI
 
-    This is a command line interface for managing a Morpheus Appliance.
-    All communication with the remote appliance is done via the Morpheus API.
+    This is a command line interface for managing MTN Cloud.
+    All communication with the remote appliance is done via the MTN Cloud API.
 
-    Use the command `#{prog_name} remote add` to connect to your Morpheus appliance.
-
-    To learn more, visit https://clidocs.morpheusdata.com
-
-    To learn more about the Morpheus Appliance, visit https://www.morpheusdata.com
-
-    To learn more about the Morpheus API, visit https://apidocs.morpheusdata.com
+    Use the command `#{prog_name} remote add` to connect to MTN Cloud.
 
 ## GLOBAL OPTIONS
 
     There are several global options available.
 
     -v, --version                    Print the version.
-        --noprofile                  Do not read and execute the personal initialization script .morpheus_profile
+        --noprofile                  Do not read and execute the personal initialization script .mtncloud_profile
     -C, --nocolor                    Disable ANSI coloring
     -V, --debug                      Print extra output for debugging. 
     -h, --help                       Print this help
@@ -251,13 +233,13 @@ EOT
     -y, --yes                        Auto Confirm
     -q, --quiet                      No Output, do not print to stdout
 
-## MORPHEUS COMMANDS
+## COMMANDS
 
-    The morpheus executable is divided into commands.
-    Each morpheus command may have 0-N sub-commands that it supports. 
-    Commands generally map to the functionality provided in the Morpheus UI.
-       
-    You can get help for any morpheus command by using the -h option.
+    The mtncloud executable is divided into commands.
+    Each command may have 0-N sub-commands that it supports.
+    Commands generally map to the functionality provided in the MTN Cloud UI.
+
+    You can get help for any command by using the -h option.
 
     The available commands and their options are documented below.
 ENDTEXT
@@ -270,7 +252,7 @@ ENDTEXT
       Morpheus::Logging::DarkPrinter.puts "appending command help `#{prog_name} --help`" if Morpheus::Logging.debug? && !options[:quiet]
 
       manpage.print "\n"
-      manpage.print "## morpheus\n"
+      manpage.print "## #{prog_name}\n"
       manpage.print "\n"
       manpage.print "```\n"
       exit_code, err = terminal.execute("--help")
@@ -284,7 +266,7 @@ ENDTEXT
         #help_cmd = "morpheus #{cmd} --help"
         #help_output = `#{help_cmd}`
         manpage.print "\n"
-        manpage.print "### morpheus #{cmd}\n"
+        manpage.print "### #{prog_name} #{cmd}\n"
         manpage.print "\n"
         manpage.print "```\n"
         begin
@@ -299,7 +281,7 @@ ENDTEXT
           subcommands.sort.each do |subcommand, subcommand_method|
             Morpheus::Logging::DarkPrinter.puts "appending command help `#{prog_name} #{cmd} #{subcommand} --help`" if Morpheus::Logging.debug? && !options[:quiet]
             manpage.print "\n"
-            manpage.print "#### morpheus #{cmd} #{subcommand}\n"
+            manpage.print "#### #{prog_name} #{cmd} #{subcommand}\n"
             manpage.print "\n"
             manpage.print "```\n"
             begin
@@ -318,51 +300,51 @@ ENDTEXT
 
 ## ENVIRONMENT VARIABLES
 
-Morpheus has only one environment variable that it uses.
+### MTNCLOUD_CLI_HOME
 
-### MORPHEUS_CLI_HOME
+The **MTNCLOUD_CLI_HOME** variable is where mtncloud stores its configuration files.
+This can be set to allow a single system user to maintain many different configurations.
+If the directory does not exist, mtncloud will attempt to create it.
 
-The **MORPHEUS_CLI_HOME** variable is where morpheus CLI stores its configuration files.
-This can be set to allow a single system user to maintain many different configurations
-If the directory does not exist, morpheus will attempt to create it.
-
-The default home directory is **$HOME/.morpheus**
+The default home directory is **$HOME/.mtncloud**
 
 To see how this works, run the following:
 
 ```shell
-MORPHEUS_CLI_HOME=~/.morpheus_test morpheus shell
+MTNCLOUD_CLI_HOME=~/.mtncloud_test mtncloud shell
 ```
 
-Now, in your new morpheus shell, you can see that it is a fresh environment.
-There are no remote appliances configured.
+Now, in your new mtncloud shell, you can see that it is a fresh environment.
+There are no remotes configured.
 
 ```shell
-morpheus> remote list
-
-Morpheus Appliances
-==================
-
-You have no appliances configured. See the `#{prog_name} remote add` command.
-
+mtncloud> remote list
+No remote appliances configured. See the command `remote add`.
 ```
 
-You can use this to create isolated environments (sandboxes), within which to execute your morpheus commands.
+You can use this to create isolated environments (sandboxes), within which to execute your mtncloud commands.
 
 ```shell
-export MORPHEUS_CLI_HOME=~/morpheus_test
-morpheus remote add demo https://demo-morpheus --insecure
-morpheus instances list
+export MTNCLOUD_CLI_HOME=~/mtncloud_test
+mtncloud remote add demo https://console.cloud.mtn.ng
+mtncloud instances list
 ```
 
-Morpheus saves the remote appliance information, including api access tokens, 
-to the CLI home directory. These files are saved with file permissions **6000**.
-So, only one system user should be allowed to execute morpheus with that home directory.
-See [Configuration](#Configuration) for more information on the files morpheus reads and writes.
+mtncloud saves the remote appliance information, including API access tokens,
+to the CLI home directory. These files are saved with file permissions **0600**.
+So, only one system user should be allowed to execute mtncloud with that home directory.
+See [Configuration](#Configuration) for more information on the files mtncloud reads and writes.
+
+### Configuration from the Morpheus CLI is not used
+
+mtncloud deliberately does not read the configuration of the HPE Morpheus CLI.
+The `~/.morpheus` directory and the `MORPHEUS_CLI_HOME`, `MORPHEUS_PS1` and
+`MORPHEUS_CLI_TMPDIR` variables are ignored, so credentials saved for other
+Morpheus appliances are never used. Add your MTN Cloud remote with `#{prog_name} remote add`.
 
 ## CONFIGURATION
 
-Morpheus reads and writes several configuration files within the $MORPHEUS_CLI_HOME directory.
+mtncloud reads and writes several configuration files within the $MTNCLOUD_CLI_HOME directory.
 
 **Note:** These files are maintained by the program. It is not recommended for you to manipulate them.
 
@@ -372,44 +354,44 @@ The `appliances` YAML file contains a list of known appliances, keyed by name.
 
 Example:
 ```yaml
-:qa:
-  :host: https://qa-morpheus
-:production:
-  :host: https://production-morpheus
+:mtncloud:
+  :url: https://console.cloud.mtn.ng
+:test:
+  :url: https://test.example.com
 ```
 
 ### credentials file
 
-The `.morpheus/credentials` YAML file contains access tokens for each known appliance.
+The `.mtncloud/credentials` YAML file contains access tokens for each known appliance.
 
 ### groups file
 
-The `.morpheus/groups` YAML file contains the active group information for each known appliance.
+The `.mtncloud/groups` YAML file contains the active group information for each known appliance.
 
 
 ## Startup scripts
 
-When Morpheus starts, it executes the commands in a couple of dot files.
+When mtncloud starts, it executes the commands in a couple of dot files.
 
-These scripts are written in morpheus commands, not bash, so they can only execute morpheus commands and aliases. 
+These scripts are written in mtncloud commands, not bash, so they can only execute mtncloud commands and aliases.
 
-### .morpheus_profile file
+### .mtncloud_profile file
 
-It looks for `$MORPHEUS_CLI_HOME/.morpheus_profile`, and reads and executes it (if it exists). 
+It looks for `$MTNCLOUD_CLI_HOME/.mtncloud_profile`, and reads and executes it (if it exists).
 
 This may be inhibited by using the `--noprofile` option.
 
-### .morpheusrc file
+### .mtncloudrc file
 
 When started as an interactive shell with the `#{prog_name} shell` command,
-Morpheus reads and executes `$MORPHEUS_CLI_HOME/.morpheusrc` (if it exists). This may be inhibited by using the `--norc` option. 
+mtncloud reads and executes `$MTNCLOUD_CLI_HOME/.mtncloudrc` (if it exists). This may be inhibited by using the `--norc` option.
 
 An example startup script might look like this:
 
 ```
-# .morpheusrc
+# .mtncloudrc
 
-set-prompt "%cyan%username%reset@%magenta%remote %cyanmorpheus> %reset"
+set-prompt "%cyan%username%reset@%magenta%remote %cyanmtncloud> %reset"
 version
 remote current
 echo "Welcome back %username"

@@ -55,7 +55,6 @@ Examples:
     alias cloud=clouds
     alias ij='instances get -j'
     alias new-hosts='hosts list -S id -D'
-For more information, see https://github.com/gomorpheus/morpheus-cli/wiki/Alias
 EOT
       
     end
@@ -192,7 +191,6 @@ EOT
 Print list of defined aliases.    
 Use the --format option to vary output.
 The `alias list` command can be abbreviated as just `alias`.
-For more information, see https://github.com/gomorpheus/morpheus-cli/wiki/Alias
 EOT
     end
     optparse.parse!(args)

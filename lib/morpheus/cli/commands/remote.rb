@@ -200,7 +200,7 @@ EOT
       opts.footer = <<-EOT
 Add a new remote to your #{prog_name} client configuration.
 [name] is required. A unique name for your appliance. eg. demo
-[url] is required. The URL of your appliance eg. https://demo.morpheusdata.com
+[url] is required. The URL of your appliance eg. https://console.cloud.mtn.ng
 First, this inspects the remote url to check the appliance status and version.
 If remote is ready, it will prompt to login, see the command `login`.
 If remote is freshly installed, it will prompt to initialize the appliance, see the command `setup`.
@@ -272,7 +272,7 @@ EOT
           if new_appliance_name == "local" || new_appliance_name == "localhost" || new_appliance_name == "dev"
             default_url = "http://localhost:8080"
           end
-          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'url', 'fieldLabel' => 'URL', 'type' => 'text', 'required' => true, 'description' => 'The URL of the remote MTN Cloud appliance. Example: https://10.0.2.2', 'defaultValue' => default_url}], options[:options])
+          v_prompt = Morpheus::Cli::OptionTypes.prompt([{'fieldName' => 'url', 'fieldLabel' => 'URL', 'type' => 'text', 'required' => true, 'description' => 'The URL of the remote MTN Cloud appliance. Example: https://console.cloud.mtn.ng', 'defaultValue' => default_url}], options[:options])
           url = v_prompt['url']
         end
       end

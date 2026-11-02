@@ -71,10 +71,10 @@ environments:
 Git Example
 ==================
 
-name: morpheus-apidoc
+name: my-app
 version: 5.0.0
 type: git
-url: "https://github.com/gomorpheus/morpheus-apidoc"
+url: "https://github.com/example/my-app"
 
 EOT
     end

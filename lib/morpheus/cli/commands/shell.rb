@@ -381,7 +381,7 @@ class Morpheus::Cli::Shell
           out <<  "\t#{cmd.to_s}\n"
         }
         out << "\n"
-        out << "For more information, see https://clidocs.morpheusdata.com"
+        out << "For more information, run `#{prog_name} man`."
         out << "\n"
         print out
         return 0

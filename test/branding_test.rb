@@ -30,12 +30,6 @@ class BrandingTest < Test::Unit::TestCase
   # Known lines still to be rebranded, keyed by the step that removes them.
   # Remove an entry in the same commit that fixes it, the test fails if an entry no longer appears.
   PENDING = {
-    /^For more information, see https:\/\/github\.com\/gomorpheus\/morpheus-cli\/wiki\/Alias$/ => "3c",
-    /^name: morpheus-apidoc$/ => "3c",
-    /^url: "https:\/\/github\.com\/gomorpheus\/morpheus-apidoc"$/ => "3c",
-    /--wiki\s+Open the morpheus-cli wiki instead of the local man page$/ => "3c",
-    /^Open the morpheus manual located at / => "3c",
-    /^\[url\] is required\. The URL of your appliance eg\. https:\/\/demo\.morpheusdata\.com$/ => "3c",
     /^This will update the morpheus command line interface to the latest version\.$/ => "3d",
     /^This is done by executing the system command: `gem update morpheus-cli`$/ => "3d",
   }

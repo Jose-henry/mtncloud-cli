@@ -339,7 +339,7 @@ module Morpheus
       # out << "Options:\n"
       out << optparse.to_s
       out << "\n"
-      out << "For more information, see https://clidocs.morpheusdata.com"
+      out << "For more information, run `#{Morpheus::Cli.prog_name} man`."
       out << "\n"
       out
     end
