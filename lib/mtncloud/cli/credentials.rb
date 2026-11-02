@@ -11,6 +11,10 @@ module MtnCloud
     class Credentials
       include MtnCloud::Cli::PrintHelper
 
+      # How sub-tenant users format their username, shown in the login prompt.
+      # login --help explains the same formats in more detail.
+      USERNAME_FORMAT = "sub-tenant users: subdomain\\username or accountID\\username"
+
       @@appliance_credentials_map = nil
 
       def initialize(appliance_name, appliance_url)
@@ -118,7 +122,7 @@ module MtnCloud
                 Readline.basic_word_break_characters = ''
                 Readline.completer_word_break_characters = '' rescue nil
                 Readline.completion_proc = nil
-                username = Readline.readline("Username: #{required_blue_prompt} ", false).to_s.chomp
+                username = Readline.readline("Username (#{USERNAME_FORMAT}): #{required_blue_prompt} ", false).to_s.chomp
               else
                 print "Username: #{required_blue_prompt} #{username}\n"
               end

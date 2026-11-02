@@ -25,7 +25,7 @@ class MtnCloud::Cli::Login
     username, password = nil, nil
     optparse = MtnCloud::Cli::OptionParser.new do |opts|
       opts.banner = usage
-      opts.on( '-u', '--username USERNAME', "Username. Sub-tenant users must format their username with a prefix like {subdomain}\\{username}" ) do |val|
+      opts.on( '-u', '--username USERNAME', "Username. Sub-tenant users prefix it with their subdomain or account ID: {subdomain}\\{username} or {accountID}\\{username}" ) do |val|
         username = val
       end
       opts.on( '-p', '--password PASSWORD', "Password" ) do |val|
@@ -54,8 +54,13 @@ Login to a remote appliance with a username and password or using an access toke
 Logging in with username and password will make an authentication api request to obtain an access token.
 [username] is required, this is the username of the MTN Cloud user
 [password] is required, this is the password of the MTN Cloud user
-Sub-tenant users will need to pass their tenant subdomain prefix. ie. {subdomain}\\{username}
-By default, the subdomain is the tenant account ID. Example: 2\\neo
+Username format:
+  Master tenant users enter only their username. Example: neo
+  Sub-tenant users prefix their username with their tenant's subdomain or account ID:
+    {subdomain}\\{username}   Example: acme\\neo
+    {accountID}\\{username}   Example: 2\\neo
+  A tenant's subdomain is its account ID unless a custom subdomain is set.
+  In bash or zsh, quote a username that contains a backslash: '2\\neo'
 The --token option can be used to login with a valid access token instead of username and password.
 The specified token will be verified by making a whoami api request
 If successful, the access token will be saved with the active session for the remote appliance.
