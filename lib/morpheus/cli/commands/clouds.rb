@@ -103,7 +103,7 @@ class Morpheus::Cli::Clouds
       json_response = @clouds_interface.list(params)
       render_response(json_response, options, 'zones') do
         clouds = json_response['zones']
-        title = "Morpheus Clouds"
+        title = "Clouds"
         subtitles = []
         if group
           subtitles << "Group: #{group['name']}".strip
@@ -714,7 +714,7 @@ class Morpheus::Cli::Clouds
         return
       end
       securityGroups = json_response['securityGroups']
-      print_h1 "Morpheus Security Groups for Cloud: #{cloud['name']}"
+      print_h1 "Security Groups for Cloud: #{cloud['name']}"
       print cyan
       print_description_list({"Firewall Enabled" => lambda {|it| format_boolean it['firewallEnabled'] } }, json_response)
       if securityGroups.empty?
@@ -802,7 +802,7 @@ EOT
       cloud_types = json_response['zoneTypes']
       subtitles = []        
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Cloud Types", subtitles, options
+      print_h1 "Cloud Types", subtitles, options
       if cloud_types.empty?
         print cyan,"No cloud types found.",reset,"\n"
       else

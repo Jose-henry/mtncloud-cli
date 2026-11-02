@@ -55,7 +55,7 @@ class Morpheus::Cli::BootScriptsCommand
         return
       end
       boot_scripts = json_response['bootScripts']
-      title = "Morpheus Boot Scripts"
+      title = "Boot Scripts"
       subtitles = []
       if params[:phrase]
         subtitles << "Search: #{params[:phrase]}".strip

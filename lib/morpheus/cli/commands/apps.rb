@@ -145,7 +145,7 @@ class Morpheus::Cli::Apps
     json_response = @apps_interface.list(params)
     render_response(json_response, options, "apps") do
       apps = json_response['apps']
-      title = "Morpheus Apps"
+      title = "Apps"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options
@@ -1873,7 +1873,7 @@ EOT
       end
       json_response = @apps_interface.security_groups(app['id'])
       securityGroups = json_response['securityGroups']
-      print_h1 "Morpheus Security Groups for App: #{app['name']}", options
+      print_h1 "Security Groups for App: #{app['name']}", options
       print cyan
       print_description_list({"Firewall Enabled" => lambda {|it| format_boolean it['firewallEnabled'] } }, json_response)
       if securityGroups.empty?

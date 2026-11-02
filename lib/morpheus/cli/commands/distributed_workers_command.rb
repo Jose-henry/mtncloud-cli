@@ -33,7 +33,7 @@ class Morpheus::Cli::DistributedWorkers
     json_response = @distributed_workers_interface.list(params)
     render_response(json_response, options, 'distributedWorkers') do
       distributed_workers = json_response['distributedWorkers']
-      print_h1 "Morpheus Distributed Workers", parse_list_subtitles(options), options
+      print_h1 "Distributed Workers", parse_list_subtitles(options), options
       if distributed_workers.empty?
         print cyan,"No distributed workers found.",reset,"\n"
       else

@@ -70,7 +70,7 @@ class Morpheus::Cli::AccountGroupsCommand
         return 0
       end
       groups = json_response['groups']
-      title = "Morpheus Groups - Tenant: #{account['name']}"
+      title = "Groups - Tenant: #{account['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

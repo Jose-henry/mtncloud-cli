@@ -98,7 +98,7 @@ EOT
     json_response = @activity_interface.list(params)
     activity = json_response["activity"]    
     render_response(json_response, options, "activity") do
-      title = "Morpheus Activity"
+      title = "Activity"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if json_response["meta"] && json_response["meta"]["startDate"]

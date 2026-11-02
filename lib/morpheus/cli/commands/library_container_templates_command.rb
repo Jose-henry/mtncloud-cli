@@ -58,7 +58,7 @@ class Morpheus::Cli::LibraryContainerTemplatesCommand
         return 0
       end
       container_templates = json_response['containerTemplates']
-      title = "Morpheus Library - File Templates"
+      title = "Library - File Templates"
       subtitles = []
       # if group
       #   subtitles << "Group: #{group['name']}".strip

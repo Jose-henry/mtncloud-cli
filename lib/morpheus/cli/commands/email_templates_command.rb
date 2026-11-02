@@ -38,7 +38,7 @@ class Morpheus::Cli::EmailTemplates
     json_response = @email_templates_interface.list(params)
     templates = json_response['emailTemplates']
     render_response(json_response, options, 'templates') do
-      title = "Morpheus Email Templates"
+      title = "Email Templates"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

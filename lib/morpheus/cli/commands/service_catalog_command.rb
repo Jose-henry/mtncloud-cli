@@ -254,7 +254,7 @@ EOT
     json_response = @service_catalog_interface.list_types(params)
     catalog_item_types = json_response[catalog_item_type_list_key]
     render_response(json_response, options, catalog_item_type_list_key) do
-      print_h1 "Morpheus Catalog Types", parse_list_subtitles(options), options
+      print_h1 "Catalog Types", parse_list_subtitles(options), options
       if catalog_item_types.empty?
         print cyan,"No catalog item types found.",reset,"\n"
       else
@@ -375,7 +375,7 @@ EOT
     json_response = @service_catalog_interface.list_inventory(params)
     catalog_items = json_response[catalog_item_list_key]
     render_response(json_response, options, catalog_item_list_key) do
-      print_h1 "Morpheus Catalog Inventory", parse_list_subtitles(options), options
+      print_h1 "Catalog Inventory", parse_list_subtitles(options), options
       if catalog_items.empty?
         print cyan,"No catalog items found.",reset,"\n"
       else

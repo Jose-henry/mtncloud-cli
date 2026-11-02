@@ -58,7 +58,7 @@ class Morpheus::Cli::LibraryOperatingSystemsCommand
         return 0
       end
       os_types = json_response['osTypes']
-      title = "Morpheus Library - OS Types"
+      title = "Library - OS Types"
       subtitles = parse_list_subtitles(options)
       print_h1 title, subtitles
       if os_types.empty?

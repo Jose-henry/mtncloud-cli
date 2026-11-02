@@ -56,7 +56,7 @@ class Morpheus::Cli::NetworkDomainsCommand
         puts records_as_csv(network_domains, options)
         return 0
       end
-      title = "Morpheus Network Domains"
+      title = "Network Domains"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -550,7 +550,7 @@ class Morpheus::Cli::NetworkDomainsCommand
         puts records_as_csv(network_domain_records, options)
         return 0
       end
-      title = "Morpheus Network Domain Records"
+      title = "Network Domain Records"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

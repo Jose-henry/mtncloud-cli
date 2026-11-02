@@ -48,7 +48,7 @@ class Morpheus::Cli::VdiGatewaysCommand
     json_response = @vdi_gateways_interface.list(params)
     render_response(json_response, options, vdi_gateway_list_key) do
       vdi_gateways = json_response[vdi_gateway_list_key]
-      print_h1 "Morpheus VDI Gateways", parse_list_subtitles(options), options
+      print_h1 "VDI Gateways", parse_list_subtitles(options), options
       if vdi_gateways.empty?
         print cyan,"No VDI gateways found.",reset,"\n"
       else

@@ -45,7 +45,7 @@ class Morpheus::Cli::WikiCommand
       return 0 if render_result
       pages = json_response['pages']
       unless options[:quiet]
-        title = "Morpheus Wiki Pages"
+        title = "Wiki Pages"
         subtitles = []
         if params['category']
           subtitles << "Category: #{params['category']}"
@@ -364,7 +364,7 @@ class Morpheus::Cli::WikiCommand
       return 0 if render_result
       categories = json_response['categories']
       unless options[:quiet]
-        title = "Morpheus Wiki Categories"
+        title = "Wiki Categories"
         subtitles = []
         subtitles += parse_list_subtitles(options)
         print_h1 title, subtitles

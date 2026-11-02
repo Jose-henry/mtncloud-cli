@@ -43,7 +43,7 @@ class Morpheus::Cli::ClientsCommand
     json_response = @clients_interface.list(params)
     render_response(json_response, options, "clients") do 
       clients = json_response['clients']
-      print_h1 "Morpheus Clients", [], options
+      print_h1 "Clients", [], options
       print as_pretty_table(clients, client_columns.upcase_keys!, options)
       print reset
       print_results_pagination(json_response)

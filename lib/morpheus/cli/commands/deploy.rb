@@ -147,7 +147,7 @@ EOT
 
     unless options[:quiet]
 
-      print_h1 "Morpheus Deployment", options
+      print_h1 "Deployment", options
 
       columns = {
         "Instance" => :name,

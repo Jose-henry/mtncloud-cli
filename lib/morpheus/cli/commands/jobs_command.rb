@@ -72,7 +72,7 @@ class Morpheus::Cli::JobsCommand
     json_response = @jobs_interface.list(params)
     jobs = json_response['jobs']
     render_response(json_response, options, 'jobs') do
-      title = "Morpheus Jobs"
+      title = "Jobs"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if params["internalOnly"]
@@ -182,7 +182,7 @@ class Morpheus::Cli::JobsCommand
           end
         end
       end
-      title = "Morpheus Job"
+      title = "Job"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -873,7 +873,7 @@ class Morpheus::Cli::JobsCommand
     json_response = @jobs_interface.list_executions(params)
     job_executions = json_response['jobExecutions']
     render_response(json_response, options, 'jobExecutions') do
-      title = "Morpheus Job Executions"
+      title = "Job Executions"
       subtitles = job ? ["Job: #{job['name']}"] : []
       subtitles += parse_list_subtitles(options)
       if params["internalOnly"]
@@ -912,7 +912,7 @@ class Morpheus::Cli::JobsCommand
     end
     json_response = @jobs_interface.get_execution(args[0], params)
     render_response(json_response, options, 'jobExecution') do
-      print_h1 "Morpheus Job Execution", [], options
+      print_h1 "Job Execution", [], options
       print_job_execution(json_response['jobExecution'], options)
     end
     return 0, nil
@@ -946,7 +946,7 @@ class Morpheus::Cli::JobsCommand
       render_result = render_with_format(json_response, options, 'processEvent')
       return 0 if render_result
 
-      title = "Morpheus Job Execution Event"
+      title = "Job Execution Event"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

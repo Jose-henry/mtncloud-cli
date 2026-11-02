@@ -98,7 +98,7 @@ class Morpheus::Cli::LogsCommand
       render_result = json_response['logs'] ? render_with_format(json_response, options, 'logs') : render_with_format(json_response, options, 'data')
       return 0 if render_result
 
-      title = "Morpheus Logs"
+      title = "Logs"
       subtitles = parse_list_subtitles(options)
       if options[:start]
         subtitles << "Start: #{options[:start]}".strip

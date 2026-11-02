@@ -55,7 +55,7 @@ EOT
       end
     end
     render_response(json_response, options, "hits") do
-      print_h1 "Morpheus Search", parse_list_subtitles(options), options
+      print_h1 "Search", parse_list_subtitles(options), options
       if search_results.empty?
         print cyan,"No results found.",reset,"\n"
       else

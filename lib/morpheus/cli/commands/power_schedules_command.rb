@@ -44,7 +44,7 @@ class Morpheus::Cli::PowerSchedulesCommand
     json_response = @power_schedules_interface.list(params)
     render_response(json_response, options, power_schedule_list_key) do
       power_schedules = json_response[power_schedule_list_key]
-      print_h1 "Morpheus Power Schedules", parse_list_subtitles(options), options
+      print_h1 "Power Schedules", parse_list_subtitles(options), options
       if power_schedules.empty?
         print cyan,"No power schedules found.",reset,"\n"
       else

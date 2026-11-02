@@ -75,7 +75,7 @@ class Morpheus::Cli::CloudDatastoresCommand
         puts records_as_csv(datastores, options)
         return 0
       end
-      title = "Morpheus Datastores - Cloud: #{cloud['name']}"
+      title = "Datastores - Cloud: #{cloud['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

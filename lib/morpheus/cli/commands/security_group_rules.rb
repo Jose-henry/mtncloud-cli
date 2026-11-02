@@ -168,7 +168,7 @@ EOT
         return
       end
       rules = json_response['rules']
-      print_h1 "Morpheus Security Group Rules for Security Group ID: #{security_group_id}"
+      print_h1 "Security Group Rules for Security Group ID: #{security_group_id}"
       if rules.empty?
         print yellow,"No security group rules currently configured.",reset,"\n"
       else

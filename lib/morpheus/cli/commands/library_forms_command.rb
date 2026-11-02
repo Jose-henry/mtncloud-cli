@@ -51,7 +51,7 @@ class Morpheus::Cli::LibraryFormsCommand
       option_type_forms = json_response[rest_list_key]
       subtitles = []
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Forms", subtitles, options
+      print_h1 "Forms", subtitles, options
       if option_type_forms.empty?
         print cyan,"No forms found.",reset,"\n"
       else

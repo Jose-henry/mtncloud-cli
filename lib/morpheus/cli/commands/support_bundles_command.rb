@@ -38,7 +38,7 @@ class Morpheus::Cli::SupportBundlesCommand
     json_response = @support_bundles_interface.list(params)
     support_bundles = json_response['supportBundles']
     render_response(json_response, options, 'supportBundles') do
-      print_h1 "Morpheus Support Bundles", parse_list_subtitles(options), options
+      print_h1 "Support Bundles", parse_list_subtitles(options), options
       if support_bundles.empty?
         print cyan, "No support bundles found.", reset, "\n"
       else

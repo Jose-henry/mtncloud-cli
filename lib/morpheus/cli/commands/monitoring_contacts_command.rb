@@ -53,7 +53,7 @@ class Morpheus::Cli::MonitoringContactsCommand
         return 0
       end
       contacts = json_response['contacts']
-      title = "Morpheus Monitoring Contacts"
+      title = "Monitoring Contacts"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

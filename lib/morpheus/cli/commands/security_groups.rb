@@ -49,7 +49,7 @@ class Morpheus::Cli::SecurityGroups
     json_response = @security_groups_interface.list(params)
     render_response(json_response, options, "securityGroups") do
       security_groups = json_response['securityGroups']
-      title = "Morpheus Security Groups"
+      title = "Security Groups"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

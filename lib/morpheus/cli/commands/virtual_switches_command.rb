@@ -51,7 +51,7 @@ class Morpheus::Cli::VirtualSwitchesCommand
     json_response = @virtual_switches_interface.list(params)
     render_response(json_response, options, virtual_switch_list_key) do
       virtual_switches = json_response[virtual_switch_list_key]
-      print_h1 "Morpheus Virtual Switches", parse_list_subtitles(options), options
+      print_h1 "Virtual Switches", parse_list_subtitles(options), options
       if virtual_switches.empty?
         print cyan,"No Virtual Switches found.",reset,"\n"
       else

@@ -54,7 +54,7 @@ class Morpheus::Cli::ReportsCommand
       end
       report_results = json_response['reportResults']
       
-      title = "Morpheus Report History"
+      title = "Report History"
       subtitles = []
       if params['type']
         subtitles << "Type: #{params[:type]}".strip
@@ -144,7 +144,7 @@ class Morpheus::Cli::ReportsCommand
       if render_result
         #return render_result
       else
-        print_h1 "Morpheus Report Details"
+        print_h1 "Report Details"
         print cyan
         
         description_cols = {
@@ -512,7 +512,7 @@ class Morpheus::Cli::ReportsCommand
     json_response = @reports_interface.types(params)
     report_types = json_response['reportTypes']
     render_response(json_response, options, 'reportTypes') do
-      title = "Morpheus Report Types"
+      title = "Report Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

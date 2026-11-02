@@ -60,7 +60,7 @@ class Morpheus::Cli::NetworkRoutersCommand
         puts records_as_csv(routers, options)
         return 0
       end
-      title = "Morpheus Network Routers"
+      title = "Network Routers"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -2189,7 +2189,7 @@ class Morpheus::Cli::NetworkRoutersCommand
         return
       end
 
-      title = "Morpheus Network Router Types"
+      title = "Network Router Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

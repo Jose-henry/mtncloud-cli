@@ -82,7 +82,7 @@ class Morpheus::Cli::LibraryUpgradesCommand
         return 0
       end
       upgrades = json_response['upgrades']
-      title = "Morpheus Library - Upgrades"
+      title = "Library - Upgrades"
       subtitles = []
       if instance_type
         subtitles << "Instance Type: #{instance_type['name']}".strip
@@ -156,7 +156,7 @@ class Morpheus::Cli::LibraryUpgradesCommand
         return 0
       end
 
-      print_h1 "Morpheus Upgrade Details"
+      print_h1 "Upgrade Details"
       print cyan
       description_cols = {
         "ID" => lambda {|it| it['id'] },

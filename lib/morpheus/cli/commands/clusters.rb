@@ -96,7 +96,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'clusters')
       return 0 if render_result
 
-      title = "Morpheus Clusters"
+      title = "Clusters"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -224,7 +224,7 @@ class Morpheus::Cli::Clusters
       worker_stats = cluster['workerStats']
       clusterType = find_cluster_type_by_id(cluster['type']['id'])
 
-      print_h1 "Morpheus Cluster"
+      print_h1 "Cluster"
       print cyan
       description_cols = {
           "ID" => 'id',
@@ -1202,7 +1202,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'workers')
       return 0 if render_result
 
-      title = "Morpheus Cluster Workers: #{cluster['name']}"
+      title = "Cluster Workers: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1627,7 +1627,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'masters')
       return 0 if render_result
 
-      title = "Morpheus Cluster Masters: #{cluster['name']}"
+      title = "Cluster Masters: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1765,7 +1765,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'volumes')
       return 0 if render_result
 
-      title = "Morpheus Cluster Volumes: #{cluster['name']}"
+      title = "Cluster Volumes: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1880,7 +1880,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'volumes')
       return 0 if render_result
 
-      title = "Morpheus Cluster Services: #{cluster['name']}"
+      title = "Cluster Services: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -1997,7 +1997,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'volumes')
       return 0 if render_result
 
-      title = "Morpheus Cluster Jobs: #{cluster['name']}"
+      title = "Cluster Jobs: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -2123,7 +2123,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'containers')
       return 0 if render_result
 
-      title = "Morpheus Cluster Containers: #{cluster['name']}"
+      title = "Cluster Containers: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -2284,7 +2284,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'containers')
       return 0 if render_result
 
-      title = "Morpheus Cluster #{resource_type.capitalize}s: #{cluster['name']}"
+      title = "Cluster #{resource_type.capitalize}s: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -2340,7 +2340,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(container_group, options, 'containers')
       return 0 if render_result
       resource_is = options['title'] ? options['title'].capitalize : resource_type.capitalize
-      title = "Morpheus Cluster #{cluster['name']}: #{resource_is}"
+      title = "Cluster #{cluster['name']}: #{resource_is}"
       print_h1 title
       print cyan
       description_cols = {
@@ -2756,7 +2756,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'namespaces')
       return 0 if render_result
 
-      title = "Morpheus Cluster Namespaces: #{cluster['name']}"
+      title = "Cluster Namespaces: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -2826,7 +2826,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'namespace')
       return 0 if render_result
 
-      print_h1 "Morpheus Cluster Namespace"
+      print_h1 "Cluster Namespace"
       print cyan
       description_cols = {
           "ID" => 'id',
@@ -3001,7 +3001,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'datastores')
       return 0 if render_result
 
-      title = "Morpheus Cluster Datastores: #{cluster['name']}"
+      title = "Cluster Datastores: #{cluster['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -3070,7 +3070,7 @@ class Morpheus::Cli::Clusters
       render_result = render_with_format(json_response, options, 'datastore')
       return 0 if render_result
 
-      print_h1 "Morpheus Cluster Datastore"
+      print_h1 "Cluster Datastore"
       print cyan
       description_cols = {
           "ID" => 'id',
@@ -3364,7 +3364,7 @@ class Morpheus::Cli::Clusters
     json_response = @clusters_interface.list_affinity_groups(cluster['id'], params)
     render_response(json_response, options, 'affinityGroups') do
       affinity_groups = json_response['affinityGroups']
-      print_h1 "Morpheus Cluster Affinity Groups: #{cluster['name']}", parse_list_subtitles(options), options
+      print_h1 "Cluster Affinity Groups: #{cluster['name']}", parse_list_subtitles(options), options
       if affinity_groups.empty?
         print cyan,"No affinity groups found.",reset,"\n"
       else          
@@ -3809,7 +3809,7 @@ class Morpheus::Cli::Clusters
     json_response = @clusters_interface.list_host_vm_groups(cluster['id'], params)
     render_response(json_response, options, 'hostVmGroups') do
       rows = json_response['hostVmGroups'] || []
-      print_h1 "Morpheus Cluster Host/VM Groups: #{cluster['name']}", parse_list_subtitles(options), options
+      print_h1 "Cluster Host/VM Groups: #{cluster['name']}", parse_list_subtitles(options), options
       if rows.empty?
         print cyan, "No host/VM groups found.", reset, "\n"
       else

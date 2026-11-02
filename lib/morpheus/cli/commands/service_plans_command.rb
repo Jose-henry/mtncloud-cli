@@ -62,7 +62,7 @@ class Morpheus::Cli::ServicePlanCommand
     json_response = @service_plans_interface.list(params)
     plans = json_response['servicePlans']
     render_response(json_response, options, 'servicePlans') do
-      title = "Morpheus Service Plans"
+      title = "Service Plans"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -138,7 +138,7 @@ class Morpheus::Cli::ServicePlanCommand
       render_result = render_with_format(json_response, options, 'servicePlan')
       return 0 if render_result
 
-      title = "Morpheus Service Plan"
+      title = "Service Plan"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

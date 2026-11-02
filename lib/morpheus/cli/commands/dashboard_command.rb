@@ -4,7 +4,7 @@ class Morpheus::Cli::DashboardCommand
   include Morpheus::Cli::CliCommand
   include Morpheus::Cli::ProvisioningHelper
   set_command_name :dashboard
-  set_command_description "View Morpheus Dashboard"
+  set_command_description "View Dashboard"
   set_command_hidden
 
   def initialize()
@@ -33,7 +33,7 @@ class Morpheus::Cli::DashboardCommand
       end
       build_standard_list_options(opts, options)
       opts.footer = <<-EOT
-View Morpheus Dashboard.
+View Dashboard.
 This includes instance and backup counts, favorite instances, monitoring and recent activity.
       EOT
     end
@@ -49,7 +49,7 @@ This includes instance and backup counts, favorite instances, monitoring and rec
     end
     json_response = @dashboard_interface.get(params)
     render_response(json_response, options) do
-      print_h1 "Morpheus Dashboard", [], options
+      print_h1 "Dashboard", [], options
 
       ## STATUS
 

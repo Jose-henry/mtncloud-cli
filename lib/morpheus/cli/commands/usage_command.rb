@@ -72,7 +72,7 @@ class Morpheus::Cli::UsageCommand
     json_response = @usage_interface.list(params)
     usages = json_response[usage_list_key]
     render_response(json_response, options, usage_list_key) do
-      print_h1 "Morpheus Usages", parse_list_subtitles(options), options
+      print_h1 "Usages", parse_list_subtitles(options), options
       if usages.empty?
         print cyan,"No usages found.",reset,"\n"
       else

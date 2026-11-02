@@ -56,7 +56,7 @@ class Morpheus::Cli::NetworkGroupsCommand
         puts records_as_csv(network_groups, options)
         return 0
       end
-      title = "Morpheus Network Groups"
+      title = "Network Groups"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

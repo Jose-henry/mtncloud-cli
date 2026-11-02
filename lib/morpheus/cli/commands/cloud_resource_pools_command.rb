@@ -78,7 +78,7 @@ class Morpheus::Cli::CloudResourcePoolsCommand
         puts records_as_csv(resource_pools, options)
         return 0
       end
-      title = "Morpheus Resource Pools - Cloud: #{cloud['name']}"
+      title = "Resource Pools - Cloud: #{cloud['name']}"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

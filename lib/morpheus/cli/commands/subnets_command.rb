@@ -92,7 +92,7 @@ class Morpheus::Cli::SubnetsCommand
     render_result = render_with_format(json_response, options, 'subnets')
     return exit_code, err if render_result
 
-    title = "Morpheus Subnets"
+    title = "Subnets"
     subtitles = []
     if network
       subtitles << "Network: #{network['name']}"
@@ -705,9 +705,9 @@ class Morpheus::Cli::SubnetsCommand
 
       subnet_type = json_response['subnetType']
 
-      title = "Morpheus Subnet Type"
+      title = "Subnet Type"
       
-      print_h1 "Morpheus Subnet Type", [], options
+      print_h1 "Subnet Type", [], options
       
       print cyan
       description_cols = {
@@ -777,7 +777,7 @@ class Morpheus::Cli::SubnetsCommand
 
       subnet_types = json_response['subnetTypes']
 
-      title = "Morpheus Subnet Types"
+      title = "Subnet Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if options[:cloud]

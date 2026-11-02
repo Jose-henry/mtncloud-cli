@@ -244,7 +244,7 @@ class Morpheus::Cli::Instances
     render_response(json_response, options, "instances") do
       instances = json_response['instances']
 
-      title = "Morpheus Instances"
+      title = "Instances"
       subtitles = []
       if group
         subtitles << "Group: #{group['name']}".strip
@@ -3524,7 +3524,7 @@ Extend shutdown for an instance.
         return
       end
       securityGroups = json_response['securityGroups']
-      print_h1 "Morpheus Security Groups for Instance: #{instance['name']}", [], options
+      print_h1 "Security Groups for Instance: #{instance['name']}", [], options
       print cyan
       print_description_list({"Firewall Enabled" => lambda {|it| format_boolean it['firewallEnabled'] } }, json_response)
       #print cyan, "Firewall Enabled=#{json_response['firewallEnabled']}\n\n"
@@ -4190,7 +4190,7 @@ List instance scaling threshold schedules.
     list_key = 'instanceSchedules'
     render_response(json_response, options, list_key) do
       records = json_response[list_key]
-      title = "Morpheus Instance Schedules"
+      title = "Instance Schedules"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

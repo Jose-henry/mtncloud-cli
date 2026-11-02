@@ -176,7 +176,7 @@ EOT
             end
             return exit_code, err
           else
-            title = "Morpheus Ping"
+            title = "Ping"
             subtitles = []
             print_h1 title, subtitles, options
             #print_green_success "Completed ping of #{appliance[:name]} (#{format_duration_seconds(took_sec)})"

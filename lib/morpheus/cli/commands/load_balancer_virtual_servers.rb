@@ -50,7 +50,7 @@ EOT
     json_response = rest_interface.list(parent_id, params)
     render_response(json_response, options, rest_list_key) do
       records = json_response[rest_list_key]
-      print_h1 "Morpheus #{rest_label_plural}"
+      print_h1 "#{rest_label_plural}"
       if records.nil? || records.empty?
         print cyan,"No #{rest_label_plural.downcase} found.",reset,"\n"
       else

@@ -53,7 +53,7 @@ class Morpheus::Cli::UserGroupsCommand
         return 0
       end
       user_groups = json_response['userGroups']
-      title = "Morpheus User Groups"
+      title = "User Groups"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

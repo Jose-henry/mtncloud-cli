@@ -30,7 +30,6 @@ class BrandingTest < Test::Unit::TestCase
   # Known lines still to be rebranded, keyed by the step that removes them.
   # Remove an entry in the same commit that fixes it, the test fails if an entry no longer appears.
   PENDING = {
-    /^View Morpheus Dashboard\.$/ => "3b",
     /^For more information, see https:\/\/github\.com\/gomorpheus\/morpheus-cli\/wiki\/Alias$/ => "3c",
     /^name: morpheus-apidoc$/ => "3c",
     /^url: "https:\/\/github\.com\/gomorpheus\/morpheus-apidoc"$/ => "3c",
@@ -121,6 +120,21 @@ class BrandingTest < Test::Unit::TestCase
     stale = PENDING.reject {|re, _| lines.any? {|line| line =~ re } }
     assert_empty stale, "these PENDING entries are fixed, remove them from the list:\n" +
       stale.map {|re, step| "  (#{step}) #{re.inspect}" }.join("\n")
+  end
+
+  def test_version_banner_is_mtn_cloud
+    out = StringIO.new
+    saved_terminal = Morpheus::Terminal.instance_variable_get(:@morphterm)
+    saved_home = Morpheus::Cli.home_directory
+    Morpheus::Terminal.new(stdin: StringIO.new(""), stdout: out, stderr: StringIO.new, homedir: Dir.tmpdir)
+    Morpheus::Cli::VersionCommand.new.handle([])
+    assert_include out.string, "MTN Cloud CLI"
+    assert_include out.string, "Client Version: #{Morpheus::Cli::VERSION}"
+    # the old banner spelled Morpheus in ASCII art, which a text search cannot see
+    assert_not_match(/__  ___/, out.string)
+  ensure
+    Morpheus::Terminal.instance_variable_set(:@morphterm, saved_terminal)
+    Morpheus::Cli.home_directory = saved_home
   end
 
   def test_prog_name_follows_invoked_name

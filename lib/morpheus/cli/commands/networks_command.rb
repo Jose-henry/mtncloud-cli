@@ -112,7 +112,7 @@ class Morpheus::Cli::NetworksCommand
         puts records_as_csv(networks, options)
         return 0
       end
-      title = "Morpheus Networks"
+      title = "Networks"
       subtitles = []
       if cloud
         subtitles << "Cloud: #{cloud['id']}"
@@ -1503,7 +1503,7 @@ class Morpheus::Cli::NetworksCommand
 
       network_types = json_response['networkTypes']
 
-      title = "Morpheus Network Types"
+      title = "Network Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if options[:cloud]
@@ -1567,9 +1567,9 @@ class Morpheus::Cli::NetworksCommand
 
       network_type = json_response['networkType']
 
-      title = "Morpheus Network Type"
+      title = "Network Type"
       
-      print_h1 "Morpheus Network Type", [], options
+      print_h1 "Network Type", [], options
       
       print cyan
       description_cols = {
@@ -1641,7 +1641,7 @@ class Morpheus::Cli::NetworksCommand
         puts records_as_csv(subnets, options)
         return 0
       end
-      title = "Morpheus Subnets"
+      title = "Subnets"
       subtitles = []
       subtitles << "Network: #{network['name']}"
       subtitles += parse_list_subtitles(options)

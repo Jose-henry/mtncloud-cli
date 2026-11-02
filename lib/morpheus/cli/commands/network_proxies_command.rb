@@ -54,7 +54,7 @@ class Morpheus::Cli::NetworkProxiesCommand
         puts records_as_csv(network_proxies, options)
         return 0
       end
-      title = "Morpheus Network Proxies"
+      title = "Network Proxies"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

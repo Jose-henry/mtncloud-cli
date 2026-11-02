@@ -68,7 +68,7 @@ class Morpheus::Cli::UserSourcesCommand
     json_response = @user_sources_interface.list(account_id, params)
     render_response(json_response, options, "userSources") do
       user_sources = json_response["userSources"]
-      title = "Morpheus Identity Sources"
+      title = "Identity Sources"
       subtitles = []
       if account
         subtitles << "Tenant: #{account['name']}".strip
@@ -180,7 +180,7 @@ EOT
       if role_mappings && role_mappings.size > 0
         # print_h2 "Role Mappings"
         role_mapping_columns = [
-          {"MORPHEUS ROLE" => lambda {|it| 
+          {"ROLE" => lambda {|it| 
             it['mappedRole'] ? it['mappedRole']['authority'] : ''
           } },
           {"SOURCE ROLE NAME" => lambda {|it| it['sourceRoleName'] } },
@@ -800,7 +800,7 @@ EOT
         return 0
       end
       user_source_types = json_response['userSourceTypes']
-      title = "Morpheus Identity Source Types"
+      title = "Identity Source Types"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

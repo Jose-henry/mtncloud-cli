@@ -55,7 +55,7 @@ class Morpheus::Cli::ResourcePoolGroupsCommand
         puts records_as_csv(resource_pool_groups, options)
         return 0
       end
-      title = "Morpheus Resource Pool Groups"
+      title = "Resource Pool Groups"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

@@ -48,7 +48,7 @@ class Morpheus::Cli::BackupJobsCommand
     json_response = @backup_jobs_interface.list(params)
     backup_jobs = json_response['jobs']
     render_response(json_response, options, 'jobs') do
-      print_h1 "Morpheus Backup Jobs", parse_list_subtitles(options), options
+      print_h1 "Backup Jobs", parse_list_subtitles(options), options
       if backup_jobs.empty?
         print yellow,"No backup jobs found.",reset,"\n"
       else

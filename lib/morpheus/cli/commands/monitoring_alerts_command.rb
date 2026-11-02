@@ -57,7 +57,7 @@ class Morpheus::Cli::MonitoringAlertsCommand
         return 0
       end
       alerts = json_response['alerts']
-      title = "Morpheus Monitoring Alerts"
+      title = "Monitoring Alerts"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

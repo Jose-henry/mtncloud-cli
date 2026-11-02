@@ -46,7 +46,7 @@ class Morpheus::Cli::BackupResultsCommand
       subtitles = []
       subtitles << "Backup: #{options[:backup]}" if options[:backup]
       subtitles += parse_list_subtitles(options)
-      print_h1 "Morpheus Backup Results", subtitles, options
+      print_h1 "Backup Results", subtitles, options
       if backup_results.empty?
         print yellow,"No backup results found.",reset,"\n"
       else

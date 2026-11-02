@@ -54,7 +54,7 @@ class Morpheus::Cli::MonitoringGroupsCommand
         return 0
       end
       check_groups = json_response['checkGroups']
-      title = "Morpheus Monitoring Check Groups"
+      title = "Monitoring Check Groups"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

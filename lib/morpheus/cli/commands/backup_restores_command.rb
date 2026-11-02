@@ -46,7 +46,7 @@ class Morpheus::Cli::BackupRestoresCommand
     json_response = @backup_restores_interface.list(params)
     backup_restores = json_response['restores']
     render_response(json_response, options, 'restores') do
-      print_h1 "Morpheus Backup Restores", parse_list_subtitles(options), options
+      print_h1 "Backup Restores", parse_list_subtitles(options), options
       if backup_restores.empty?
         print yellow,"No backup restores found.",reset,"\n"
       else

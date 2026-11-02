@@ -66,7 +66,7 @@ class Morpheus::Cli::NetworkPoolsCommand
         puts records_as_csv(network_pools, options)
         return 0
       end
-      title = "Morpheus Network Pools"
+      title = "Network Pools"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -486,7 +486,7 @@ class Morpheus::Cli::NetworkPoolsCommand
         puts records_as_csv(network_pool_ips, options)
         return 0
       end
-      title = "Morpheus Network Pool IPs"
+      title = "Network Pool IPs"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles

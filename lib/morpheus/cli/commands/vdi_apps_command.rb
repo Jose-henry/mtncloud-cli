@@ -48,7 +48,7 @@ class Morpheus::Cli::VdiAppsCommand
     json_response = @vdi_apps_interface.list(params)
     render_response(json_response, options, vdi_app_list_key) do
       vdi_apps = json_response[vdi_app_list_key]
-      print_h1 "Morpheus VDI Apps", parse_list_subtitles(options), options
+      print_h1 "VDI Apps", parse_list_subtitles(options), options
       if vdi_apps.empty?
         print cyan,"No VDI apps found.",reset,"\n"
       else

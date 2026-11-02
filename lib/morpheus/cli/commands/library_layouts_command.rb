@@ -93,7 +93,7 @@ class Morpheus::Cli::LibraryLayoutsCommand
         return 0
       end
       layouts = json_response['instanceTypeLayouts']
-      title = "Morpheus Library - Layouts"
+      title = "Library - Layouts"
       subtitles = []
       if instance_type
         subtitles << "Instance Type: #{instance_type['name']}".strip

@@ -53,7 +53,7 @@ class Morpheus::Cli::MonitoringIncidentsCommand
         return 0
       end
       incidents = json_response['incidents']
-      title = "Morpheus Monitoring Incidents"
+      title = "Monitoring Incidents"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles
@@ -116,7 +116,7 @@ class Morpheus::Cli::MonitoringIncidentsCommand
       open_incidents_count = json_response['openIncidentCount']
       stats = json_response['incidentStats']
 
-      print_h1 "Morpheus Incidents: Stats"
+      print_h1 "Incidents: Stats"
       print cyan
 
       # print_h2 "Counts"

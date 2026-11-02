@@ -92,7 +92,7 @@ EOT
           return 2, warning_msg
         end
       else
-        title = "Morpheus Appliances"
+        title = "Remotes"
         subtitles = parse_list_subtitles(options)
         subtitles << "Current" if current_only
         print_h1 title, subtitles, options
@@ -397,7 +397,7 @@ EOT
     end
 
     # print new appliance details
-    print_h1 "Morpheus Appliance", [], options
+    print_h1 "Remote", [], options
     print cyan
     print format_remote_details(appliance, options)
     print reset, "\n"
@@ -565,7 +565,7 @@ EOT
       end
 
       render_response(json_response, options) do
-        print_h1 "Morpheus Appliance", [], options
+        print_h1 "Remote", [], options
         print cyan
         print format_remote_details(appliance, options)
         print reset, "\n"
@@ -884,7 +884,7 @@ EOT
         return exit_code, err
       end
 
-      print_h1 "Morpheus Appliance", [], options
+      print_h1 "Remote", [], options
       print cyan
       print format_remote_details(appliance, options)
       print reset, "\n"
@@ -1208,7 +1208,7 @@ EOT
       elsif version_only
         print cyan, appliance[:build_version],"\n",reset
       else
-        print_h1 "Morpheus Appliance", [], options
+        print_h1 "Remote", [], options
         print cyan
         print format_remote_details(appliance, options)
         print reset, "\n"

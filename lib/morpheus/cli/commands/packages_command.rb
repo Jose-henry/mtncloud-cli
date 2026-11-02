@@ -250,11 +250,11 @@ class Morpheus::Cli::PackagesCommand
               rows = sorted_versions.collect {|package_version|
                 {
                   "PACKAGE VERSION": package_version['version'],
-                  "MORPHEUS VERSION": package_version['minApplianceVersion'],
+                  "MIN APPLIANCE VERSION": package_version['minApplianceVersion'],
                   "PUBLISH DATE": format_local_dt(package_version['created'] || package_version['dateCreated'])
                 }
               }
-              columns = ["PACKAGE VERSION", "MORPHEUS VERSION", "PUBLISH DATE"]
+              columns = ["PACKAGE VERSION", "MIN APPLIANCE VERSION", "PUBLISH DATE"]
               print cyan
               print as_pretty_table(rows, columns)
               # print reset, "\n"

@@ -792,7 +792,7 @@ EOT
       end
 
       clients = json_response['clients'] || json_response['apiClients']
-      print_h1 "Morpheus API Clients"
+      print_h1 "API Clients"
       columns = {
         "CLIENT ID" => lambda {|it| it['clientId'] },
         "NAME" => lambda {|it| it['name'] },

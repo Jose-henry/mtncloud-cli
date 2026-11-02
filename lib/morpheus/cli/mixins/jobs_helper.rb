@@ -164,7 +164,7 @@ module Morpheus::Cli::JobsHelper
       job_execution = jobs_interface.get_execution(job_execution_id)['jobExecution']
     end
     if print_output && options[:quiet] != true
-      print_h1 "Morpheus Job Execution", [], options
+      print_h1 "Job Execution", [], options
       print_job_execution(job_execution, options)
     end
     return job_execution

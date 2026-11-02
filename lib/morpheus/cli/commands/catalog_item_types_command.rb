@@ -66,7 +66,7 @@ class Morpheus::Cli::CatalogItemTypesCommand
     json_response = @catalog_item_types_interface.list(params)
     catalog_item_types = json_response[catalog_item_type_list_key]
     render_response(json_response, options, catalog_item_type_list_key) do
-      print_h1 "Morpheus Catalog Item Types", parse_list_subtitles(options), options
+      print_h1 "Catalog Item Types", parse_list_subtitles(options), options
       if catalog_item_types.empty?
         print cyan,"No catalog item types found.",reset,"\n"
       else

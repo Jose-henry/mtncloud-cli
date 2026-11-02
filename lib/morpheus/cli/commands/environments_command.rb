@@ -42,7 +42,7 @@ class Morpheus::Cli::EnvironmentsCommand
       return 0 if render_result
       environments = json_response['environments']
       unless options[:quiet]
-        title = "Morpheus Environments"
+        title = "Environments"
         subtitles = []
         subtitles += parse_list_subtitles(options)
         print_h1 title, subtitles

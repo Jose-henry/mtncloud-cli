@@ -182,7 +182,7 @@ class Morpheus::Cli::InvoicesCommand
     json_response = @invoices_interface.list(params)
     invoices = json_response['invoices']
     render_response(json_response, options, 'invoices') do
-      title = "Morpheus Invoices"
+      title = "Invoices"
       subtitles = []
       if params['startDate']
         subtitles << "Start Date: #{params['startDate']}"
@@ -843,7 +843,7 @@ EOT
     json_response = @invoice_line_items_interface.list(params)
     line_items = json_response['lineItems']
     render_response(json_response, options, 'lineItems') do
-      title = "Morpheus Line Items"
+      title = "Line Items"
       subtitles = []
       if params['startDate']
         subtitles << "Start Date: #{params['startDate']}"

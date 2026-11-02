@@ -72,7 +72,7 @@ class Morpheus::Cli::Roles
 
     render_response(json_response, options, "roles") do
       roles = json_response['roles']
-      title = "Morpheus Roles"
+      title = "Roles"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       print_h1 title, subtitles, options

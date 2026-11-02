@@ -67,7 +67,7 @@ class Morpheus::Cli::CypherCommand
       end
       cypher_items = json_response["cypherItems"] || json_response["cyphers"]
       cypher_data = json_response["data"]
-      title = "Morpheus Cypher Key List"
+      title = "Cypher Key List"
       subtitles = []
       subtitles += parse_list_subtitles(options)
       if item_key
