@@ -4,12 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'morpheus/cli/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "morpheus-cli"
+  spec.name          = "mtncloud-cli"
   spec.version       = Morpheus::Cli::VERSION
-  spec.authors       = ["David Estes", "Bob Whiton", "Jeremy Michael Crosbie", "James Dickson"]
+  spec.authors       = ["David Estes", "Bob Whiton", "Jeremy Michael Crosbie", "James Dickson", "MTN Cloud"]
   spec.email         = ["davydotcom@gmail.com"]
-  spec.summary       = "Provides CLI Interface to the Morpheus Public/Private Cloud Appliance"
-  spec.description   = "Infrastructure agnostic cloud application management & orchestration CLI for Morpheus. Easily manage and orchestrate VMS on private or public infrastructure and containerized architectures."
+  spec.summary       = "Provides CLI Interface to MTN Cloud"
+  spec.description   = "Cloud application management & orchestration CLI for MTN Cloud. Easily manage and orchestrate VMs on private or public infrastructure and containerized architectures. Derived from HPE morpheus-cli (MIT)."
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

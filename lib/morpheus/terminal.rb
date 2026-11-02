@@ -73,7 +73,7 @@ module Morpheus
           @prompt = ENV['MORPHEUS_PS1'].dup
         else
           #ENV['MORPHEUS_PS1'] = "#{Term::ANSIColor.cyan}morpheus>#{Term::ANSIColor.reset} "
-          @prompt = "#{Term::ANSIColor.cyan}morpheus>#{Term::ANSIColor.reset} "
+          @prompt = "#{Term::ANSIColor.cyan}#{Morpheus::Cli.prog_name}>#{Term::ANSIColor.reset} "
         end
       end
       @prompt
@@ -84,7 +84,7 @@ module Morpheus
     end
 
     def self.angry_prompt
-      "#{Term::ANSIColor.red}morpheus:#{Term::ANSIColor.reset} "
+      "#{Term::ANSIColor.red}#{Morpheus::Cli.prog_name}:#{Term::ANSIColor.reset} "
     end
 
     def self.custom_prompt
@@ -278,7 +278,7 @@ module Morpheus
     # alias :'coloring=' :set_coloring
 
     def usage
-      out = "Usage: morpheus [command] [options]\n"
+      out = "Usage: #{Morpheus::Cli.prog_name} [command] [options]\n"
       # just for printing help. todo: start using this. maybe in class Cli::MainCommand
       # maybe OptionParser's recover() instance method will do the trick
       optparse = Morpheus::Cli::OptionParser.new do|opts|
@@ -493,7 +493,7 @@ module Morpheus
           # end
 
           if (defined?(@benchmarking) && @benchmarking) || args.include?('-B') || args.include?('--benchmark')
-            benchmark_name = "morpheus #{formatted_cmd}"
+            benchmark_name = "#{Morpheus::Cli.prog_name} #{formatted_cmd}"
             benchmark_name.sub!(' -B', '')
             benchmark_name.sub!(' --benchmark', '')
             #benchmark_name << " -B"

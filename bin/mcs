@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+# mcs is the short alias for the mtncloud command, it runs the same CLI.
+load File.expand_path('mtncloud', __dir__)

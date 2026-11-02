@@ -2069,7 +2069,7 @@ module Morpheus
         #             :subcommands, :hidden_subcommands, :default_subcommand, :subcommand_aliases, :subcommand_descriptions
 
         def prog_name
-          "morpheus"
+          Morpheus::Cli.prog_name
         end
 
         def set_command_name(cmd_name)

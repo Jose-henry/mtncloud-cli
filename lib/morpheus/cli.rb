@@ -27,6 +27,13 @@ module Morpheus
       @@home_directory = fn
     end
 
+    # the name the CLI was invoked as, "mtncloud" or its short alias "mcs".
+    # Defaults to "mtncloud" when run some other way, eg. under rake or bundle.
+    def self.prog_name
+      invoked_name = File.basename($0.to_s, ".*")
+      ["mtncloud", "mcs"].include?(invoked_name) ? invoked_name : "mtncloud"
+    end
+
     # check if this is a Windows environment.
     def self.windows?
       if defined?(@@is_windows)
