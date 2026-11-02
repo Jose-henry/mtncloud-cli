@@ -165,8 +165,8 @@ New versions are published to RubyGems by the [Publish gem](.github/workflows/re
 2. Tag the release and push the tag:
 
    ```shell
-   git tag v9.1.3
-   git push origin v9.1.3
+   git tag v1.0.1
+   git push origin v1.0.1
    ```
 
 The workflow fails if the tag does not match `VERSION`. RubyGems does not accept the same version twice.

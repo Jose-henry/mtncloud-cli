@@ -1,6 +1,6 @@
 
 module MtnCloud
   module Cli
-    VERSION = "9.1.2"
+    VERSION = "1.0.0"
   end
 end
