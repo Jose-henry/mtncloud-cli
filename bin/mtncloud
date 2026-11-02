@@ -5,7 +5,7 @@ require 'morpheus'
 args = ARGV.dup
 
 # input pipe: only read stdin as arguments when --stdin is explicitly passed.
-# Previously stdin was always consumed when not a TTY, which caused morpheus
+# Previously stdin was always consumed when not a TTY, which caused the CLI
 # invoked inside a piped bash script (e.g. base64 -d <<< <script> | bash -l)
 # to consume the remaining script lines as CLI arguments (MORPH-6237).
 # Usage: echo 42 | mtncloud instances get --stdin

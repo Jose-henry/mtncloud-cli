@@ -7,8 +7,6 @@ It installs two commands that run the same CLI:
 - `mtncloud`
 - `mcs`, a short alias for `mtncloud`
 
-This CLI is derived from HPE's [morpheus-cli](https://github.com/HewlettPackard/morpheus-cli) and is distributed under the MIT license. See [License](#license).
-
 ## Installation
 
 The CLI is not published to RubyGems. Build and install it from this repository.
@@ -104,28 +102,6 @@ Other environment variables:
 | `MTNCLOUD_PS1` | The prompt for `mtncloud shell`. See `mtncloud set-prompt --help`. |
 | `MTNCLOUD_CLI_TMPDIR` | Where temporary shells (`mtncloud shell -Z`) are created. The default is the `tmp` directory inside the home directory. |
 
-### Coming from the HPE Morpheus CLI
-
-The MTN Cloud CLI deliberately does not read the Morpheus CLI's configuration. It ignores:
-
-- the `~/.morpheus` directory
-- `MORPHEUS_CLI_HOME`
-- `MORPHEUS_PS1`
-- `MORPHEUS_CLI_TMPDIR`
-
-This means credentials saved for other Morpheus appliances are never used by `mtncloud`. Add your MTN Cloud remote again with `mtncloud remote add`.
-
-Some things are unchanged:
-
-- The `deploy` command reads `mtncloud.yml`, and still reads an existing `morpheus.yml` if there is no `mtncloud.yml`.
-- Values that belong to the appliance or its API keep their names, for example the `X-Morpheus-Lease` header and the `MORPHEUS_LEASE_TOKEN` variable that the appliance sets:
-
-  ```shell
-  mtncloud whoami -H "X-Morpheus-Lease: $MORPHEUS_LEASE_TOKEN"
-  ```
-
-- The `morpheus` command is not installed. Use `mtncloud` or `mcs`.
-
 ## Development
 
 Install the dependencies with Bundler 2. The gemspec requires Bundler `~> 2.2`, so if your default Bundler is newer, install 2.7.2 and use it explicitly:
@@ -150,17 +126,15 @@ bundle _2.7.2_ exec ruby bin/mtncloud shell --debug
 
 Code layout:
 
-- API interfaces are in `lib/morpheus/api/`.
-- CLI commands are in `lib/morpheus/cli/commands/`.
-
-The Ruby namespace is still `Morpheus::`, and the files are still under `lib/morpheus/`. They were kept so that fixes from the upstream HPE project can still be merged.
+- API interfaces are in the `api/` folder under `lib/`.
+- CLI commands are in the `cli/commands/` folder under `lib/`.
 
 ### Testing
 
 Offline tests don't need an appliance. Run each file with `bundle _2.7.2_ exec ruby -Ilib -Itest <file>`. They include:
 
-- `test/branding_test.rb`, which checks every command's help for leftover Morpheus branding
-- the test files under `test/cli/` and `test/api/` that do not `require 'morpheus_test'`
+- `test/branding_test.rb`, which checks every command's help for leftover non-MTN Cloud branding
+- the test files under `test/cli/` and `test/api/` that don't load the live-appliance test helper
 
 The other tests run against a live appliance. Create a `test_config.yaml` in the repository root:
 
@@ -178,4 +152,4 @@ bundle _2.7.2_ exec rake test
 
 ## License
 
-MIT. See [LICENSE.txt](LICENSE.txt). This project is derived from HPE's morpheus-cli. The original copyright notice is kept in LICENSE.txt.
+MIT. See [LICENSE.txt](LICENSE.txt).

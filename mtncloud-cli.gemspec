@@ -6,10 +6,9 @@ require 'morpheus/cli/version'
 Gem::Specification.new do |spec|
   spec.name          = "mtncloud-cli"
   spec.version       = Morpheus::Cli::VERSION
-  spec.authors       = ["David Estes", "Bob Whiton", "Jeremy Michael Crosbie", "James Dickson", "MTN Cloud"]
-  spec.email         = ["davydotcom@gmail.com"]
+  spec.authors       = ["Joshua Ukpozi", "Joseph Henry", "MTN Cloud"]
   spec.summary       = "Provides CLI Interface to MTN Cloud"
-  spec.description   = "Cloud application management & orchestration CLI for MTN Cloud. Easily manage and orchestrate VMs on private or public infrastructure and containerized architectures. Derived from HPE morpheus-cli (MIT)."
+  spec.description   = "Cloud application management & orchestration CLI for MTN Cloud. Easily manage and orchestrate VMs on private or public infrastructure and containerized architectures."
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
