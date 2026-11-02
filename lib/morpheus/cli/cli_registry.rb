@@ -53,7 +53,7 @@ module Morpheus
       def add_alias(alias_name, command_string)
         #return @commands[alias_name.to_sym]
         if self.class.has_command?(alias_name)
-          raise BadAlias.new "alias name '#{alias_name}' is invalid. That is the name of a #{Morpheus::Cli.prog_name} command."
+          raise BadAlias.new "alias name '#{alias_name}' is invalid. That is the name of an existing command."
         elsif alias_name.to_s.downcase.strip == command_string.to_s.downcase.strip
           raise BadAlias.new "alias #{alias_name}=#{command_string} is invalid..."
         end
@@ -91,7 +91,7 @@ module Morpheus
             end
           else
             # todo: need to just return error instead of raise
-            msg = "'#{command_name}' is not a #{Morpheus::Cli.prog_name} command."
+            msg = "'#{command_name}' is not a known command. See '#{Morpheus::Cli.prog_name} --help'."
             suggestions = find_command_suggestions(command_name)
             if suggestions && suggestions.size == 1
               msg += "\nThe most similar command is:\n"
