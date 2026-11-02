@@ -1,6 +1,6 @@
 require 'morpheus/cli/cli_command'
 
-# Command for editing the .morpheus_profile initalization script
+# Command for editing the .mtncloud_profile initalization script
 class Morpheus::Cli::EditRcCommand
   include Morpheus::Cli::CliCommand
   set_command_name :'edit-rc'
@@ -9,7 +9,7 @@ class Morpheus::Cli::EditRcCommand
   def handle(args)
     options = {}
     editor = nil
-    filename = Morpheus::Cli::DotFile.morpheusrc_filename
+    filename = Morpheus::Cli::DotFile.mtncloudrc_filename
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = "Usage: morpheus #{command_name}"
       opts.on( '-e', '--editor PROGRAM', "Editor program to use. The default is $EDITOR." ) do |val|
@@ -17,7 +17,7 @@ class Morpheus::Cli::EditRcCommand
       end
       build_common_options(opts, options, [])
       opts.footer = <<-EOT
-Edit your .morpheusrc script located in the morpheus home directory.
+Edit your .mtncloudrc script located in the morpheus home directory.
 This script runs at the beginning of the interactive morpheus shell command.
 It provides a way to initialize your interactive morpheus shell environment.
 

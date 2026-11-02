@@ -11,7 +11,7 @@ class Morpheus::Cli::ExitCommand
   def handle(args)
     exit_code = 0
     options = {}
-    filename = Morpheus::Cli::DotFile.morpheus_profile_filename
+    filename = Morpheus::Cli::DotFile.mtncloud_profile_filename
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = "Usage: exit [code]"
       build_common_options(opts, options, [])

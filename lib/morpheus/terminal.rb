@@ -14,7 +14,7 @@ module Morpheus
   
   # Terminal is a class for executing morpheus commands
   # The default IO is STDIN, STDOUT, STDERR
-  # The default home directory is $HOME/.morpheus
+  # The default home directory is $HOME/.mtncloud
   #
   # ==== Example Usage
   #
@@ -69,10 +69,10 @@ module Morpheus
 
     def self.prompt
       if !defined?(@prompt) || @prompt.nil?
-        if ENV['MORPHEUS_PS1']
-          @prompt = ENV['MORPHEUS_PS1'].dup
+        if ENV['MTNCLOUD_PS1']
+          @prompt = ENV['MTNCLOUD_PS1'].dup
         else
-          #ENV['MORPHEUS_PS1'] = "#{Term::ANSIColor.cyan}morpheus>#{Term::ANSIColor.reset} "
+          #ENV['MTNCLOUD_PS1'] = "#{Term::ANSIColor.cyan}morpheus>#{Term::ANSIColor.reset} "
           @prompt = "#{Term::ANSIColor.cyan}#{Morpheus::Cli.prog_name}>#{Term::ANSIColor.reset} "
         end
       end
@@ -88,7 +88,7 @@ module Morpheus
     end
 
     def self.custom_prompt
-      #export MORPHEUS_PS1='\[\e[1;32m\]\u@\h:\w${text}$\[\e[m\] '
+      #export MTNCLOUD_PS1='\[\e[1;32m\]\u@\h:\w${text}$\[\e[m\] '
     end
 
     # def self.benchmarking=(v)
@@ -135,7 +135,7 @@ module Morpheus
       set_stderr(stderr)
       
       # establish home directory
-      use_homedir = homedir || ENV['MORPHEUS_CLI_HOME'] || File.join(Dir.home, ".morpheus")
+      use_homedir = homedir || ENV['MTNCLOUD_CLI_HOME'] || File.join(Dir.home, ".mtncloud")
       set_home_directory(use_homedir)
       
       # use colors by default
@@ -144,8 +144,8 @@ module Morpheus
       # @coloring = Term::ANSIColor::coloring?
 
       # startup script
-      if File.exist? Morpheus::Cli::DotFile.morpheus_profile_filename
-        @profile_dot_file = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheus_profile_filename)
+      if File.exist? Morpheus::Cli::DotFile.mtncloud_profile_filename
+        @profile_dot_file = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloud_profile_filename)
       else
         @profile_dot_file = nil
       end
@@ -163,7 +163,7 @@ module Morpheus
       to_s
     end
 
-    # execute .morpheus_profile startup script
+    # execute .mtncloud_profile startup script
     def execute_profile_script(rerun=false)
       if @profile_dot_file
         if rerun || !@profile_dot_file_has_run
@@ -287,11 +287,11 @@ module Morpheus
           @execute_mode = true
           @execute_mode_command = val
         end
-        opts.on('--noprofile','--noprofile', "Do not read and execute the personal initialization script .morpheus_profile") do
+        opts.on('--noprofile','--noprofile', "Do not read and execute the personal initialization script .mtncloud_profile") do
           @noprofile = true
         end
         # todo: make these work
-        # opts.on('--home','--home', "Morpheus client home directory, where configuration files are located. The default is MORPHEUS_CLI_HOME or HOME/.morpheus") do |val|
+        # opts.on('--home','--home', "Morpheus client home directory, where configuration files are located. The default is MTNCLOUD_CLI_HOME or HOME/.mtncloud") do |val|
         #   @use_home_directory = val
         #   set_home_directory(@use_home_directory)
         #   # that it? all done...
@@ -423,14 +423,14 @@ module Morpheus
           set_home_directory(@use_home_directory)
           # re-initialize some variables
           # startup script
-          if File.exist? Morpheus::Cli::DotFile.morpheus_profile_filename
-            @profile_dot_file = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheus_profile_filename)
+          if File.exist? Morpheus::Cli::DotFile.mtncloud_profile_filename
+            @profile_dot_file = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloud_profile_filename)
           else
             @profile_dot_file = nil
           end
         end
 
-        # execute startup script .morpheus_profile  unless --noprofile is passed
+        # execute startup script .mtncloud_profile  unless --noprofile is passed
         # todo: this should happen in initialize..
         noprofile = false
         if args.find {|it| it == '--noprofile' }
@@ -445,7 +445,7 @@ module Morpheus
           end
         end
 
-        # execute startup script .morpheus_profile  unless --noprofile is passed
+        # execute startup script .mtncloud_profile  unless --noprofile is passed
         # todo: this should happen in initialize..
         @execute_mode = false
         @execute_mode_command = nil

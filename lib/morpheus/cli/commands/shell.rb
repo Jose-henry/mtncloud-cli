@@ -56,7 +56,7 @@ class Morpheus::Cli::Shell
   def recalculate_prompt()
     # custom prompts.. this is overkill and perhaps a silly thing..
     # Example usage:
-    # MORPHEUS_PS1="[%remote] %cyan %username morph> " morpheus shell --debug
+    # MTNCLOUD_PS1="[%remote] %cyan %username morph> " morpheus shell --debug
     #@prompt = Morpheus::Terminal.instance.prompt.to_s #.dup
     @prompt = my_terminal.prompt
 
@@ -127,7 +127,7 @@ class Morpheus::Cli::Shell
         @execute_mode = true
         @execute_mode_command = val
       end
-      opts.on('--norc','--norc', "Do not read and execute the personal initialization script .morpheusrc") do
+      opts.on('--norc','--norc', "Do not read and execute the personal initialization script .mtncloudrc") do
         @norc = true
       end
       opts.on('-I','--insecure', "Allow for insecure HTTPS communication i.e. bad SSL certificate") do |val|
@@ -171,10 +171,10 @@ class Morpheus::Cli::Shell
       @original_home_directory ||= @previous_home_directory
       
       #@norc = true # perhaps?
-      # instead of using TMPDIR, create tmp shell directory inside $MORPHEUS_CLI_HOME/tmp
+      # instead of using TMPDIR, create tmp shell directory inside $MTNCLOUD_CLI_HOME/tmp
       # should chown these files too..
-      #tmpdir = ENV['MORPHEUS_CLI_TMPDIR'] || ENV['TMPDIR'] || ENV['TMP']
-      tmpdir = ENV['MORPHEUS_CLI_TMPDIR']
+      #tmpdir = ENV['MTNCLOUD_CLI_TMPDIR'] || ENV['TMPDIR'] || ENV['TMP']
+      tmpdir = ENV['MTNCLOUD_CLI_TMPDIR']
       if !tmpdir
         tmpdir = File.join(@original_home_directory, "tmp")
       end
@@ -184,7 +184,7 @@ class Morpheus::Cli::Shell
       end
       # this won't not happen since we mkdir above
       if !File.exist?(tmpdir)
-        raise_command_error "Temporary directory not found. Use environment variable MORPHEUS_CLI_TMPDIR"
+        raise_command_error "Temporary directory not found. Use environment variable MTNCLOUD_CLI_TMPDIR"
       end
       # change to a temporary home directory
       @temporary_home_directory = File.join(tmpdir, "tmpshell-#{rand().to_s[2..7]}")
@@ -210,18 +210,18 @@ class Morpheus::Cli::Shell
         # keep remotes and credentials and activity or history
         # this is done just by copying configuration files to the tmp home dir
         # 
-        # should use Morpheus::Cli::DotFile.morpheus_profile_filename
-        # and # should use Morpheus::Cli::DotFile.morpheus_profile_filename
+        # should use Morpheus::Cli::DotFile.mtncloud_profile_filename
+        # and # should use Morpheus::Cli::DotFile.mtncloud_profile_filename
         # this already got run though.. this temporary mode should work for any terminal command,
         # not just in shell
-        # .morpheus_profile has aliases
+        # .mtncloud_profile has aliases
         # this has already been loaded, probably should reload it...
-        if File.exist?(File.join(@previous_home_directory, ".morpheus_profile"))
-          FileUtils.cp(File.join(@previous_home_directory, ".morpheus_profile"), File.join(@temporary_home_directory, ".morpheus_profile"))
+        if File.exist?(File.join(@previous_home_directory, ".mtncloud_profile"))
+          FileUtils.cp(File.join(@previous_home_directory, ".mtncloud_profile"), File.join(@temporary_home_directory, ".mtncloud_profile"))
         end
         if @norc != true
-          if File.exist?(File.join(@previous_home_directory, ".morpheusrc"))
-            FileUtils.cp(File.join(@previous_home_directory, ".morpheusrc"), File.join(@temporary_home_directory, ".morpheusrc"))
+          if File.exist?(File.join(@previous_home_directory, ".mtncloudrc"))
+            FileUtils.cp(File.join(@previous_home_directory, ".mtncloudrc"), File.join(@temporary_home_directory, ".mtncloudrc"))
           end
         end
         if File.exist?(File.join(@previous_home_directory, "appliances"))
@@ -265,9 +265,9 @@ class Morpheus::Cli::Shell
 
     # execute startup script
     if !@norc
-      if File.exist?(Morpheus::Cli::DotFile.morpheusrc_filename)
-        @history_logger.info("load source #{Morpheus::Cli::DotFile.morpheusrc_filename}") if @history_logger
-        Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheusrc_filename).execute()
+      if File.exist?(Morpheus::Cli::DotFile.mtncloudrc_filename)
+        @history_logger.info("load source #{Morpheus::Cli::DotFile.mtncloudrc_filename}") if @history_logger
+        Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloudrc_filename).execute()
       end
     end
 
@@ -397,11 +397,11 @@ class Morpheus::Cli::Shell
         # reload code
         Morpheus::Cli.reload!
         # execute startup scripts
-        if File.exist?(Morpheus::Cli::DotFile.morpheus_profile_filename)
-          Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheus_profile_filename).execute()
+        if File.exist?(Morpheus::Cli::DotFile.mtncloud_profile_filename)
+          Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloud_profile_filename).execute()
         end
-        if File.exist?(Morpheus::Cli::DotFile.morpheusrc_filename)
-          Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheusrc_filename).execute()
+        if File.exist?(Morpheus::Cli::DotFile.mtncloudrc_filename)
+          Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloudrc_filename).execute()
         end
         # recalculate shell environment
         reinitialize()

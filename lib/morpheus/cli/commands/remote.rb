@@ -1058,7 +1058,7 @@ The command `remote current` will return the current remote information.
 Instead of using an active remote, the -r option can be specified with each command.
 
 It is recommeneded to set a custom prompt to show the current remote name.
-For example, add the following to your .morpheusrc file:
+For example, add the following to your .mtncloudrc file:
 
   # set your shell prompt to display the current username and remote
   set-prompt "%green%username%reset@%magenta%remote %cyanmorpheus> %reset"

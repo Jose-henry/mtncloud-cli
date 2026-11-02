@@ -1,5 +1,5 @@
 # use a different default home directory when running tests
-ENV['MORPHEUS_CLI_HOME'] = ENV['TEST_CLI_HOME'] || File.join(Dir.home, ".morpheus_test") unless ENV['MORPHEUS_CLI_HOME']
+ENV['MTNCLOUD_CLI_HOME'] = ENV['TEST_CLI_HOME'] || File.join(Dir.home, ".mtncloud_test") unless ENV['MTNCLOUD_CLI_HOME']
 require 'morpheus'
 
 module MorpheusTest
@@ -30,8 +30,8 @@ module MorpheusTest
 
     # use a different default home directory when running tests
     # load settings from environment variables and config file
-    # unless ENV['MORPHEUS_CLI_HOME']
-    #   ENV['MORPHEUS_CLI_HOME'] = File.join(Dir.home, ".morpheus_test")
+    # unless ENV['MTNCLOUD_CLI_HOME']
+    #   ENV['MTNCLOUD_CLI_HOME'] = File.join(Dir.home, ".mtncloud_test")
     # end
     # The default name of the remote to create and use for unit testing
     DEFAULT_HOMEDIR = Morpheus::Cli.home_directory

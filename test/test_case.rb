@@ -1,6 +1,6 @@
 require 'test/unit'
 # use a different default home directory when running tests
-ENV['MORPHEUS_CLI_HOME'] = ENV['TEST_CLI_HOME'] || File.join(Dir.home, ".morpheus_test")
+ENV['MTNCLOUD_CLI_HOME'] = ENV['TEST_CLI_HOME'] || File.join(Dir.home, ".mtncloud_test")
 require 'morpheus'
 require 'test_config'
 #require 'securerandom'
@@ -167,7 +167,7 @@ module MorpheusTest
     # Creates a remote for executing unit tests
     # This requires the user to set environment variables: TEST_URL, TEST_USERNAME and TEST_PASSWORD or TEST_CONFIG
     # By default, test_config.yaml in the current directory can be used.
-    # The home directory can be specified with TEST_HOME, and the default TEST_CONFIG filename is ~/.morpheus_test
+    # The home directory can be specified with TEST_HOME, and the default TEST_CONFIG filename is ~/.mtncloud_test
     # returns the Morpheus::Terminal instance for executing CLI commands
     def establish_test_terminal()
       if Thread.current[:terminal].nil?

@@ -1,7 +1,7 @@
 require 'morpheus/cli/cli_command'
 
 # This command allows the creation of an alias
-# these aliases are stored in the $MORPHEUS_CLI_HOME/.morpheusrc
+# these aliases are stored in the $MTNCLOUD_CLI_HOME/.mtncloudrc
 # See Morpheus::Cli::DotFile
 #
 class Morpheus::Cli::AliasCommand
@@ -36,7 +36,7 @@ class Morpheus::Cli::AliasCommand
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = subcommand_usage("[name]='[command]'")
       #build_common_options(opts, options, [])
-      opts.on( '-e', '--export', "Export this alias to your .morpheus_profile for future use" ) do
+      opts.on( '-e', '--export', "Export this alias to your .mtncloud_profile for future use" ) do
         do_export = true
       end
       opts.on('-h', '--help', "Print this help" ) do
@@ -91,7 +91,7 @@ EOT
         #print "registered alias #{alias_name}", "\n"
         if do_export
           # puts "exporting alias '#{alias_name}' now..."
-          morpheus_profile = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheus_profile_filename)
+          morpheus_profile = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloud_profile_filename)
           morpheus_profile.export_aliases({(alias_name) => command_string})
         end
       rescue Morpheus::Cli::CliRegistry::BadAlias => err
@@ -115,7 +115,7 @@ EOT
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = subcommand_usage("[alias] [alias2] [alias3]")
       build_common_options(opts, options, [])
-      opts.footer = "Export an alias, saving it to your .morpheus_profile for future use"
+      opts.footer = "Export an alias, saving it to your .mtncloud_profile for future use"
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, min: 1)
@@ -130,7 +130,7 @@ EOT
     alias_names.each do |alias_name|
       alias_definitions[alias_name] = Morpheus::Cli::CliRegistry.instance.get_alias(alias_name)
     end
-    morpheus_profile = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheus_profile_filename)
+    morpheus_profile = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloud_profile_filename)
     morpheus_profile.export_aliases(alias_definitions)
     
     # Morpheus::Cli::Shell.instance.recalculate_auto_complete_commands() if Morpheus::Cli::Shell.instance
@@ -142,7 +142,7 @@ EOT
     optparse = Morpheus::Cli::OptionParser.new do|opts|
       opts.banner = subcommand_usage("[alias1] [alias2]")
       build_common_options(opts, options, [])
-      opts.footer = "This is how you remove alias definitions from your .morpheus_profile" + "\n"
+      opts.footer = "This is how you remove alias definitions from your .mtncloud_profile" + "\n"
                     "Pass one or more alias names to remove."
     end
     optparse.parse!(args)
@@ -157,7 +157,7 @@ EOT
         return false
       end
     end
-    morpheus_profile = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.morpheus_profile_filename)
+    morpheus_profile = Morpheus::Cli::DotFile.new(Morpheus::Cli::DotFile.mtncloud_profile_filename)
     morpheus_profile.remove_aliases(alias_names)
 
     # unregister them

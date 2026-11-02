@@ -31,7 +31,7 @@ The available variables are:
 #{formatted_variable_map}
 
 The default prompt is: "%cyanmorpheus> %reset"
-The value may also be set through the enviroment variable MORPHEUS_PS1.
+The value may also be set through the enviroment variable MTNCLOUD_PS1.
 EOT
     end
     optparse.parse!(args)
