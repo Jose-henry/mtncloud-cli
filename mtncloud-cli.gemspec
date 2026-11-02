@@ -31,4 +31,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "http", "5.3.1"
   spec.add_dependency "rubyzip", '~> 2.3.2'
   spec.add_dependency "test-unit"
+  # No longer part of Ruby's default libraries as of Ruby 4.0
+  spec.add_dependency "readline"
+  spec.add_dependency "logger"
+  spec.add_dependency "ostruct"
 end
