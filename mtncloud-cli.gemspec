@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "tins", '~> 1.43.0'
   spec.add_dependency "public_suffix", "4.0.7" # https://github.com/weppos/publicsuffix-ruby/blob/main/CHANGELOG.md
   spec.add_dependency "ffi", "1.15.5" # Fix for mismatched deps: https://github.com/ffi/ffi/issues/1103
-  spec.add_development_dependency "bundler", "~> 2.2"
+  spec.add_development_dependency "bundler", ">= 2.2"
   spec.add_development_dependency "rake"
   spec.add_dependency 'term-ansicolor', '~> 1.3.0'
   spec.add_dependency "rest-client", "2.0.2"
@@ -31,4 +31,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "http", "5.3.1"
   spec.add_dependency "rubyzip", '~> 2.3.2'
   spec.add_dependency "test-unit"
+  # No longer part of Ruby's default libraries as of Ruby 4.0
+  spec.add_dependency "readline"
+  spec.add_dependency "logger"
+  spec.add_dependency "ostruct"
 end

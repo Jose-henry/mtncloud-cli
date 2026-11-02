@@ -1,0 +1,56 @@
+# Runs on every pull request and every push to main.
+# main is protected: a pull request can only be merged when every job here passes.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Offline tests (Ruby ${{ matrix.ruby }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.3", "3.4", "4.0"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Run offline tests
+        run: bundle exec rake test:offline
+
+  build:
+    name: Build gem
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Build the gem
+        run: gem build mtncloud-cli.gemspec
+
+  # One check for branch protection to require, so the protection rule does not
+  # need to change when the Ruby versions above change.
+  ci-passed:
+    name: CI passed
+    if: always()
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail unless every job passed
+        run: |
+          echo "test: ${{ needs.test.result }}, build: ${{ needs.build.result }}"
+          [ "${{ needs.test.result }}" = "success" ] && [ "${{ needs.build.result }}" = "success" ]
