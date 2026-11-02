@@ -65,6 +65,13 @@ mtncloud remote add mtncloud https://console.cloud.mtn.ng
 mtncloud login
 ```
 
+When prompted for your username:
+
+- Master tenant users enter only their username, for example `neo`.
+- Sub-tenant users prefix it with their tenant's subdomain or account ID: `subdomain\username` or `accountID\username`, for example `acme\neo` or `2\neo`.
+
+Your password is not saved. The CLI saves an access token in `~/.mtncloud/credentials` and refreshes it when it expires. To log in from a script without a prompt, use `--password-file FILE` or `--token ACCESS_TOKEN`. See `mtncloud login --help`.
+
 Then run commands, for example:
 
 ```shell
@@ -152,7 +159,7 @@ The other tests run against a live appliance. Create a `test_config.yaml` in the
 
 ```yaml
 url: 'https://console.cloud.mtn.ng'
-username: (accountID/Subdomain)\testrunner
+username: (accountID/subdomain)\testrunner
 password: 'SecretPassword123$'
 ```
 
