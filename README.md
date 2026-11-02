@@ -138,7 +138,13 @@ Code layout:
 
 ### Testing
 
-Offline tests don't need an appliance. Run each file with `bundle _2.7.2_ exec ruby -Ilib -Itest <file>`. They include:
+Offline tests don't need an appliance. CI runs them on every pull request:
+
+```shell
+bundle _2.7.2_ exec rake test:offline
+```
+
+They include:
 
 - `test/branding_test.rb`, which checks every command's help for leftover non-MTN Cloud branding
 - the test files under `test/cli/` and `test/api/` that do not `require 'mtncloud_test'`
@@ -157,12 +163,16 @@ Then run all the tests:
 bundle _2.7.2_ exec rake test
 ```
 
+## Contributing
+
+Changes reach `main` only through pull requests that pass CI. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Releasing
 
 New versions are published to RubyGems by the [Publish gem](.github/workflows/release.yml) workflow when a version tag is pushed:
 
-1. Update `VERSION` in `lib/mtncloud/cli/version.rb` and push the change to `main`.
-2. Tag the release and push the tag:
+1. Update `VERSION` in `lib/mtncloud/cli/version.rb` in a pull request, and merge it once CI passes.
+2. Tag the merged commit on `main` and push the tag:
 
    ```shell
    git tag v1.0.1
