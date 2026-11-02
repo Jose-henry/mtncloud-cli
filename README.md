@@ -32,6 +32,8 @@ mtncloud version
 mcs version
 ```
 
+On Windows, a first install from a clean environment took about 17 minutes in our testing, mostly spent compiling native extensions for dependencies such as `ffi`, `llhttp-ffi` and `bigdecimal`. Your install time may differ.
+
 ### Updating
 
 Updates are not installed automatically. To update, run `git pull` in your clone, then run the `gem build` and `gem install` steps above again.
