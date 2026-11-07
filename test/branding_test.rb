@@ -15,7 +15,7 @@ require 'mtncloud'
 class BrandingTest < Test::Unit::TestCase
 
   # The names customers must not see in help text.
-  NAMES = /morpheus|\bhpe\b|openstack|octavia|neutron|keystone|barbican|amphora/i # mtncloud:allow-upstream-name mtncloud:allow-cloud-name (the names this test looks for)
+  NAMES = /morpheus|\bhpe\b|openstack|octavia|neutron|keystone|barbican|amphora/i # mtncloud:allow-upstream-name (the names this test looks for) mtncloud:allow-cloud-name (the names this test looks for)
 
   # Help lines that may still contain one of NAMES because they show a value the API
   # defines, such as a header name. Empty: no help text needs one today.

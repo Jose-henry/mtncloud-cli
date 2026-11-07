@@ -737,7 +737,7 @@ module MtnCloud
                   header_key, header_value = header_parts[0], header_parts[1..-1].join("=").strip
                 end
                 if header_parts.size() < 2
-                  raise_command_error "Invalid HEADER value '#{val}'. HEADER should contain a key and a value. eg. -H 'X-Morpheus-Lease: $MORPHEUS_LEASE_TOKEN'"
+                  raise_command_error "Invalid HEADER value '#{val}'. HEADER should contain a key and a value. eg. -H 'X-Morpheus-Lease: $MORPHEUS_LEASE_TOKEN'" # mtncloud:allow-upstream-name (API header and lease variable names)
                 end
                 options[:headers][header_key] = header_value
               end

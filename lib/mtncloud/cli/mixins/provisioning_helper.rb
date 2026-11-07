@@ -827,7 +827,7 @@ module MtnCloud::Cli::ProvisioningHelper
       end
     }
 
-    if ['openstack', 'huawei', 'opentelekom'].include?(cloud_type['zoneType']['code'])
+    if ['openstack', 'huawei', 'opentelekom'].include?(cloud_type['zoneType']['code']) # mtncloud:allow-cloud-name (API cloud type code)
       prompt_resource_pool.call
       prompt_provision_options.call
       prompt_service_plan.call

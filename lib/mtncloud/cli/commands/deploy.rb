@@ -459,7 +459,7 @@ EOT
   # +NOTE: + It is also possible to nest these properties in an "environments" map to override based on a passed environment deploy name
   #
   def load_deploy_file
-    deploy_filename = ["mtncloud.yml", "morpheus.yml"].find {|fn| File.exist?(fn) }
+    deploy_filename = ["mtncloud.yml", "morpheus.yml"].find {|fn| File.exist?(fn) } # mtncloud:allow-upstream-name (older deploy file name, still read)
     if deploy_filename.nil?
       puts "No mtncloud.yml file detected in the current directory. Nothing to do."
       return nil

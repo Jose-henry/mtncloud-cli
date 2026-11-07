@@ -258,7 +258,7 @@ class MtnCloud::Cli::JobsCommand
         else
           options[:task] = val
         end
-        options[:type] = 'morpheus.task'
+        options[:type] = 'morpheus.task' # mtncloud:allow-upstream-name (API job type codes)
       end
       opts.on('-w', '--workflow [WORKFLOW]', String, "Workflow ID or name, assigns workflow to job. This sets the job type to \"Workflow Job\".") do |val|
         if options[:task]
@@ -268,7 +268,7 @@ class MtnCloud::Cli::JobsCommand
         else
           options[:workflow] = val
         end
-        options[:type] = 'morpheus.workflow'
+        options[:type] = 'morpheus.workflow' # mtncloud:allow-upstream-name (API job type codes)
       end
       opts.on('--security-package [PACKAGE]', String, "Security Package ID or name, assigns security package to job. This sets the job type to \"Security Scan Job\".") do |val|
         if options[:workflow]
@@ -278,7 +278,7 @@ class MtnCloud::Cli::JobsCommand
         else
           options[:security_package] = val
         end
-        options[:type] = 'morpheus.securityScan'
+        options[:type] = 'morpheus.securityScan' # mtncloud:allow-upstream-name (API job type codes)
       end
       opts.on('--context-type [TYPE]', String, "Context type (instance|instance-label|server|server-label|none). Default is none") do |val|
         val = val.to_s.downcase
@@ -366,11 +366,11 @@ class MtnCloud::Cli::JobsCommand
         end
 
         # prompt task / workflow / securityPackage
-        if job_type['code'] == 'morpheus.task'
+        if job_type['code'] == 'morpheus.task' # mtncloud:allow-upstream-name (API job type codes)
           params['task'] = MtnCloud::Cli::OptionTypes.prompt([{'fieldName' => 'task.id', 'fieldLabel' => 'Task', 'type' => 'select', 'required' => true, 'optionSource' => 'tasks'}], options[:options], @api_client, {})['task']
-        elsif job_type['code'] == 'morpheus.workflow'
+        elsif job_type['code'] == 'morpheus.workflow' # mtncloud:allow-upstream-name (API job type codes)
           params['workflow'] = MtnCloud::Cli::OptionTypes.prompt([{'fieldName' => 'workflow.id', 'fieldLabel' => 'Workflow', 'type' => 'select', 'required' => true, 'optionSource' => 'operationTaskSets'}], options[:options], @api_client, {})['workflow']
-        elsif job_type['code'] == 'morpheus.securityScan'
+        elsif job_type['code'] == 'morpheus.securityScan' # mtncloud:allow-upstream-name (API job type codes)
           params['securityPackage'] = MtnCloud::Cli::OptionTypes.prompt([{'fieldName' => 'securityPackage.id', 'fieldLabel' => 'Security Package', 'type' => 'select', 'required' => true, 'optionSource' => 'securityPackages'}], options[:options], @api_client, {})['securityPackage']
         end
         # type is not even included in the payload? lol
@@ -386,7 +386,7 @@ class MtnCloud::Cli::JobsCommand
           exit 1
         end
         params['task'] = {'id' => task['id']}
-        job_type = job_types.find {|it| it['code'] == 'morpheus.task' } # || raise_command_error "Unable to find job type for 'morpheus.task'"
+        job_type = job_types.find {|it| it['code'] == 'morpheus.task' } # || raise_command_error "Unable to find job type for 'morpheus.task'" # mtncloud:allow-upstream-name (API job type codes)
       end
 
       # workflow
@@ -399,7 +399,7 @@ class MtnCloud::Cli::JobsCommand
           exit 1
         end
         params['workflow'] = {'id' => task_set['id']}
-        job_type = job_types.find {|it| it['code'] == 'morpheus.workflow' } # || raise_command_error "Unable to find job type for 'morpheus.workflow'"
+        job_type = job_types.find {|it| it['code'] == 'morpheus.workflow' } # || raise_command_error "Unable to find job type for 'morpheus.workflow'" # mtncloud:allow-upstream-name (API job type codes)
       end
       # load workflow if we havent yet
       if (params['workflow'] && params['workflow']['id']) && task_set.nil?
@@ -436,14 +436,14 @@ class MtnCloud::Cli::JobsCommand
           exit 1
         end
         params['securityPackage'] = {'id' => security_package['id']}
-        job_type = job_types.find {|it| it['code'] == 'morpheus.securityScan' } # || raise_command_error "Unable to find job type for 'morpheus.workflow'"
+        job_type = job_types.find {|it| it['code'] == 'morpheus.securityScan' } # || raise_command_error "Unable to find job type for 'morpheus.workflow'" # mtncloud:allow-upstream-name (API job type codes)
       end
 
       # load options based upon job type + task / workflow / securityPackage
       job_options = @jobs_interface.options(job_type['id'], {'taskId' => params['task'] ? params['task']['id'] : nil, 'workflowId' => params['workflow'] ? params['workflow']['id'] : nil, 'securityPackageId' => params['securityPackage'] ? params['securityPackage']['id'] : nil})
 
       # securityScan options
-      if job_type['code'] == 'morpheus.securityScan'
+      if job_type['code'] == 'morpheus.securityScan' # mtncloud:allow-upstream-name (API job type codes)
         job_type_option_types = [
           {'fieldName' => 'scanPath', 'fieldLabel' => "Scan Checklist", 'type' => 'text', 'required' => true, 'displayOrder' => 20},
           {'fieldName' => 'securityProfile', 'fieldLabel' => "Security Profile", 'type' => 'text', 'required' => true, 'displayOrder' => 21}
@@ -655,7 +655,7 @@ class MtnCloud::Cli::JobsCommand
             exit 1
           end
           params['task'] = {'id': task['id']}
-          job_type_id = load_job_type_id_by_code('morpheus.task')
+          job_type_id = load_job_type_id_by_code('morpheus.task') # mtncloud:allow-upstream-name (API job type codes)
         end
 
         if !options[:workflow].nil?
@@ -666,7 +666,7 @@ class MtnCloud::Cli::JobsCommand
             exit 1
           end
           params['workflow'] = {'id': task_set['id']}
-          job_type_id = load_job_type_id_by_code('morpheus.workflow')
+          job_type_id = load_job_type_id_by_code('morpheus.workflow') # mtncloud:allow-upstream-name (API job type codes)
         end
 
         if !options[:targets].nil? && ['instance', 'server'].include?(params['targetType'])
