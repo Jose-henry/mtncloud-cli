@@ -368,15 +368,35 @@ class LoadBalancerOperationsInterfaceTest < Test::Unit::TestCase
 
   WRITES = %w[create pool-create member-add delete pool-delete fip-attach fip-detach pool-update loadbalancer-update]
 
-  # the request never reached the console: no connection was made
-  def not_delivered_errors
-    [RestClient::Exceptions::OpenTimeout.new, Errno::ECONNREFUSED.new, SocketError.new("getaddrinfo: Name or service not known")]
+  # An error as Net::HTTP raises it while opening the connection: the same class, its message
+  # prefixed with "Failed to open TCP connection to host:port".
+  def connect_failure(error)
+    error.exception("Failed to open TCP connection to console.example.test:443 (#{error.message})")
   end
 
-  # the request may have reached the console, and the reply was lost
+  # the request never reached the console: no connection was made
+  def not_delivered_errors
+    [RestClient::Exceptions::OpenTimeout.new, Errno::ECONNREFUSED.new, connect_failure(Errno::ECONNREFUSED.new),
+     connect_failure(SocketError.new("getaddrinfo: Name or service not known")),
+     connect_failure(Errno::EHOSTUNREACH.new), connect_failure(Errno::ENETUNREACH.new)]
+  end
+
+  # the request may have reached the console, and the reply was lost. Unreachable and socket
+  # errors without the connect prefix happened on a connection already in use.
   def possibly_delivered_errors
     [RestClient::Exceptions::ReadTimeout.new, RestClient::ServerBrokeConnection.new, Errno::ECONNRESET.new,
-     RestClient::InternalServerError.new(nil, 500), RestClient::BadGateway.new(nil, 502)]
+     RestClient::InternalServerError.new(nil, 500), RestClient::BadGateway.new(nil, 502),
+     Errno::EPIPE.new, IOError.new("closed stream"),
+     Errno::EHOSTUNREACH.new, Errno::ENETUNREACH.new, SocketError.new("recvfrom: connection lost")]
+  end
+
+  # failures that are not a lost reply: the request was answered, or failed in a way a retry would
+  # not fix. They are never retried, and reach the caller as they are.
+  def never_retried_errors
+    [OpenSSL::SSL::SSLError.new("SSL_read: unexpected eof while reading"),
+     RestClient::SSLCertificateNotVerified.new("certificate verify failed"),
+     RestClient::BadRequest.new(nil, 400), RestClient::RequestTimeout.new(nil, 408), RestClient::Conflict.new(nil, 409),
+     RestClient::Exceptions::EXCEPTIONS_MAP.fetch(429).new(nil, 429)]
   end
 
   def test_a_request_that_never_reached_the_console_is_retried_for_any_action
@@ -472,6 +492,128 @@ class LoadBalancerOperationsInterfaceTest < Test::Unit::TestCase
     assert_equal "lb-1", ops(console).run("create", inputs)["result"]["loadbalancer"]["id"]
     assert_equal 2, console.executes.size
     assert_equal [request_id] * 2, (0..1).collect {|n| console.payload(n)["job"]["customOptions"]["requestId"] }
+  end
+
+  def test_unreachable_and_socket_errors_count_as_not_delivered_only_in_the_connect_step
+    [Errno::EHOSTUNREACH.new, Errno::ENETUNREACH.new, SocketError.new("getaddrinfo: Name or service not known")].each do |error|
+      # raised while opening the connection: nothing was sent, so a write is sent again
+      OPS.task_ids.clear
+      console = FakeConsole.new(executes: [connect_failure(error)], polls: [job("success", ok)])
+      assert_equal true, ops(console).run("pool-update", {"networkId" => 114})["success"], error.class.to_s
+      assert_equal 2, console.executes.size
+      # the same error on a connection already in use: the request may have arrived
+      OPS.task_ids.clear
+      console = FakeConsole.new(executes: [error], polls: [job("success", ok)])
+      err = assert_raise(MtnCloud::Cli::LoadBalancerError, error.class.to_s) { ops(console).run("pool-update", {"networkId" => 114}) }
+      assert_equal "no reply", err.details[:delivery]
+      assert_equal 1, console.executes.size
+    end
+  end
+
+  def test_failures_that_are_not_a_lost_reply_are_never_retried
+    never_retried_errors.each do |error|
+      %w[read create pool-update].each do |action|
+        OPS.task_ids.clear
+        console = FakeConsole.new(executes: [error], polls: [job("success", ok)])
+        raised = assert_raise(error.class, "#{action} after #{error.class}") { ops(console).run(action, {"networkId" => 114}) }
+        assert_same error, raised
+        assert_equal 1, console.executes.size, "#{action} after #{error.class}"
+      end
+    end
+  end
+
+  def test_a_read_that_never_gets_a_reply_stops_after_its_retries
+    console = FakeConsole.new(executes: Array.new(5) { RestClient::Exceptions::ReadTimeout.new })
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("read", {"networkId" => 114, "lbId" => "lb-1"}) }
+    assert_equal :no_answer, err.kind
+    assert_equal "no reply", err.details[:delivery]
+    assert_equal "The console did not reply to the load balancer read request. Try again.", err.message
+    assert_equal 5, console.executes.size
+    assert_equal [5, 10, 20, 40], @waits
+    assert_equal ["no reply"] * 5, err.details[:attempts].collect {|a| a[:delivery] }
+  end
+
+  # --- what earlier attempts may have done, after the retries run out ------------------
+
+  def test_a_write_that_may_have_acted_earlier_is_not_reported_as_nothing_sent
+    refused_connect = Array.new(4) { connect_failure(Errno::ECONNREFUSED.new) }
+    # attempt 1: the job ended without an answer (it may have acted); attempts 2 to 5 never arrived
+    console = FakeConsole.new(executes: [nil] + refused_connect, polls: [job("error")])
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) do
+      ops(console).run("create", {"networkId" => 114, "requestId" => OPS.new_request_id, "spec" => {"name" => "web"}})
+    end
+    assert_equal :no_answer, err.kind
+    assert_equal "The load balancer create operation could not reach the console on its last attempt. " \
+                 "An earlier attempt may have been applied. Check the load balancer before trying again.", err.message
+    assert_no_match(/nothing was sent/, err.message)
+    assert_equal true, err.details[:earlier_attempt_may_have_acted]
+    attempts = err.details[:attempts]
+    assert_equal 5, attempts.size
+    assert_equal({attempt: 1, outcome: "error", delivery: "delivered", job_execution_id: 1001, may_have_acted: true}, attempts[0])
+    assert_equal [NOT_DELIVERED_DETAIL] * 4, attempts[1..].collect {|a| a[:delivery] }
+  end
+  NOT_DELIVERED_DETAIL = "not delivered"
+
+  def test_a_write_whose_earlier_attempts_did_nothing_is_not_reported_as_maybe_applied
+    # attempt 1: the plugin answered that nothing ran; attempts 2 to 5 never arrived
+    console = FakeConsole.new(executes: [nil] + Array.new(4) { RestClient::Exceptions::OpenTimeout.new }, polls: [job("error", INPUT_TIMEOUT)])
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("pool-update", {"networkId" => 114}) }
+    assert_equal "The load balancer pool-update operation could not reach the console on its last attempt. Try again.", err.message
+    assert_equal false, err.details[:earlier_attempt_may_have_acted]
+    assert_equal false, err.details[:attempts][0][:may_have_acted]
+  end
+
+  def test_a_read_with_an_earlier_reply_lost_is_not_reported_as_nothing_sent
+    console = FakeConsole.new(executes: [RestClient::Exceptions::ReadTimeout.new] + Array.new(4) { RestClient::Exceptions::OpenTimeout.new })
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("read", {"networkId" => 114, "lbId" => "lb-1"}) }
+    assert_equal "The load balancer read operation could not reach the console on its last attempt. Try again.", err.message
+    assert_equal %w[no\ reply not\ delivered not\ delivered not\ delivered not\ delivered], err.details[:attempts].collect {|a| a[:delivery] }
+  end
+
+  def test_an_error_after_earlier_attempts_keeps_their_history
+    # attempt 1 never arrived, attempt 2's job ended without an answer, attempt 3's job is never found
+    console = FakeConsole.new(executes: [RestClient::Exceptions::OpenTimeout.new], polls: [job("error")] + Array.new(10) { not_found })
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("pool-delete", {"networkId" => 114, "poolId" => "p1"}) }
+    assert_equal :job_not_found, err.kind
+    assert_equal [false, true, true], err.details[:attempts].collect {|a| a[:may_have_acted] }
+    assert_equal %w[not\ delivered error job_not_found], err.details[:attempts].collect {|a| a[:outcome] }
+  end
+
+  # --- a stale cached task id, then another failure ------------------------------------
+
+  def test_after_a_stale_cached_task_id_an_uncertain_execute_is_not_repeated_for_a_write
+    console = FakeConsole.new(polls: [job("success", ok)])
+    ops(console).run("list", {"networkId" => 114})                                  # caches the task id
+    console.instance_variable_get(:@executes).push(not_found, RestClient::Exceptions::ReadTimeout.new)
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("pool-update", {"networkId" => 114}) }
+    assert_equal "no reply", err.details[:delivery]
+    assert_equal 2, console.task_lookups.size                                       # looked up again once
+    assert_equal 3, console.executes.size                                           # list, the stale id, one real try
+  end
+
+  def test_after_a_stale_cached_task_id_a_read_with_no_reply_is_retried
+    console = FakeConsole.new(polls: [job("success", ok), job("success", ok)])
+    ops(console).run("list", {"networkId" => 114})
+    console.instance_variable_get(:@executes).push(not_found, RestClient::Exceptions::ReadTimeout.new)
+    assert_equal true, ops(console).run("read", {"networkId" => 114, "lbId" => "lb-1"})["success"]
+    assert_equal 4, console.executes.size                                           # list, stale, no reply, success
+  end
+
+  def test_after_a_stale_cached_task_id_a_write_that_never_arrived_is_retried
+    console = FakeConsole.new(polls: [job("success", ok), job("success", ok)])
+    ops(console).run("list", {"networkId" => 114})
+    console.instance_variable_get(:@executes).push(not_found, connect_failure(Errno::ECONNREFUSED.new))
+    assert_equal true, ops(console).run("pool-update", {"networkId" => 114})["success"]
+    assert_equal 4, console.executes.size                                           # list, stale, refused connect, success
+  end
+
+  def test_a_whole_load_balancer_create_is_not_repeated_after_a_socket_error_on_a_used_connection
+    console = FakeConsole.new(executes: [SocketError.new("recvfrom: connection lost")], polls: [job("success", ok)])
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) do
+      ops(console).run("create", {"networkId" => 114, "requestId" => OPS.new_request_id, "spec" => {"name" => "web"}})
+    end
+    assert_equal "no reply", err.details[:delivery]
+    assert_equal 1, console.executes.size
   end
 
   # --- refusals: what was taken back, what was left -----------------------------------

@@ -44,6 +44,9 @@ class MtnCloud::LoadBalancerOperationsInterface < MtnCloud::APIClient
   # (nothing ran), or it may have reached it and the reply was lost (a job may be running).
   NOT_DELIVERED = 'not delivered'
   NO_REPLY = 'no reply'
+  # How Net::HTTP's connect step starts the message of an error it raises while opening the
+  # connection, before anything is sent.
+  CONNECT_FAILURE = 'Failed to open TCP connection'
 
   # Retries of a run that did nothing, and the wait before each. Each retry is a new job execution.
   RETRY_WAITS = [5, 10, 20, 40]
@@ -80,15 +83,28 @@ class MtnCloud::LoadBalancerOperationsInterface < MtnCloud::APIClient
     write = !READ_ACTIONS.include?(action)
     deadline = now + time_limit(write ? :write_total : :read_total)
     attempt = 0
-    loop do
-      status, envelope, job_id = run_once(action, custom_options, write, deadline)
-      if retry?(action, status, envelope) && attempt < RETRY_WAITS.size && now + RETRY_WAITS[attempt] < deadline
-        log("load balancer #{action} did nothing (#{retry_reason(status, envelope)}), retrying, attempt #{attempt + 2}")
-        sleep_for(RETRY_WAITS[attempt])
-        attempt += 1
-        next
+    # what each attempt did, so the final error can say what earlier attempts may have done
+    attempts = []
+    begin
+      loop do
+        status, envelope, job_id = run_once(action, custom_options, write, deadline)
+        attempts << attempt_record(attempts.size + 1, status, envelope, job_id)
+        if retry?(action, status, envelope) && attempt < RETRY_WAITS.size && now + RETRY_WAITS[attempt] < deadline
+          log("load balancer #{action} did nothing (#{retry_reason(status, envelope)}), retrying, attempt #{attempt + 2}")
+          sleep_for(RETRY_WAITS[attempt])
+          attempt += 1
+          next
+        end
+        return answer(action, status, envelope, job_id, write, attempts)
       end
-      return answer(action, status, envelope, job_id, write)
+    rescue MtnCloud::Cli::LoadBalancerError => e
+      # an attempt that failed before it was recorded (its job execution was never found, say)
+      if attempts.size < attempt + 1
+        attempts << {attempt: attempt + 1, outcome: e.kind.to_s, job_execution_id: e.details[:job_execution_id],
+                     may_have_acted: e.kind == :job_not_found}
+      end
+      e.details[:attempts] = attempts if attempts.size > 1
+      raise
     end
   end
 
@@ -150,10 +166,20 @@ class MtnCloud::LoadBalancerOperationsInterface < MtnCloud::APIClient
       raise access_error(action, {http_status: e.http_code, response: response_text(e)})
     rescue RestClient::Unauthorized
       raise
-    rescue RestClient::Exceptions::OpenTimeout, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH, SocketError => e
-      # no connection was made, so nothing reached the console
+    rescue RestClient::Exceptions::OpenTimeout, Errno::ECONNREFUSED => e
+      # no connection was made, so nothing reached the console: rest-client raises OpenTimeout
+      # only before the connection is established, and a connection is only refused on connect
       log("load balancer #{action}: the console could not be reached, nothing was sent (#{e.message})")
       return NOT_DELIVERED
+    rescue Errno::EHOSTUNREACH, Errno::ENETUNREACH, SocketError => e
+      # these also happen on a connection already in use, after the request was sent. Only
+      # Net::HTTP's connect step raises them with this prefix, and then nothing was sent.
+      if e.message.start_with?(CONNECT_FAILURE)
+        log("load balancer #{action}: the console could not be reached, nothing was sent (#{e.message})")
+        return NOT_DELIVERED
+      end
+      log("load balancer #{action}: the connection to the console failed after the request was sent (#{e.message})")
+      return NO_REPLY
     rescue RestClient::Exception => e
       raise unless e.http_code.to_i >= 500 || e.is_a?(RestClient::Exceptions::Timeout) || e.is_a?(RestClient::ServerBrokeConnection)
       log("load balancer #{action}: the console did not reply to the execute request (#{e.message})")
@@ -267,8 +293,17 @@ class MtnCloud::LoadBalancerOperationsInterface < MtnCloud::APIClient
     READ_ACTIONS.include?(action) || REPEATABLE_WRITES.include?(action)
   end
 
-  # The answer, or the error for a run that failed.
-  def answer(action, status, envelope, job_id, write)
+  # What one attempt did. may_have_acted: its job may have run (no reply, timed out, or the job
+  # ended without an answer). A request that never arrived, or an answer saying nothing was done,
+  # did not act.
+  def attempt_record(number, status, envelope, job_id)
+    delivery = status == NOT_DELIVERED ? NOT_DELIVERED : (status == NO_REPLY ? NO_REPLY : "delivered")
+    {attempt: number, outcome: (envelope ? (envelope["success"] == true ? "success" : "refused") : status),
+     delivery: delivery, job_execution_id: job_id, may_have_acted: envelope.nil? && status != NOT_DELIVERED}
+  end
+
+  # The answer, or the error for a run that failed. attempts is what every attempt did, this one last.
+  def answer(action, status, envelope, job_id, write, attempts = [])
     if envelope.nil?
       may_have_acted = write ? " It may have been applied: check the load balancer before trying again." : " Try again."
       if status == TIMED_OUT
@@ -277,9 +312,18 @@ class MtnCloud::LoadBalancerOperationsInterface < MtnCloud::APIClient
           kind: :timed_out, action: action, details: {job_execution_id: job_id, job_status: status})
       end
       if status == NOT_DELIVERED
-        raise MtnCloud::Cli::LoadBalancerError.new(
-          "The load balancer #{action} operation could not reach the console, so nothing was sent. Try again.",
-          kind: :no_answer, action: action, details: {delivery: status})
+        earlier = attempts[0...-1]
+        earlier_acted = earlier.any? {|a| a[:may_have_acted] }
+        msg = if write && earlier_acted
+          "The load balancer #{action} operation could not reach the console on its last attempt. " \
+          "An earlier attempt may have been applied. Check the load balancer before trying again."
+        elsif earlier.any? {|a| a[:delivery] != NOT_DELIVERED }
+          "The load balancer #{action} operation could not reach the console on its last attempt. Try again."
+        else
+          "The load balancer #{action} operation could not reach the console, so nothing was sent. Try again."
+        end
+        raise MtnCloud::Cli::LoadBalancerError.new(msg, kind: :no_answer, action: action,
+          details: {delivery: status, earlier_attempt_may_have_acted: earlier_acted})
       end
       if status == NO_REPLY
         raise MtnCloud::Cli::LoadBalancerError.new(
