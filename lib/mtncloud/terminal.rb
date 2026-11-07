@@ -476,7 +476,7 @@ module MtnCloud
             @stderr.puts "#{@angry_prompt}[command] argument is required."
             #@stderr.puts "No command given, here's some help:"
             @stderr.print usage
-            return 1, nil # CommandError.new("morpheus requires a command")
+            return 1, nil # CommandError.new("mtncloud requires a command")
           end
           
           cmd_name, *cmd_args = args

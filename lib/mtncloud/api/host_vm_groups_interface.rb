@@ -4,7 +4,7 @@ require 'mtncloud/api/api_client'
 #
 # Only show/update/delete are exposed at this path; list/create/form-options
 # stay scoped under /clusters/{id}/host-vm-groups and /zones/{id}/host-vm-groups.
-# See morpheus-ui ApiV1UrlMappings (rc-9.1.0).
+# See the platform UI's ApiV1UrlMappings (rc-9.1.0).
 class MtnCloud::HostVmGroupsInterface < MtnCloud::APIClient
 
   def base_path

@@ -166,7 +166,7 @@ EOT
           if hubmode == 'login'
 
             # print cyan
-            # puts "MORPHEUS HUB #{hub_settings['url']}"
+            # puts "LICENSE HUB #{hub_settings['url']}"
             # puts "The Command Center for DevOps"
             # print reset
 

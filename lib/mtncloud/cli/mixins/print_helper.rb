@@ -340,7 +340,7 @@ module MtnCloud::Cli::PrintHelper
   # @param options [Hash] common cli options
   # formats command like:
   #
-  # curl -XPOST "https://api.gomorpheus.com/api/cypher" \
+  # curl -XPOST "https://console.cloud.mtn.ng/api/cypher" \
   #   -H "Authorization: BEARER ******************" \
   #   -H "Content-Type: application/json" \
   #   -d '{

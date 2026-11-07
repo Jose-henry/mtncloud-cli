@@ -315,7 +315,7 @@ class MtnCloud::Cli::StorageProvidersCommand
             {'fieldName' => 'bucketName', 'fieldLabel' => 'Bucket Name', 'type' => 'hidden', 'required' => true, 'description' => '', 'defaultValue' => '/'}
           ]
         elsif storage_provider_type_code == 'openstack'
-          # print_h2 "Openstack Swift Options"
+          # print_h2 "Swift-compatible Object Storage Options"
           provider_type_option_types = [
             {'fieldContext' => 'config', 'fieldName' => 'username', 'fieldLabel' => 'Username', 'type' => 'text', 'required' => true, 'description' => ''},
             {'fieldContext' => 'config', 'fieldName' => 'apiKey', 'fieldLabel' => 'API Key', 'type' => 'password', 'required' => true, 'description' => ''},

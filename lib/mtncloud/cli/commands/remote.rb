@@ -1331,7 +1331,7 @@ EOT
     include Term::ANSIColor
 
     # for caching the the contents of YAML file $home/appliances
-    # it is structured like :appliance_name => {:host => "https://api.gomorpheus.com", :active => true}
+    # it is structured like :appliance_name => {:host => "https://console.cloud.mtn.ng", :active => true}
     # not named @@appliances to avoid confusion with the instance variable . This is also a command class...
     @@appliance_config = nil 
 
@@ -1499,7 +1499,7 @@ EOT
         return {}
         # return {
         #   mtncloud: {
-        #     host: 'https://api.gomorpheus.com',
+        #     host: 'https://console.cloud.mtn.ng',
         #     active: true
         #   }
         # }

@@ -3,7 +3,7 @@ require 'mtncloud/api/api_client'
 # Top-level flat-by-ID affinity group endpoints (MORPH-14136).
 #
 # Only show/update/delete are exposed at this path. Per
-# morpheus-ui ApiV1UrlMappings (rc-9.1.0):
+# the platform UI's ApiV1UrlMappings (rc-9.1.0):
 #   "Flat-by-ID endpoints for mtncloud-cli -- list/create stay scoped under
 #    /clusters/{id}/... and /zones/{id}/...."
 # For list/create/form-options use MtnCloud::ClustersInterface or

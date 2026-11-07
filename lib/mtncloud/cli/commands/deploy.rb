@@ -445,7 +445,7 @@ EOT
   protected
 
   # Loads a mtncloud.yml file from within the current working directory.
-  # A morpheus.yml file is still read when there is no mtncloud.yml, so existing projects keep working.
+  # The older deploy file name is still read when there is no mtncloud.yml, so existing projects keep working.
   # This file contains information necessary to perform a deployment via the cli.
   #
   # === Example File Attributes

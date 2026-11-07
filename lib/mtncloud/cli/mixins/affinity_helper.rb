@@ -3,7 +3,7 @@ require 'mtncloud/cli/mixins/print_helper'
 # Mixin for MtnCloud::Cli command classes
 # Single source of truth for affinity group / host-vm group enums and formatting.
 #
-# Keep this in sync with morpheus-ui and the OpenAPI shared affinity-type schema.
+# Keep this in sync with the platform UI and the OpenAPI shared affinity-type schema.
 # Defining these values here (rather than inline in each command) prevents the
 # definitions from drifting apart between cluster-scoped, cloud-scoped and
 # top-level flat-by-ID commands.
@@ -23,8 +23,8 @@ module MtnCloud::Cli::AffinityHelper
     {'name' => 'Keep Separate (Must)',   'value' => 'KEEP_SEPARATE_MUST'},
   ].freeze
 
-  # Group types, per HostVmGroup.HostVmGroupType (morpheus-ui rc-9.1.0,
-  # morpheus-domains/grails-app/domain/com/morpheus/HostVmGroup.groovy).
+  # Group types, per HostVmGroup.HostVmGroupType (the platform UI rc-9.1.0,
+  # the platform's HostVmGroup domain class).
   # SITE_GROUP exists in the enum but is not valid on either side of a combined
   # VM-to-Host rule -- AffinityGroupService.applyRuleShapeFields rejects it.
   HOST_VM_GROUP_TYPES = [
