@@ -494,6 +494,10 @@ class MtnCloud::APIClient
     MtnCloud::LoadBalancerTypesInterface.new(common_interface_options).setopts(@options)
   end
 
+  def load_balancer_operations
+    MtnCloud::LoadBalancerOperationsInterface.new(common_interface_options).setopts(@options)
+  end
+
   def load_balancer_virtual_servers
     MtnCloud::LoadBalancerVirtualServersInterface.new(common_interface_options).setopts(@options)
   end
