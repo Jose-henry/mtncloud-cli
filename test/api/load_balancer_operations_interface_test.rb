@@ -302,7 +302,7 @@ class LoadBalancerOperationsInterfaceTest < Test::Unit::TestCase
   end
 
   def test_a_run_with_no_answer_is_retried_only_when_repeating_it_is_safe
-    {"read" => 2, "list" => 2, "pool-create" => 2, "fip-attach" => 2, "pool-delete" => 2, "delete" => 2,
+    {"read" => 2, "list" => 2, "create" => 2, "pool-create" => 2, "fip-attach" => 2, "pool-delete" => 2, "delete" => 2,
      "pool-update" => 1, "loadbalancer-update" => 1, "member-update" => 1, "l7policy-update" => 1}.each do |action, executes|
       OPS.task_ids.clear
       console = FakeConsole.new(polls: [job("error"), job("success", ok)])
@@ -362,6 +362,116 @@ class LoadBalancerOperationsInterfaceTest < Test::Unit::TestCase
     assert_raise(MtnCloud::Cli::LoadBalancerError) { o.run("list", {"networkId" => 114}) }
     assert_operator console.executes.size, :<, 5
     assert_operator @time, :<, 20
+  end
+
+  # --- execute failures and timed-out attempts: never a second write while the first may run
+
+  WRITES = %w[create pool-create member-add delete pool-delete fip-attach fip-detach pool-update loadbalancer-update]
+
+  # the request never reached the console: no connection was made
+  def not_delivered_errors
+    [RestClient::Exceptions::OpenTimeout.new, Errno::ECONNREFUSED.new, SocketError.new("getaddrinfo: Name or service not known")]
+  end
+
+  # the request may have reached the console, and the reply was lost
+  def possibly_delivered_errors
+    [RestClient::Exceptions::ReadTimeout.new, RestClient::ServerBrokeConnection.new, Errno::ECONNRESET.new,
+     RestClient::InternalServerError.new(nil, 500), RestClient::BadGateway.new(nil, 502)]
+  end
+
+  def test_a_request_that_never_reached_the_console_is_retried_for_any_action
+    not_delivered_errors.each do |error|
+      (["read"] + WRITES).each do |action|
+        OPS.task_ids.clear
+        console = FakeConsole.new(executes: [error], polls: [job("success", ok)])
+        assert_equal true, ops(console).run(action, {"networkId" => 114})["success"], "#{action} after #{error.class}"
+        assert_equal 2, console.executes.size, "#{action} after #{error.class}"
+      end
+    end
+  end
+
+  def test_a_request_that_never_reached_the_console_says_nothing_was_sent
+    console = FakeConsole.new(executes: Array.new(5) { Errno::ECONNREFUSED.new })
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("pool-update", {"networkId" => 114}) }
+    assert_equal :no_answer, err.kind
+    assert_equal "not delivered", err.details[:delivery]
+    assert_match(/nothing was sent/, err.message)
+    assert_equal 5, console.executes.size
+  end
+
+  def test_a_request_that_may_have_reached_the_console_is_retried_only_for_reads
+    possibly_delivered_errors.each do |error|
+      OPS.task_ids.clear
+      console = FakeConsole.new(executes: [error], polls: [job("success", ok)])
+      assert_equal true, ops(console).run("read", {"networkId" => 114, "lbId" => "lb-1"})["success"], "read after #{error.class}"
+      assert_equal 2, console.executes.size
+      WRITES.each do |action|
+        OPS.task_ids.clear
+        console = FakeConsole.new(executes: [error], polls: [job("success", ok)])
+        err = assert_raise(MtnCloud::Cli::LoadBalancerError, action) { ops(console).run(action, {"networkId" => 114}) }
+        assert_equal :no_answer, err.kind
+        assert_equal "no reply", err.details[:delivery]
+        assert_match(/may have been applied: check the load balancer before trying again/, err.message)
+        assert_equal 1, console.executes.size, "#{action} after #{error.class} must not be executed twice"
+      end
+    end
+  end
+
+  def test_a_timed_out_attempt_is_retried_only_for_reads
+    # an attempt of 20 s polls 6 times (0.5, 1, 2, 4, 8, then the 4.5 s left)
+    console = FakeConsole.new(polls: Array.new(6) { job("running") } + [job("success", ok)])
+    o = ops(console)
+    o.time_limits = {read_attempt: 20, read_total: 300}
+    assert_equal true, o.run("read", {"networkId" => 114, "lbId" => "lb-1"})["success"]
+    assert_equal 2, console.executes.size
+    WRITES.each do |action|
+      OPS.task_ids.clear
+      console = FakeConsole.new(polls: Array.new(50) { job("running") })
+      o = ops(console)
+      o.time_limits = {write_attempt: 20, write_total: 900}
+      err = assert_raise(MtnCloud::Cli::LoadBalancerError, action) { o.run(action, {"networkId" => 114}) }
+      assert_equal :timed_out, err.kind
+      assert_equal 1001, err.details[:job_execution_id]
+      assert_match(/job execution 1001/, err.message)
+      assert_match(/check the load balancer before trying again/, err.message)
+      assert_equal 1, console.executes.size, "#{action} must not be executed again while its job may run"
+    end
+  end
+
+  def test_a_whole_load_balancer_create_is_never_executed_twice_while_the_first_may_run
+    request_id = OPS.new_request_id
+    inputs = {"networkId" => 114, "requestId" => request_id,
+              "spec" => {"name" => "web", "vipSubnetId" => "s1", "listeners" => [], "pools" => []}}
+    created = ok({"loadbalancer" => {"id" => "lb-1", "provisioning_status" => "ACTIVE"}, "existing" => true})
+
+    # the execute request may have reached the console
+    console = FakeConsole.new(executes: [RestClient::Exceptions::ReadTimeout.new], polls: [job("success", created)])
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("create", inputs) }
+    assert_equal :no_answer, err.kind
+    assert_equal 1, console.executes.size
+
+    # the attempt ran out of time while its job may still run
+    OPS.task_ids.clear
+    console = FakeConsole.new(polls: Array.new(50) { job("running") } + [job("success", created)])
+    o = ops(console)
+    o.time_limits = {write_attempt: 60, write_total: 900}
+    err = assert_raise(MtnCloud::Cli::LoadBalancerError) { o.run("create", inputs) }
+    assert_equal :timed_out, err.kind
+    assert_equal 1, console.executes.size
+
+    # the request never reached the console: nothing ran, so it is sent again with the same requestId
+    OPS.task_ids.clear
+    console = FakeConsole.new(executes: [RestClient::Exceptions::OpenTimeout.new], polls: [job("success", created)])
+    ops(console).run("create", inputs)
+    assert_equal 2, console.executes.size
+    assert_equal [request_id] * 2, (0..1).collect {|n| console.payload(n)["job"]["customOptions"]["requestId"] }
+
+    # the job ended without an answer: the first execution has finished, so a retry cannot overlap it
+    OPS.task_ids.clear
+    console = FakeConsole.new(polls: [job("error"), job("success", created)])
+    assert_equal "lb-1", ops(console).run("create", inputs)["result"]["loadbalancer"]["id"]
+    assert_equal 2, console.executes.size
+    assert_equal [request_id] * 2, (0..1).collect {|n| console.payload(n)["job"]["customOptions"]["requestId"] }
   end
 
   # --- refusals: what was taken back, what was left -----------------------------------
