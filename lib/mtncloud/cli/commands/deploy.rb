@@ -30,7 +30,6 @@ If is a file type deployment, all the discovered files are uploaded to the new d
 Finally, it deploys the new version to the instance using any specified config options.
 
 The mtncloud.yml should be located in the working directory.
-A morpheus.yml file is used instead if there is no mtncloud.yml.
 This YAML file contains the settings that specify how to execute the deployment.
 
 File Settings

@@ -1232,7 +1232,7 @@ EOT
 Setup a fresh remote appliance, initializing it.
 First, this checks if setup is available, and returns an error if not.
 Then it prompts to create the master tenant and admin user.
-If Morpheus Hub registration is enabled, you may login or register to retrieve a license key,
+If License Hub registration is enabled, you may login or register to retrieve a license key,
 or you can pass `--hubmode skip`.
 This is only available on a new, freshly installed remote appliance,
 and it may only be executed successfully one time.

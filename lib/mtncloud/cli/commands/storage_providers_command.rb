@@ -1269,7 +1269,7 @@ class MtnCloud::Cli::StorageProvidersCommand
       {'name' => 'CIFS', 'value' => 'cifs'},
       {'name' => 'Local Storage', 'value' => 'local'},
       {'name' => 'NFSv3', 'value' => 'nfs'},
-      {'name' => 'Openstack Swift', 'value' => 'openstack'},
+      {'name' => 'Swift-compatible object storage', 'value' => 'openstack'},
       {'name' => 'Rackspace CDN', 'value' => 'rackspace'},
       {'name' => 'S3', 'value' => 's3'},
     ]

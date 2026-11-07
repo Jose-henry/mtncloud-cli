@@ -40,7 +40,7 @@ class MtnCloud::Cli::Hub
     json_response = @hub_interface.get(params)
     # render response
     render_response(json_response, options) do
-      print_h1 "Morpheus Hub Config", [], options
+      print_h1 "Hub Config", [], options
       print_description_list({
         "Hub URL" => lambda {|it| it['hub']['url'] },
         "Appliance ID" => lambda {|it| it['hub']['applianceUniqueId'] },
@@ -75,7 +75,7 @@ class MtnCloud::Cli::Hub
     # render response
     render_response(json_response, options) do
       usage_data = json_response['data']
-      print_h1 "Morpheus Hub Usage", [], options
+      print_h1 "Hub Usage", [], options
       print_hub_usage_data_details(json_response, options)
       print reset,"\n"
     end

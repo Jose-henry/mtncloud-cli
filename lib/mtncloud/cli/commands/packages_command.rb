@@ -306,7 +306,7 @@ class MtnCloud::Cli::PackagesCommand
       # opts.on('--package-version VALUE', String, "Version number for package.") do |val|
       #   params['version'] = val
       # end
-      opts.on('--organization NAME', String, "Package Organization.  Default is morpheus.") do |val|
+      opts.on('--organization NAME', String, "Package Organization.") do |val|
         params['organization'] = val
       end
       opts.on( '-f', '--force', "Force Install." ) do

@@ -793,7 +793,7 @@ EOT
       opts.footer = <<-EOT
 Attach a floating IP to a container.
 [id] is required. This is the id of a container.
-Only the following cloud types support this command: OpenStack, Huawei and OpenTelekom
+Only some cloud types support this command, including MTN Cloud.
 EOT
     end
     optparse.parse!(args)
@@ -855,7 +855,7 @@ EOT
       opts.footer = <<-EOT
 Detach a floating IP from a container.
 [id] is required. This is the id of a container.
-Only the following cloud types support this command: OpenStack, Huawei and OpenTelekom
+Only some cloud types support this command, including MTN Cloud.
 EOT
     end
     optparse.parse!(args)
