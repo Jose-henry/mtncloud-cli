@@ -16,8 +16,11 @@ Ruby gem `mtncloud-cli`. It installs the `mtncloud` command and its alias `mcs`.
 
 ## Naming
 
-- Customer-facing text says MTN Cloud, and commands are shown as `mtncloud`.
-- Keep values the appliance or its API defines unchanged, even though they contain "Morpheus": the `X-Morpheus-Lease` and `X-Morpheus-Token` headers, `MORPHEUS_LEASE_TOKEN`, the `morpheus.yml` fallback, job type codes such as `morpheus.task`, the `morpheus` blueprint and backup provider codes, and Morpheus Hub. `test/branding_test.rb` lists the approved ones.
+- Customer-facing text says MTN Cloud, and commands are shown as `mtncloud`. Networks are MTN Networks and routers MTN Routers.
+- The upstream product's name ("Morpheus", "HPE") and the cloud software's names ("OpenStack", "Octavia", ...) appear nowhere in shipped files: not in text, help, comments or tests. The only exceptions are `LICENSE.txt` (the MIT notice must stay) and this file.
+- Keep values the appliance or its API defines unchanged even when they contain those names: the `X-Morpheus-Lease` and `X-Morpheus-Token` headers, `MORPHEUS_LEASE_TOKEN`, the `morpheus.yml` fallback, job type codes such as `morpheus.task`, the `morpheus` blueprint and backup provider codes, cloud and option-source codes such as `openstack`. End each such line with `# mtncloud:allow-upstream-name (reason)` or `# mtncloud:allow-cloud-name (reason)`.
+- Customers see the platform's own blueprint type as "MTN Cloud" (`-t mtncloud`) and the license registration service as "License Hub".
+- `test/naming_test.rb` enforces this on every file and `test/branding_test.rb` on every command's help.
 
 ## Releases
 

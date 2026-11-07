@@ -30,7 +30,6 @@ If is a file type deployment, all the discovered files are uploaded to the new d
 Finally, it deploys the new version to the instance using any specified config options.
 
 The mtncloud.yml should be located in the working directory.
-A morpheus.yml file is used instead if there is no mtncloud.yml.
 This YAML file contains the settings that specify how to execute the deployment.
 
 File Settings
@@ -446,7 +445,7 @@ EOT
   protected
 
   # Loads a mtncloud.yml file from within the current working directory.
-  # A morpheus.yml file is still read when there is no mtncloud.yml, so existing projects keep working.
+  # The older deploy file name is still read when there is no mtncloud.yml, so existing projects keep working.
   # This file contains information necessary to perform a deployment via the cli.
   #
   # === Example File Attributes
@@ -460,7 +459,7 @@ EOT
   # +NOTE: + It is also possible to nest these properties in an "environments" map to override based on a passed environment deploy name
   #
   def load_deploy_file
-    deploy_filename = ["mtncloud.yml", "morpheus.yml"].find {|fn| File.exist?(fn) }
+    deploy_filename = ["mtncloud.yml", "morpheus.yml"].find {|fn| File.exist?(fn) } # mtncloud:allow-upstream-name (older deploy file name, still read)
     if deploy_filename.nil?
       puts "No mtncloud.yml file detected in the current directory. Nothing to do."
       return nil

@@ -294,7 +294,7 @@ class MtnCloud::Cli::Apps
         blueprint_id = v_prompt['blueprint']
         
         if blueprint_id.to_s.empty? || blueprint_id == 'existing'
-          blueprint = {"id" => "existing", "name" => "Existing Instances", "value" => "existing", "type" => "morpheus"}
+          blueprint = {"id" => "existing", "name" => "Existing Instances", "value" => "existing", "type" => "morpheus"} # mtncloud:allow-upstream-name (API blueprint type code)
         else
           blueprint = find_blueprint_by_name_or_id(blueprint_id)
           if blueprint.nil?
@@ -378,8 +378,8 @@ class MtnCloud::Cli::Apps
               print cyan, "Configuring app with blueprint id: #{blueprint['id']}, name: #{blueprint['name']}, type: #{blueprint['type']}\n"
             end
             
-            blueprint_type = blueprint['type'] || 'morpheus'
-            if blueprint_type == 'morpheus'
+            blueprint_type = blueprint['type'] || 'morpheus' # mtncloud:allow-upstream-name (API blueprint type code)
+            if blueprint_type == 'morpheus' # mtncloud:allow-upstream-name (API blueprint type code)
               # configure each tier and instance in the blueprint
               # tiers are a map, heh, sort them by tierIndex
               tiers = blueprint["config"]["tiers"] ? blueprint["config"]["tiers"] : (blueprint["tiers"] || {})
@@ -2472,7 +2472,7 @@ EOT
       @available_blueprints = results['data'].collect {|it|
         {"id" => it["value"], "name" => it["name"], "value" => it["value"]}
       }
-      default_option = {"id" => "existing", "name" => "Existing Instances", "value" => "existing", "type" => "morpheus"}
+      default_option = {"id" => "existing", "name" => "Existing Instances", "value" => "existing", "type" => "morpheus"} # mtncloud:allow-upstream-name (API blueprint type code)
       @available_blueprints.unshift(default_option)
     end
     #puts "get_available_blueprints() rtn: #{@available_blueprints.inspect}"

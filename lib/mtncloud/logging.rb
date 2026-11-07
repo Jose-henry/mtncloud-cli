@@ -9,7 +9,7 @@ module MtnCloud::Logging
   DEFAULT_LOG_LEVEL = ENV['DEBUG'] ? Logger::DEBUG : Logger::INFO
 
   AUTHORIZATION_HEADER = 'Authorization'
-  SECRET_TOKEN_HEADERS = ['X-Morpheus-Token', 'X-Cypher-Token', 'X-Vault-Token', 'X-Morpheus-Lease']
+  SECRET_TOKEN_HEADERS = ['X-Morpheus-Token', 'X-Cypher-Token', 'X-Vault-Token', 'X-Morpheus-Lease'] # mtncloud:allow-upstream-name (API header and lease variable names)
 
   @@log_level = DEFAULT_LOG_LEVEL
   @@logger = nil

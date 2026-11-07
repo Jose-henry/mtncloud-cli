@@ -827,7 +827,7 @@ module MtnCloud::Cli::ProvisioningHelper
       end
     }
 
-    if ['openstack', 'huawei', 'opentelekom'].include?(cloud_type['zoneType']['code'])
+    if ['openstack', 'huawei', 'opentelekom'].include?(cloud_type['zoneType']['code']) # mtncloud:allow-cloud-name (API cloud type code)
       prompt_resource_pool.call
       prompt_provision_options.call
       prompt_service_plan.call
@@ -2920,30 +2920,17 @@ module MtnCloud::Cli::ProvisioningHelper
     return v
   end
 
+  # The API's code for the platform's own blueprint type. Customers see it as MTN Cloud.
+  NATIVE_BLUEPRINT_TYPE = "morpheus" # mtncloud:allow-upstream-name (API blueprint type code)
+
+  # show the type as is, except the platform's own type, which is shown as MTN Cloud
   def format_blueprint_type(type_code)
-    return type_code.to_s # just show it as is
-    if type_code.to_s.empty?
-      type_code = "morpheus"
-    end
-    if type_code.to_s.downcase == "arm"
-      "ARM"
-    else
-      return type_code.to_s.capitalize
-    end
+    type_code.to_s.downcase == NATIVE_BLUEPRINT_TYPE ? "MTN Cloud" : type_code.to_s
   end
 
+  # use the type as is, except mtncloud, which is the API's code for the platform's own type
   def parse_blueprint_type(type_code)
-    return type_code.to_s # just use it as is
-    # if type_code.to_s.empty?
-    #   type_code = "morpheus"
-    # end
-    if type_code.to_s.downcase == "arm"
-      "arm"
-    elsif type_code.to_s.downcase == "cloudformation"
-      type_code = "cloudFormation"
-    else
-      return type_code.to_s.downcase
-    end
+    type_code.to_s.downcase == "mtncloud" ? NATIVE_BLUEPRINT_TYPE : type_code.to_s
   end
 
   def format_snapshot_status(snapshot, return_color=cyan)

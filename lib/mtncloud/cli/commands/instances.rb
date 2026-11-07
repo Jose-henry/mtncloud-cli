@@ -2749,7 +2749,7 @@ class MtnCloud::Cli::Instances
   private :addnode_requires_resource_pool?
 
   # Prompts for a resource pool selection when adding a node to an instance.
-  # This is invoked during the Add Node action to choose a resource pool (eg. for HPE bare metal host provisioning types mandates a pool).
+  # This is invoked during the Add Node action to choose a resource pool (eg. bare metal host provisioning types that require a pool).
   def addnode_prompt_for_resource_pool(instance, options)
     zone_id = instance['cloud']['id']
     if zone_id.nil?

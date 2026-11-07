@@ -43,7 +43,7 @@ class MtnCloudTest::AffinityGroupsTest < MtnCloudTest::TestCase
     assert_error %(affinity-groups list --not-a-real-option)
   end
 
-  # There is no unscoped list/create route -- morpheus-ui ApiV1UrlMappings
+  # There is no unscoped list/create route -- the platform UI's ApiV1UrlMappings
   # exposes only /api/affinity-groups/{id} at the top level, so list and add
   # must refuse to run without --cloud or --cluster rather than 404.
   def test_affinity_groups_list_requires_a_scope

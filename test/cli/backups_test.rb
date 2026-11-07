@@ -84,7 +84,7 @@ class BackupsCommandTest < Test::Unit::TestCase
       'id' => 132614,
       'name' => 'vmware-snapshot-backup',
       'backupType' => {'id' => 13, 'code' => 'vmwareSnapshot', 'name' => 'VMware VM Snapshot'},
-      'backupProvider' => {'id' => 543, 'code' => 'morpheus', 'name' => 'Internal Backup'},
+      'backupProvider' => {'id' => 543, 'code' => 'morpheus', 'name' => 'Internal Backup'}, # mtncloud:allow-upstream-name (API backup provider code)
       'storageProvider' => {'id' => 194, 'name' => 'Local Backups'},
     }
   end

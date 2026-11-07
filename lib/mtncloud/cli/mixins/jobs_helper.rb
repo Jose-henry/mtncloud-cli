@@ -53,7 +53,7 @@ module MtnCloud::Cli::JobsHelper
     description_cols = {
         "ID" => lambda {|it| it['id'] },
         "Job" => lambda {|it| it['job'] ? it['job']['name'] : ''},
-        "Job Type" => lambda {|it| it['job'] && it['job']['type'] ? (it['job']['type']['code'] == 'morpheus.workflow' ? 'Workflow' : 'Task') : ''},
+        "Job Type" => lambda {|it| it['job'] && it['job']['type'] ? (it['job']['type']['code'] == 'morpheus.workflow' ? 'Workflow' : 'Task') : ''}, # mtncloud:allow-upstream-name (API job type codes)
         # "Description" => lambda {|it| it['description'] || (it['job'] ? it['job']['description'] : '') },
         "Start Date" => lambda {|it| format_local_dt(it['startDate'])},
         "ETA/Time" => lambda {|it| it['duration'] ? format_human_duration(it['duration'] / 1000.0) : ''},
@@ -107,7 +107,7 @@ module MtnCloud::Cli::JobsHelper
             id: ex['id'],
             job: ex['job'] ? ex['job']['name'] : '',
             description: ex['description'] || ex['job'] ? ex['job']['description'] : '',
-            type: ex['job'] && ex['job']['type'] ? (ex['job']['type']['code'] == 'morpheus.workflow' ? 'Workflow' : 'Task') : '',
+            type: ex['job'] && ex['job']['type'] ? (ex['job']['type']['code'] == 'morpheus.workflow' ? 'Workflow' : 'Task') : '', # mtncloud:allow-upstream-name (API job type codes)
             start: format_local_dt(ex['startDate']),
             duration: ex['duration'] ? format_human_duration(ex['duration'] / 1000.0) : '',
             status: format_job_status(ex['status']),

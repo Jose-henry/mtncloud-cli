@@ -46,7 +46,7 @@ class MtnCloud::Cli::Setup
 Setup a fresh remote appliance, initializing it.
 First, this checks if setup is available, and returns an error if not.
 Then it prompts to create the master tenant and admin user.
-If Morpheus Hub registration is enabled, you may login or register to retrieve a license key,
+If License Hub registration is enabled, you may login or register to retrieve a license key,
 or you can pass `--hubmode skip`.
 This is only available on a new, freshly installed remote appliance,
 and it may only be executed successfully one time.
@@ -148,8 +148,8 @@ EOT
           
 
         print cyan
-        puts "Morpheus Hub registration is enabled for your appliance."
-        puts "This step will connect to the Morpheus Hub at #{hub_settings['url']}"
+        puts "License Hub registration is enabled for your appliance."
+        puts "This step will connect to the License Hub at #{hub_settings['url']}"
         puts "This is done to retrieve and install the license key for your appliance."
         puts "You have several options for how to proceed:"
         hub_action_dropdown.each_with_index do |hub_action, idx|
@@ -166,15 +166,15 @@ EOT
           if hubmode == 'login'
 
             # print cyan
-            # puts "MORPHEUS HUB #{hub_settings['url']}"
+            # puts "LICENSE HUB #{hub_settings['url']}"
             # puts "The Command Center for DevOps"
             # print reset
 
             # Hub Login
-            print_h2 "Morpheus Hub Login @ #{hub_settings['url']}", options
+            print_h2 "License Hub Login @ #{hub_settings['url']}", options
             hub_login_option_types = [
-              {'fieldContext' => 'hub', 'fieldName' => 'email', 'fieldLabel' => 'Email', 'type' => 'text', 'required' => true, 'description' => 'Email Address of existing Morpheus Hub user to link with.'},
-              {'fieldContext' => 'hub', 'fieldName' => 'password', 'fieldLabel' => 'Password', 'type' => 'password', 'required' => true, 'description' => 'Password of existing Morpheus Hub user.'},
+              {'fieldContext' => 'hub', 'fieldName' => 'email', 'fieldLabel' => 'Email', 'type' => 'text', 'required' => true, 'description' => 'Email Address of existing License Hub user to link with.'},
+              {'fieldContext' => 'hub', 'fieldName' => 'password', 'fieldLabel' => 'Password', 'type' => 'password', 'required' => true, 'description' => 'Password of existing License Hub user.'},
             ]
             v_prompt = MtnCloud::Cli::OptionTypes.prompt(hub_login_option_types, options[:options])
             hub_login_payload = v_prompt['hub']
@@ -185,7 +185,7 @@ EOT
               hub_info = {'email' => hub_login_payload['email'], 'password' => hub_login_payload['password'] }
               hub_info.deep_merge!(hub_login_response['data']['info']) if (hub_login_response['data'] && hub_login_response['data']['info'])
               hub_info.deep_merge!(hub_login_response['hub']) if hub_login_response['hub'].is_a?(Hash)
-              print_green_success "Logged into Morpheus Hub as #{hub_info['email']}"
+              print_green_success "Logged into License Hub as #{hub_info['email']}"
             rescue RestClient::Exception => e
               hub_login_response = parse_rest_exception(e)
               error_msg = hub_login_response["msg"] || "Hub login failed."
@@ -203,12 +203,12 @@ EOT
 
           elsif hubmode == 'register'
             # Hub Registration
-            print_h2 "Morpheus Hub Registration", options
+            print_h2 "License Hub Registration", options
             hub_register_option_types = [
-              {'fieldContext' => 'hub', 'fieldName' => 'companyName', 'fieldLabel' => 'Company Name', 'type' => 'text', 'required' => true, 'description' => 'Company Name of new Morpheus Hub account to be created.'},
-              {'fieldContext' => 'hub', 'fieldName' => 'firstName', 'fieldLabel' => 'First Name', 'type' => 'text', 'required' => true, 'description' => 'First Name of new Morpheus Hub user.'},
-              {'fieldContext' => 'hub', 'fieldName' => 'lastName', 'fieldLabel' => 'Last Name', 'type' => 'text', 'required' => true, 'description' => 'Last Name of new Morpheus Hub user.'},
-              {'fieldContext' => 'hub', 'fieldName' => 'email', 'fieldLabel' => 'Email', 'type' => 'text', 'required' => true, 'description' => 'Email Address of new Morpheus Hub user.'}
+              {'fieldContext' => 'hub', 'fieldName' => 'companyName', 'fieldLabel' => 'Company Name', 'type' => 'text', 'required' => true, 'description' => 'Company Name of new License Hub account to be created.'},
+              {'fieldContext' => 'hub', 'fieldName' => 'firstName', 'fieldLabel' => 'First Name', 'type' => 'text', 'required' => true, 'description' => 'First Name of new License Hub user.'},
+              {'fieldContext' => 'hub', 'fieldName' => 'lastName', 'fieldLabel' => 'Last Name', 'type' => 'text', 'required' => true, 'description' => 'Last Name of new License Hub user.'},
+              {'fieldContext' => 'hub', 'fieldName' => 'email', 'fieldLabel' => 'Email', 'type' => 'text', 'required' => true, 'description' => 'Email Address of new License Hub user.'}
             ]
             v_prompt = MtnCloud::Cli::OptionTypes.prompt(hub_register_option_types, options[:options])
             hub_register_payload = v_prompt['hub']
@@ -222,8 +222,8 @@ EOT
             end
             while need_password do
               password_option_types = [
-                {'fieldContext' => 'hub', 'fieldName' => 'password', 'fieldLabel' => 'Create Password', 'type' => 'password', 'required' => true, 'description' => 'Confirm password of new Morpheus Hub user.'},
-                {'fieldContext' => 'hub', 'fieldName' => 'confirmPassword', 'fieldLabel' => 'Confirm Password', 'type' => 'password', 'required' => true, 'description' => 'Confirm password of new Morpheus Hub user.'}
+                {'fieldContext' => 'hub', 'fieldName' => 'password', 'fieldLabel' => 'Create Password', 'type' => 'password', 'required' => true, 'description' => 'Confirm password of new License Hub user.'},
+                {'fieldContext' => 'hub', 'fieldName' => 'confirmPassword', 'fieldLabel' => 'Confirm Password', 'type' => 'password', 'required' => true, 'description' => 'Confirm password of new License Hub user.'}
               ]
               v_prompt = MtnCloud::Cli::OptionTypes.prompt(password_option_types, options[:options])
               if v_prompt['hub']['password'] == v_prompt['hub']['confirmPassword']
@@ -241,7 +241,7 @@ EOT
               hub_info.deep_merge!(hub_register_payload)
               hub_info.deep_merge!(hub_register_response['data']['info']) if (hub_register_response['data'] && hub_register_response['data']['info'])
               hub_info.deep_merge!(hub_register_response['hub']) if hub_register_response['hub'].is_a?(Hash)
-              print_green_success "Registered with Morpheus Hub as #{hub_info['email']}"
+              print_green_success "Registered with License Hub as #{hub_info['email']}"
               # uh ok so that means the init() request can use login
               # this avoid duplicate email error
               # but it can also just omit hubMode from the init() payload to achieve the same thing.

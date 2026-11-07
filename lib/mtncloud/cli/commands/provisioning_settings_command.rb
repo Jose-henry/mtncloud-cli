@@ -80,7 +80,11 @@ class MtnCloud::Cli::ProvisioningSettingsCommand
         # PXE Boot Settings
         "Default Root Password" => lambda {|it| it['pxeRootPassword']},
         # App Blueprint Settings
-        "Default Blueprint Type" => lambda {|it| it['defaultTemplateType'] ? it['defaultTemplateType']['name'].capitalize : 'Morpheus'}
+        "Default Blueprint Type" => lambda {|it|
+          name = it['defaultTemplateType'] ? it['defaultTemplateType']['name'].to_s : ''
+          # the platform's own blueprint type, or none set, is shown as MTN Cloud
+          (name.empty? || name.downcase == 'morpheus') ? 'MTN Cloud' : name.capitalize # mtncloud:allow-upstream-name (API blueprint type name)
+        }
       }
       print_description_list(description_cols, settings)
       print reset, "\n"

@@ -66,7 +66,10 @@ bundle exec rake test:offline
 
 Add or update tests for the behaviour you change. A test that doesn't need an appliance must not `require 'mtncloud_test'`, so that `test:offline` and CI run it.
 
-`test/branding_test.rb` fails if any command's help mentions Morpheus, except for values that belong to the appliance, such as the `X-Morpheus-Lease` header. Keep it passing.
+Two tests keep the upstream product's name and the cloud software's names out of the CLI. Keep them passing:
+
+- `test/naming_test.rb` checks every file in the repository.
+- `test/branding_test.rb` checks the help of every command.
 
 The tests that need a live appliance are described in [Testing](README.md#testing) in the README. Run them when you change how the CLI talks to the API.
 
@@ -74,7 +77,8 @@ The tests that need a live appliance are described in [Testing](README.md#testin
 
 - Keep each pull request to one change. Separate refactoring from behaviour changes.
 - Follow the style of the code around your change.
-- Customer-facing text says **MTN Cloud**, and commands are shown as `mtncloud`. Values that the appliance or its API defines keep their names, for example `X-Morpheus-Lease` and `MORPHEUS_LEASE_TOKEN`.
+- Customer-facing text says **MTN Cloud**, and commands are shown as `mtncloud`. Networks are **MTN Networks** and routers are **MTN Routers**. Never name the upstream product or the cloud software, in text, comments or tests.
+- Values that the appliance or its API defines keep their names, such as header names and type codes. Mark each line that has one with `# mtncloud:allow-upstream-name (reason)` or `# mtncloud:allow-cloud-name (reason)`; `test/naming_test.rb` explains the rule.
 - Update the README when you change how the CLI is installed, configured or used.
 
 ## Commit messages

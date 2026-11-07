@@ -194,7 +194,7 @@ class MtnCloud::Cli::BlueprintsCommand
     optparse = MtnCloud::Cli::OptionParser.new do |opts|
       opts.banner = subcommand_usage("[name] [options]")
       build_option_type_options(opts, options, add_blueprint_option_types(false))
-      opts.on('-t', '--type TYPE', String, "Blueprint Type. Default is morpheus.") do |val|
+      opts.on('-t', '--type TYPE', String, "Blueprint Type, for example mtncloud (the default) or terraform.") do |val|
         options[:blueprint_type] = parse_blueprint_type(val.to_s)
       end
       opts.on('-l', '--labels [LIST]', String, "Labels") do |val|
@@ -1833,7 +1833,7 @@ class MtnCloud::Cli::BlueprintsCommand
   def add_blueprint_option_types(connected=true)
     [
       {'fieldName' => 'name', 'fieldLabel' => 'Name', 'type' => 'text', 'required' => true, 'description' => 'Enter a name for this app'},
-      {'fieldName' => 'type', 'fieldLabel' => 'Type', 'type' => 'select', 'selectOptions' => (connected ? get_available_blueprint_types() : []), 'required' => true, 'defaultValue' => 'morpheus'},
+      {'fieldName' => 'type', 'fieldLabel' => 'Type', 'type' => 'select', 'selectOptions' => (connected ? get_available_blueprint_types() : []), 'required' => true, 'defaultValue' => NATIVE_BLUEPRINT_TYPE},
       {'fieldName' => 'description', 'fieldLabel' => 'Description', 'type' => 'text', 'required' => false},
       {'fieldName' => 'category', 'fieldLabel' => 'Category', 'type' => 'text', 'required' => false},
       #{'fieldName' => 'group', 'fieldLabel' => 'Group', 'type' => 'select', 'selectOptions' => (connected ? get_available_groups() : []), 'required' => true}
@@ -1846,11 +1846,12 @@ class MtnCloud::Cli::BlueprintsCommand
         # results = @options_interface.options_for_source('blueprintTypes',{})
         results = @blueprints_interface.list_types({})
         @available_blueprint_types = results['types'].collect {|it|
-          {"name" => (it["name"] || it["code"]), "value" => (it["code"] || it["value"])}
+          value = (it["code"] || it["value"])
+          {"name" => (value.to_s.downcase == NATIVE_BLUEPRINT_TYPE ? format_blueprint_type(value) : (it["name"] || it["code"])), "value" => value}
         }
       rescue RestClient::Exception
         # older version
-        @available_blueprint_types = [{"name" => "Morpheus", "value" => "morpheus"}, {"name" => "Terraform", "value" => "terraform"}, {"name" => "CloudFormation", "value" => "cloudFormation"}, {"name" => "ARM template", "value" => "arm"}]
+        @available_blueprint_types = [{"name" => format_blueprint_type(NATIVE_BLUEPRINT_TYPE), "value" => NATIVE_BLUEPRINT_TYPE}, {"name" => "Terraform", "value" => "terraform"}, {"name" => "CloudFormation", "value" => "cloudFormation"}, {"name" => "ARM template", "value" => "arm"}]
       end
     end
     #puts "get_available_blueprints() rtn: #{@available_blueprints.inspect}"

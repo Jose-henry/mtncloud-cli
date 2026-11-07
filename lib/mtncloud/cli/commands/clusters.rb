@@ -690,7 +690,7 @@ class MtnCloud::Cli::Clusters
         server_payload['securityGroups'] = prompt_security_groups_by_cloud(cloud, provision_type, resource_pool, options)
 
         # KLUDGE part 2: need to ask for hauwei floating ip option
-        if option_type = option_type_list.find {|type| type['code'] == 'computeServerType.openstackLinux.selectFloatingIp'}
+        if option_type = option_type_list.find {|type| type['code'] == 'computeServerType.openstackLinux.selectFloatingIp'} # mtncloud:allow-cloud-name (API option source and type codes)
           floating_ip = load_floating_options(cluster_payload, options)
           if floating_ip != nil 
             server_payload['config']['osExternalNetworkId'] = floating_ip
@@ -5603,7 +5603,7 @@ class MtnCloud::Cli::Clusters
   end
 
   def load_floating_options(cluster, options)
-    floating_ip_opts = @api_client.options.options_for_source('openstackFloatingIpOptions', {optionsSourceType: 'openStack', zoneId: cluster['cloud']['id']})['data']
+    floating_ip_opts = @api_client.options.options_for_source('openstackFloatingIpOptions', {optionsSourceType: 'openStack', zoneId: cluster['cloud']['id']})['data'] # mtncloud:allow-cloud-name (API option source and type codes)
     floating_ip_opts = floating_ip_opts.reject {|it| it['value'] == '' }
     floating_ip = MtnCloud::Cli::OptionTypes.prompt([{'fieldName' => 'osExternalNetworkId', 'fieldLabel' => 'Floating IP', 'type' => 'select', 'selectOptions' => floating_ip_opts, 'required' => false, 'description' => "Select Floating IP"}], options[:options])['osExternalNetworkId']
     return floating_ip

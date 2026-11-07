@@ -1232,7 +1232,7 @@ EOT
 Setup a fresh remote appliance, initializing it.
 First, this checks if setup is available, and returns an error if not.
 Then it prompts to create the master tenant and admin user.
-If Morpheus Hub registration is enabled, you may login or register to retrieve a license key,
+If License Hub registration is enabled, you may login or register to retrieve a license key,
 or you can pass `--hubmode skip`.
 This is only available on a new, freshly installed remote appliance,
 and it may only be executed successfully one time.
@@ -1331,7 +1331,7 @@ EOT
     include Term::ANSIColor
 
     # for caching the the contents of YAML file $home/appliances
-    # it is structured like :appliance_name => {:host => "https://api.gomorpheus.com", :active => true}
+    # it is structured like :appliance_name => {:host => "https://console.cloud.mtn.ng", :active => true}
     # not named @@appliances to avoid confusion with the instance variable . This is also a command class...
     @@appliance_config = nil 
 
@@ -1499,7 +1499,7 @@ EOT
         return {}
         # return {
         #   mtncloud: {
-        #     host: 'https://api.gomorpheus.com',
+        #     host: 'https://console.cloud.mtn.ng',
         #     active: true
         #   }
         # }

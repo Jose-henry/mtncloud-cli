@@ -195,8 +195,8 @@ class MtnCloud::Cli::CloudResourcePoolsCommand
         "Tenants" => lambda {|it| it['tenants'] ? it['tenants'].collect {|it| it['name'] }.uniq.join(', ') : '' }
       }
 
-      if cloud['zoneType']['code'] == 'openstack'
-        role = resource_pool['config']['roleId'] ? load_option_source_data('openstackRoles', {zoneId: cloud['id']}).find {|it| it['value'] == resource_pool['config']['roleId']} : nil
+      if cloud['zoneType']['code'] == 'openstack' # mtncloud:allow-cloud-name (API cloud type code)
+        role = resource_pool['config']['roleId'] ? load_option_source_data('openstackRoles', {zoneId: cloud['id']}).find {|it| it['value'] == resource_pool['config']['roleId']} : nil # mtncloud:allow-cloud-name (API option source and type codes)
         description_cols['Role'] = lambda {|it| role ? role['name'] : ''}
       end
 
@@ -490,13 +490,13 @@ class MtnCloud::Cli::CloudResourcePoolsCommand
         # no options
       elsif zone_type == 'cloudFoundry' || zone_type == 'bluemixCloudFoundry'
 
-      elsif zone_type == 'openstack'
+      elsif zone_type == 'openstack' # mtncloud:allow-cloud-name (API cloud type code)
         payload['resourcePool']['config'] ||= {}
         # Description
         v_prompt = MtnCloud::Cli::OptionTypes.prompt([{'fieldName' => 'description', 'fieldLabel' => 'Description', 'type' => 'text'}], options)
         payload['resourcePool']['description'] = v_prompt['description']
         # Role
-        role_options = load_option_source_data('openstackRoles', {zoneId: cloud['id']})
+        role_options = load_option_source_data('openstackRoles', {zoneId: cloud['id']}) # mtncloud:allow-cloud-name (API option source and type codes)
         if role = options[:role] ? role_options.find {|it| [it['name'], it['value']].include?(options[:role])} : nil
           payload['resourcePool']['config']['roleId'] = role['value']
         else
@@ -721,7 +721,7 @@ class MtnCloud::Cli::CloudResourcePoolsCommand
 
         # Role
         if options['role'] != nil
-          role_options = load_option_source_data('openstackRoles', {zoneId: cloud['id']})
+          role_options = load_option_source_data('openstackRoles', {zoneId: cloud['id']}) # mtncloud:allow-cloud-name (API option source and type codes)
           if role = role_options.find {|it| [it['name'], it['value']].include?(options['role'])}
             payload['resourcePool']['config'] ||= {}
             payload['resourcePool']['config']['roleId'] = role['value']

@@ -7,24 +7,19 @@ require 'mtncloud'
 
 # Offline branding checks for the MTN Cloud CLI, no appliance needed.
 #
-# Renders --help for every command and subcommand and fails if any line still
-# mentions morpheus (other than approved server-side values), or if any help
-# screen raises a Ruby error.
+# Renders --help for every command and subcommand and fails if any line names the
+# upstream product or the cloud software, or if any help screen raises a Ruby error.
+# test/naming_test.rb applies the same rule to the source files.
 #
 #   bundle exec ruby -Ilib -Itest test/branding_test.rb
 class BrandingTest < Test::Unit::TestCase
 
-  # Approved keep-list. These are values the appliance or API depends on,
-  # or names of external services, so they must not be rebranded.
+  # The names customers must not see in help text.
+  NAMES = /morpheus|\bhpe\b|openstack|octavia|neutron|keystone|barbican|amphora/i # mtncloud:allow-upstream-name (the names this test looks for) mtncloud:allow-cloud-name (the names this test looks for)
+
+  # Help lines that may still contain one of NAMES because they show a value the API
+  # defines, such as a header name. Empty: no help text needs one today.
   ALLOWED = [
-    /morph-(cli|api)/,                       # OAuth client IDs
-    /X-Morpheus-(Token|Lease)/,              # API headers
-    /\$?MORPHEUS_LEASE_TOKEN/,               # set by the appliance
-    /morpheus\.(task|workflow|securityScan)/, # job type codes
-    /Default is morpheus\./,                 # blueprint type value, marketplace organization
-    /Morpheus Hub/,                          # HPE's external service
-    /\.morpkg/,                              # package file format
-    /morpheus\.yml/,                         # deploy file fallback
   ]
 
   # Known lines still to be rebranded, keyed by the step that removes them.
@@ -80,12 +75,12 @@ class BrandingTest < Test::Unit::TestCase
     end
   end
 
-  def morpheus_lines
+  def named_lines
     lines = []
     self.class.screens.each do |label, text|
       text.each_line do |line|
         line = line.strip
-        next unless line =~ /morpheus/i
+        next unless line =~ NAMES
         next if ALLOWED.any? {|re| line =~ re }
         lines << [label, line]
       end
@@ -101,14 +96,14 @@ class BrandingTest < Test::Unit::TestCase
     assert_empty self.class.errors, "help screens raised errors:\n" + self.class.errors.join("\n")
   end
 
-  def test_help_has_no_unapproved_morpheus
-    unexpected = morpheus_lines.reject {|_, line| PENDING.keys.any? {|re| line =~ re } }
-    assert_empty unexpected, "help text still mentions morpheus:\n" +
+  def test_help_names_no_upstream_or_cloud_software
+    unexpected = named_lines.reject {|_, line| PENDING.keys.any? {|re| line =~ re } }
+    assert_empty unexpected, "help text names the upstream product or the cloud software:\n" +
       unexpected.map {|label, line| "  #{label}: #{line}" }.join("\n")
   end
 
   def test_pending_lines_still_exist
-    lines = morpheus_lines.map(&:last)
+    lines = named_lines.map(&:last)
     stale = PENDING.reject {|re, _| lines.any? {|line| line =~ re } }
     assert_empty stale, "these PENDING entries are fixed, remove them from the list:\n" +
       stale.map {|re, step| "  (#{step}) #{re.inspect}" }.join("\n")
@@ -122,7 +117,7 @@ class BrandingTest < Test::Unit::TestCase
     MtnCloud::Cli::VersionCommand.new.handle([])
     assert_include out.string, "MTN Cloud CLI"
     assert_include out.string, "Client Version: #{MtnCloud::Cli::VERSION}"
-    # the old banner spelled Morpheus in ASCII art, which a text search cannot see
+    # the old banner spelled the upstream name in ASCII art, which a text search cannot see
     assert_not_match(/__  ___/, out.string)
   ensure
     MtnCloud::Terminal.instance_variable_set(:@morphterm, saved_terminal)
@@ -150,7 +145,7 @@ class BrandingTest < Test::Unit::TestCase
   def test_prog_name_follows_invoked_name
     original = $0
     { "/usr/local/bin/mcs" => "mcs", "C:/Ruby33-x64/bin/mcs" => "mcs", "bin/mtncloud" => "mtncloud",
-      "rake" => "mtncloud", "/usr/bin/morpheus" => "mtncloud" }.each do |program, expected|
+      "rake" => "mtncloud", "/usr/bin/morpheus" => "mtncloud" }.each do |program, expected| # mtncloud:allow-upstream-name (the old binary name must not count)
       $0 = program
       assert_equal expected, MtnCloud::Cli.prog_name, "prog_name when invoked as #{program}"
     end

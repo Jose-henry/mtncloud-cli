@@ -26,13 +26,13 @@ class AffinityHelperTest < Test::Unit::TestCase
 
   ## Enums
 
-  # The canonical list, per morpheus-ui. If this test fails, the CLI, the UI and
+  # The canonical list, per the platform UI. If this test fails, the CLI, the UI and
   # the OpenAPI affinity-type schema have drifted apart.
   def test_affinity_types_contains_all_four_values
     expected = %w[KEEP_TOGETHER KEEP_SEPARATE KEEP_TOGETHER_MUST KEEP_SEPARATE_MUST]
     actual = @helper.affinity_type_select_options.collect {|it| it['value'] }
     assert_equal expected.sort, actual.sort,
-      "Affinity types drifted from morpheus-ui. Expected exactly: #{expected.sort.inspect}"
+      "Affinity types drifted from the platform UI. Expected exactly: #{expected.sort.inspect}"
   end
 
   def test_affinity_types_includes_mandatory_must_variants
@@ -41,8 +41,8 @@ class AffinityHelperTest < Test::Unit::TestCase
     assert values.include?('KEEP_SEPARATE_MUST'), "KEEP_SEPARATE_MUST must be offered"
   end
 
-  # Per HostVmGroup.HostVmGroupType, morpheus-ui rc-9.1.0
-  # (morpheus-domains/grails-app/domain/com/morpheus/HostVmGroup.groovy:32).
+  # Per HostVmGroup.HostVmGroupType, the platform UI rc-9.1.0
+  # (the platform's HostVmGroup domain class).
   def test_host_vm_group_types
     expected = %w[SITE_GROUP HOST_GROUP VM_GROUP]
     actual = @helper.host_vm_group_type_select_options.collect {|it| it['value'] }
@@ -151,7 +151,7 @@ class AffinityHelperTest < Test::Unit::TestCase
   end
 
   # Real payload shape from AffinityGroupService.validateCombinedRulePoolConsistency
-  # (morpheus-ui rc-9.1.0). There is no top-level errorCode - the CLI must read
+  # (the platform UI rc-9.1.0). There is no top-level errorCode - the CLI must read
   # msg and the field-keyed errors map.
   def test_cross_pool_error_surfaces_server_message
     body = {

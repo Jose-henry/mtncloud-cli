@@ -1280,7 +1280,7 @@ class MtnCloud::Cli::SecurityGroups
           options[:options].deep_merge!({'customOptions' => {'resourceGroup' => resource_pool_id} }) if resource_pool_id
           custom_options_values = MtnCloud::Cli::OptionTypes.prompt([{'fieldContext' => 'customOptions', 'fieldName' => 'resourceGroup', 'fieldLabel' => 'Resource Group', 'type' => 'select', 'optionSource' => 'zonePools', 'required' => true, 'config' => {'valueField' => 'externalId'}}], options[:options], @api_client, {zoneId: cloud['id'], ignoreDefaultPool: true})
         end
-      elsif network_server_type == 'openstack' || network_server_type == 'opentelekom' || network_server_type == 'huawei'
+      elsif network_server_type == 'openstack' || network_server_type == 'opentelekom' || network_server_type == 'huawei' # mtncloud:allow-cloud-name (API network server type code)
         if cloud['config'] && !cloud['config']['resourcePoolId'].to_s.empty?
           custom_options_values.deep_merge!({'customOptions' => {'resourcePoolId' => cloud['config']['resourcePoolId']} })
         else

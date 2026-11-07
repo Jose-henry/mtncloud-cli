@@ -124,7 +124,7 @@ class MtnCloud::Cli::AffinityGroupsCommand
         print reset, "\n"
       end
     else
-      # There is no top-level list route: morpheus-ui ApiV1UrlMappings exposes
+      # There is no top-level list route: the platform UI's ApiV1UrlMappings exposes
       # only /api/affinity-groups/{id} for show/update/delete. List stays scoped.
       print_error MtnCloud::Terminal.angry_prompt
       puts_error "#{command_name} list requires a scope: pass --cloud CLOUD or --cluster CLUSTER\n#{optparse}"

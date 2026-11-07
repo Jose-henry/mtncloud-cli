@@ -314,8 +314,8 @@ class MtnCloud::Cli::StorageProvidersCommand
             {'fieldContext' => 'config', 'fieldName' => 'exportFolder', 'fieldLabel' => 'Export Folder', 'type' => 'text', 'required' => false, 'description' => ''},
             {'fieldName' => 'bucketName', 'fieldLabel' => 'Bucket Name', 'type' => 'hidden', 'required' => true, 'description' => '', 'defaultValue' => '/'}
           ]
-        elsif storage_provider_type_code == 'openstack'
-          # print_h2 "Openstack Swift Options"
+        elsif storage_provider_type_code == 'openstack' # mtncloud:allow-cloud-name (API storage provider type code)
+          # print_h2 "Swift-compatible Object Storage Options"
           provider_type_option_types = [
             {'fieldContext' => 'config', 'fieldName' => 'username', 'fieldLabel' => 'Username', 'type' => 'text', 'required' => true, 'description' => ''},
             {'fieldContext' => 'config', 'fieldName' => 'apiKey', 'fieldLabel' => 'API Key', 'type' => 'password', 'required' => true, 'description' => ''},
@@ -1269,7 +1269,7 @@ class MtnCloud::Cli::StorageProvidersCommand
       {'name' => 'CIFS', 'value' => 'cifs'},
       {'name' => 'Local Storage', 'value' => 'local'},
       {'name' => 'NFSv3', 'value' => 'nfs'},
-      {'name' => 'Openstack Swift', 'value' => 'openstack'},
+      {'name' => 'Swift-compatible object storage', 'value' => 'openstack'}, # mtncloud:allow-cloud-name (API storage provider type code)
       {'name' => 'Rackspace CDN', 'value' => 'rackspace'},
       {'name' => 'S3', 'value' => 's3'},
     ]

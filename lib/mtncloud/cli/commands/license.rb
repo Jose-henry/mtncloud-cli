@@ -381,15 +381,15 @@ class MtnCloud::Cli::License
       max_executions = license['maxExecutions']
       max_distributed_workers = license['maxDistributedWorkers']
       max_discovered_objects = license['maxDiscoveredObjects']
-      label_width = 20
+      label_width = 27
       chart_opts = {max_bars: 20, unlimited_label: '0%', percent_sigdig: 0}
       out = ""
       out << cyan + "Sockets".rjust(label_width, ' ') + ": " + generate_usage_bar(used_sockets, max_sockets, chart_opts) + cyan + used_sockets.to_s.rjust(8, ' ') + " / " + (max_sockets ? max_sockets.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
       out << cyan + "Managed Servers".rjust(label_width, ' ') + ": " + generate_usage_bar(used_managed_servers, max_managed_servers, chart_opts) + cyan + used_managed_servers.to_s.rjust(8, ' ') + " / " + (max_managed_servers ? max_managed_servers.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
       out << cyan + "Discovered Servers".rjust(label_width, ' ') + ": " + generate_usage_bar(used_discovered_servers, max_discovered_servers, chart_opts) + cyan + used_discovered_servers.to_s.rjust(8, ' ') + " / " + (max_discovered_servers ? max_discovered_servers.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
       out << cyan + "Hosts".rjust(label_width, ' ') + ": " + generate_usage_bar(used_hosts, max_hosts, chart_opts) + cyan + used_hosts.to_s.rjust(8, ' ') + " / " + (max_hosts ? max_hosts.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
-      out << cyan + "HPE VM Hosts".rjust(label_width, ' ') + ": " + generate_usage_bar(used_mvm, max_mvm, chart_opts) + cyan + used_mvm.to_s.rjust(8, ' ') + " / " + (max_mvm ? max_mvm.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
-      out << cyan + "HPE VM Sockets".rjust(label_width, ' ') + ": " + generate_usage_bar(used_mvm_sockets, max_mvm_sockets, chart_opts) + cyan + used_mvm_sockets.to_s.rjust(8, ' ') + " / " + (max_mvm_sockets ? max_mvm_sockets.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
+      out << cyan + "Built-in Hypervisor Hosts".rjust(label_width, ' ') + ": " + generate_usage_bar(used_mvm, max_mvm, chart_opts) + cyan + used_mvm.to_s.rjust(8, ' ') + " / " + (max_mvm ? max_mvm.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
+      out << cyan + "Built-in Hypervisor Sockets".rjust(label_width, ' ') + ": " + generate_usage_bar(used_mvm_sockets, max_mvm_sockets, chart_opts) + cyan + used_mvm_sockets.to_s.rjust(8, ' ') + " / " + (max_mvm_sockets ? max_mvm_sockets.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
       out << cyan + "Iac Deployments".rjust(label_width, ' ') + ": " + generate_usage_bar(used_iac, max_iac, chart_opts) + cyan + used_iac.to_s.rjust(8, ' ') + " / " + (max_iac ? max_iac.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
       out << cyan + "Xaas Instances".rjust(label_width, ' ') + ": " + generate_usage_bar(used_xaas, max_xaas, chart_opts) + cyan + used_xaas.to_s.rjust(8, ' ') + " / " + (max_xaas ? max_xaas.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
       out << cyan + "Executions".rjust(label_width, ' ') + ": " + generate_usage_bar(used_executions, max_executions, chart_opts) + cyan + used_executions.to_s.rjust(8, ' ') + " / " + (max_executions ? max_executions.to_s : unlimited_label).to_s.ljust(15, ' ') + "\n"
@@ -457,11 +457,11 @@ class MtnCloud::Cli::License
     else
       license_columns.merge!({
         "Sockets" => 'maxSockets',
-        "HPE VM Sockets" => 'maxMvmSockets',
+        "Built-in Hypervisor Sockets" => 'maxMvmSockets',
         "Managed Servers" => 'maxManagedServers',
         "Discovered Servers" => 'maxDiscoveredServers',
         "Hosts" => 'maxHosts', 
-        "HPE VM Hosts" => 'maxMvm',
+        "Built-in Hypervisor Hosts" => 'maxMvm',
         "Iac Deployments" => 'maxIac',
         "Xaas Instances" => 'maxXaas',
         "Executions" => 'maxExecutions',
