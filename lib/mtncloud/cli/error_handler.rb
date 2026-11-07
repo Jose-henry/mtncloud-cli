@@ -72,6 +72,16 @@ class MtnCloud::Cli::ErrorHandler
         exit_code = err.exit_code
       end
 
+    when MtnCloud::Cli::LoadBalancerError
+      # the message says what happened and what to do: no usage hint, details only with --debug
+      message_lines = err.message.split(/\r?\n/)
+      puts_angry_error message_lines.shift
+      @stderr.puts message_lines.join("\n") unless message_lines.empty?
+      if options[:debug] && !err.details.empty?
+        @stderr.puts "#{dark}Details: #{err.details.to_json}#{reset}"
+      end
+      do_print_stacktrace = false
+      exit_code = err.exit_code if err.exit_code
     when MtnCloud::Cli::CommandError
       # this should probably always print the whole thing as red, but just does the first line for now.
       # until verify_args! replaces raise_command_error where the full parser help is in the error message..

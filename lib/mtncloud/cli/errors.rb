@@ -50,4 +50,28 @@ module MtnCloud::Cli
     end
   end
 
+  # A load balancer operation that was refused or could not finish, assigned exit code 1.
+  # kind says which:
+  #   :access         the login may not run load balancer operations
+  #   :refused        the load balancer service refused or failed it, in its own words
+  #   :no_answer      the operation ended without an answer
+  #   :timed_out      the operation did not finish in time
+  #   :job_not_found  the operation's job execution could not be read
+  #   :unexpected     the answer is not what the protocol promises
+  # details keeps what was seen, for diagnosis: HTTP status, job execution id and status, the raw error.
+  class LoadBalancerError < CommandError
+
+    attr_reader :kind, :action, :details, :rolled_back, :left_behind, :piece_id
+
+    def initialize(msg, kind:, action: nil, details: {}, rolled_back: false, left_behind: [], piece_id: nil)
+      @kind = kind
+      @action = action
+      @details = details || {}
+      @rolled_back = rolled_back
+      @left_behind = left_behind || []
+      @piece_id = piece_id
+      super(msg, [], nil, 1)
+    end
+  end
+
 end
