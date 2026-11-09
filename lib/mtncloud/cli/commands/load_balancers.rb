@@ -29,6 +29,10 @@ class MtnCloud::Cli::LoadBalancers
     lb_connect(options)
   end
 
+  def handle(args)
+    handle_subcommand(args)
+  end
+
   def list(args)
     options = {}
     optparse = MtnCloud::Cli::OptionParser.new do |opts|
@@ -46,7 +50,7 @@ class MtnCloud::Cli::LoadBalancers
       opts.on('--page-size NUMBER', String, "Load balancers per page, 1 to #{PAGE_SIZE_MAX}. The default is 100 when --page is given.") do |val|
         options[:lb_page_size] = val
       end
-      build_standard_get_options(opts, options, [], [:query])
+      build_lb_output_options(opts, options)
       opts.footer = <<-EOT
 List the load balancers on an MTN Network, sorted by name.
 #{lb_network_footer}
@@ -58,6 +62,7 @@ EOT
     verify_args!(args:args, optparse:optparse, count:0)
     page = lb_whole_number(options[:lb_page], '--page', 1, nil, optparse)
     page_size = lb_whole_number(options[:lb_page_size], '--page-size', 1, PAGE_SIZE_MAX, optparse)
+    lb_require_network!(options, optparse)
     connect(options)
     network = lb_network!(options, optparse)
     inputs = {'networkId' => network[:id], 'name' => options[:lb_name], 'status' => options[:lb_status],
@@ -96,6 +101,7 @@ EOT
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, count:1)
+    lb_require_network!(options, optparse)
     connect(options)
     network = lb_network!(options, optparse)
     answer = lb_read(network, args[0], options)
@@ -138,6 +144,7 @@ EOT
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, count:0)
+    lb_require_network!(options, optparse)
     connect(options)
     network = lb_network!(options, optparse)
     answer = lb_run('fip-options', {'networkId' => network[:id]}, network, options)

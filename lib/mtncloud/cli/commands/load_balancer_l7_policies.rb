@@ -18,6 +18,10 @@ class MtnCloud::Cli::LoadBalancerL7Policies
     lb_connect(options)
   end
 
+  def handle(args)
+    handle_subcommand(args)
+  end
+
   def list(args)
     options, network = lb_piece_parse(args, subcommand_usage("[load balancer] [listener] --network NETWORK"), 2, <<-EOT)
 List a listener's L7 policies, in the order they are applied.

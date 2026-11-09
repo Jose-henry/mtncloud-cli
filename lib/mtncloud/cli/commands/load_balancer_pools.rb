@@ -21,6 +21,10 @@ class MtnCloud::Cli::LoadBalancerPools
     lb_connect(options)
   end
 
+  def handle(args)
+    handle_subcommand(args)
+  end
+
   def list(args)
     options, network = lb_piece_parse(args, subcommand_usage("[load balancer] --network NETWORK"), 1, <<-EOT)
 List a load balancer's pools, sorted by name.

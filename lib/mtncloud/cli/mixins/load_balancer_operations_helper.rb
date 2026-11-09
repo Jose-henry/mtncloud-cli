@@ -47,7 +47,19 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
   # the plugin does not offer.
   def build_lb_read_options(opts, options)
     build_lb_network_option(opts, options)
-    build_standard_get_options(opts, options, [], [:query])
+    build_lb_output_options(opts, options)
+  end
+
+  # Output and connection options. No -Q: the plugin takes no query parameters.
+  def build_lb_output_options(opts, options)
+    build_common_options(opts, options, [:json, :yaml, :csv, :fields, :select, :delim, :quiet, :dry_run, :remote])
+  end
+
+  # --network is checked before connecting, so a missing one is reported as such.
+  def lb_require_network!(options, optparse=nil)
+    if options[:network].to_s.strip.empty?
+      raise_args_error("--network is required", [], optparse)
+    end
   end
 
   def lb_network_footer
@@ -201,6 +213,7 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     end
     optparse.parse!(args)
     verify_args!(args:args, optparse:optparse, count:count)
+    lb_require_network!(options, optparse)
     connect(options)
     [options, lb_network!(options, optparse)]
   end

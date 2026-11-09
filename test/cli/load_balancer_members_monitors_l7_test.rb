@@ -130,6 +130,22 @@ class LoadBalancerMembersMonitorsL7Test < Test::Unit::TestCase
 
   ## every new command's help
 
+  def test_every_command_runs_through_handle
+    [MtnCloud::Cli::LoadBalancers, MtnCloud::Cli::LoadBalancerListeners, MtnCloud::Cli::LoadBalancerPools,
+     MtnCloud::Cli::LoadBalancerMembers, MtnCloud::Cli::LoadBalancerMonitors, MtnCloud::Cli::LoadBalancerL7Policies].each do |klass|
+      command, ops = command_for(klass)
+      output, result = capture_output { command.handle(['--help']) }
+      assert_equal 0, result, klass.to_s
+      assert_match(/list\t/, output)
+      command, ops = command_for(klass)
+      sub_args = klass == MtnCloud::Cli::LoadBalancers ? ['get', 'web-lb'] : ['list', 'web-lb']
+      sub_args << 'web' if klass == MtnCloud::Cli::LoadBalancerMembers
+      sub_args << 'http' if klass == MtnCloud::Cli::LoadBalancerL7Policies
+      capture_output { command.handle(sub_args + ['--network', '114']) }
+      assert_equal ['read'], ops.runs.collect(&:first), klass.to_s
+    end
+  end
+
   def test_help_names_the_network_option
     [[MtnCloud::Cli::LoadBalancerMembers, :list], [MtnCloud::Cli::LoadBalancerMonitors, :get],
      [MtnCloud::Cli::LoadBalancerL7Policies, :get], [MtnCloud::Cli::LoadBalancerListeners, :get],
@@ -141,8 +157,20 @@ class LoadBalancerMembersMonitorsL7Test < Test::Unit::TestCase
       end
       assert_match(/--network NETWORK/, output, "#{klass} #{sub}")
       assert_match(/MTN Network name or ID/, output)
-      assert_no_match(/--max|--offset|--sort/, output)
+      assert_no_match(/--max|--offset|--sort|--query|-Q,/, output)
       assert_empty ops.runs
+    end
+  end
+
+  def test_a_missing_network_is_reported_before_connecting
+    [[MtnCloud::Cli::LoadBalancers, :list, []], [MtnCloud::Cli::LoadBalancers, :get, ['web-lb']],
+     [MtnCloud::Cli::LoadBalancers, :floating_ip_options, []], [MtnCloud::Cli::LoadBalancerListeners, :list, ['web-lb']],
+     [MtnCloud::Cli::LoadBalancerPools, :get, ['web-lb', 'web']], [MtnCloud::Cli::LoadBalancerMembers, :list, ['web-lb', 'web']],
+     [MtnCloud::Cli::LoadBalancerMonitors, :list, ['web-lb']], [MtnCloud::Cli::LoadBalancerL7Policies, :list, ['web-lb', 'http']]].each do |klass, sub, args|
+      command = klass.new
+      command.define_singleton_method(:lb_connect) {|_o| raise "#{klass} #{sub} connected" }
+      err = assert_raise(MtnCloud::Cli::CommandArgumentsError, "#{klass} #{sub}") { command.send(sub, args) }
+      assert_match(/--network is required/, err.message)
     end
   end
 end
