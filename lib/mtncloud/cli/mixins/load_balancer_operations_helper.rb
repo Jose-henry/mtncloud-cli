@@ -182,6 +182,86 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     (items || []).sort_by {|it| [it[field].to_s, it['id'].to_s] }
   end
 
+  ## the commands about a load balancer's pieces
+
+  def lb_piece_footer
+    "[load balancer] is required. This is the ID or the exact name of a load balancer; a name must match only one.\n" +
+    lb_network_footer
+  end
+
+  # Parses a piece command's options and arguments, connects and names the network.
+  # Returns [options, network], or raises.
+  def lb_piece_parse(args, banner, count, footer)
+    options = {}
+    optparse = MtnCloud::Cli::OptionParser.new do |opts|
+      opts.banner = banner
+      build_lb_read_options(opts, options)
+      opts.footer = footer
+    end
+    optparse.parse!(args)
+    verify_args!(args:args, optparse:optparse, count:count)
+    connect(options)
+    [options, lb_network!(options, optparse)]
+  end
+
+  # The load balancer read for a piece command, cleaned for output: [output, loadbalancer], or nil
+  # in a dry run.
+  def lb_piece_read(network, lb, options)
+    answer = lb_read(network, lb, options)
+    return nil if answer.nil?
+    output = lb_output(answer)
+    [output, output['loadbalancer']]
+  end
+
+  def lb_piece_subtitles(output, network)
+    lb = output['loadbalancer'] || {}
+    ["Load Balancer: #{lb['name'].to_s.empty? ? lb['id'] : lb['name']}"] + lb_access_subtitles(output, network)
+  end
+
+  # Prints a list of pieces, or renders it as {key => items}.
+  def lb_render_list(key, items, title, columns, output, network, options, empty_text)
+    render_response({key => items}, options, key) do
+      print_h1 title, lb_piece_subtitles(output, network), options
+      if items.empty?
+        print cyan, empty_text, reset, "\n"
+      else
+        print cyan, as_pretty_table(items, columns, options)
+      end
+      print reset, "\n"
+    end
+    return 0, nil
+  end
+
+  # Prints one piece, or renders it as {key => item}. The block prints any sections after it.
+  def lb_render_one(key, item, title, columns, output, network, options)
+    render_response({key => item}, options, key) do
+      print_h1 title, lb_piece_subtitles(output, network), options
+      print cyan
+      print_description_list(columns, item, options)
+      yield if block_given?
+      print reset, "\n"
+    end
+    return 0, nil
+  end
+
+  def lb_print_section(title, items, columns, options, empty_text)
+    print_h2 title, options
+    if items.nil? || items.empty?
+      print cyan, empty_text, reset, "\n"
+    else
+      print cyan, as_pretty_table(items, columns, options)
+    end
+  end
+
+  def lb_enabled_columns
+    {
+      "Enabled" => lambda {|it| format_boolean(it['admin_state_up']) },
+      "Provisioning Status" => lambda {|it| format_lb_status(it['provisioning_status']) },
+      "Operating Status" => lambda {|it| format_lb_status(it['operating_status']) },
+      "Tags" => lambda {|it| format_lb_list(it['tags']) },
+    }
+  end
+
   # A subcommand that is not available yet: it says so and sends nothing.
   def lb_unavailable(args, subcommand, message)
     if args.include?('-h') || args.include?('--help')
@@ -270,6 +350,17 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
       "Algorithm" => 'lb_algorithm',
       "Members" => lambda {|it| (it['members'] || []).size },
       "Monitor" => lambda {|it| it['healthmonitor'].is_a?(Hash) ? (it['healthmonitor']['type'] || 'Yes') : '' },
+    }.merge(lb_status_columns)
+  end
+
+  def lb_member_list_columns
+    {
+      "ID" => 'id',
+      "Name" => 'name',
+      "Address" => 'address',
+      "Port" => 'protocol_port',
+      "Weight" => 'weight',
+      "Backup" => lambda {|it| format_boolean(it['backup']) },
     }.merge(lb_status_columns)
   end
 
