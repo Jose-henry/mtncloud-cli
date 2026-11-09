@@ -219,6 +219,12 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     s.empty? ? '' : "#{color}#{s}#{return_color}"
   end
 
+  def format_lb_time(value)
+    value.to_s.empty? ? '' : format_local_dt(value)
+  rescue StandardError
+    value.to_s
+  end
+
   def format_lb_known(value, known)
     known == false ? 'Unknown' : value.to_s
   end
