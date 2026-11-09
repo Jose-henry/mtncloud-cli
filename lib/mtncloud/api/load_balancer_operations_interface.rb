@@ -432,7 +432,7 @@ class MtnCloud::LoadBalancerOperationsInterface < MtnCloud::APIClient
 
   def access_error(action, details)
     MtnCloud::Cli::LoadBalancerError.new(
-      "Your role is not allowed to run load balancer operations. Ask your administrator to grant access.",
+      "Your role is not allowed to run load balancer operations. Ask your administrator to grant you access to the Load Balancer Operations task.",
       kind: :access, action: action, details: details)
   end
 

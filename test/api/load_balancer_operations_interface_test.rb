@@ -120,7 +120,7 @@ class LoadBalancerOperationsInterfaceTest < Test::Unit::TestCase
     console = FakeConsole.new(task_pages: [[{"id" => 1, "code" => "something.else"}]])
     err = assert_raise(MtnCloud::Cli::LoadBalancerError) { ops(console).run("list", {"networkId" => 114}) }
     assert_equal :access, err.kind
-    assert_equal "Your role is not allowed to run load balancer operations. Ask your administrator to grant access.", err.message
+    assert_equal "Your role is not allowed to run load balancer operations. Ask your administrator to grant you access to the Load Balancer Operations task.", err.message
     assert_empty console.executes
   end
 
