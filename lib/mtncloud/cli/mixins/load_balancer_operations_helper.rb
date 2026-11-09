@@ -147,7 +147,8 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
       raise lb_error("The load balancer has no #{what} with the ID or name \"#{val}\". Names are matched exactly.", :not_found)
     elsif found.size > 1
       ids = found.collect {|it| it['id'] }.join(', ')
-      raise lb_error("#{found.size} #{what}s are named \"#{val}\" (IDs #{ids}). Use the #{what}'s ID.", :not_found)
+      whats = what.end_with?('y') ? "#{what[0..-2]}ies" : "#{what}s"
+      raise lb_error("#{found.size} #{whats} are named \"#{val}\" (IDs #{ids}). Use the #{what}'s ID.", :not_found)
     end
     found[0]
   end
