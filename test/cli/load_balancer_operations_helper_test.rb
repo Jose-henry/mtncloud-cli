@@ -177,6 +177,46 @@ class LoadBalancerOperationsHelperTest < Test::Unit::TestCase
     assert_nothing_hidden(JSON.generate(out))
   end
 
+  def test_read_output_is_the_whole_result_with_only_plugin_tags_removed
+    expected = JSON.parse(JSON.generate(read_answer['result']))
+    lb = expected['loadbalancer']
+    lb['tags'] = ['prod']
+    lb['listeners'][1]['tags'] = ['team-web']
+    lb['pools'][0]['members'][0]['tags'] = []
+    assert_equal expected.merge('networkAccess' => 'owner'), @command.lb_output(read_answer)
+  end
+
+  def test_every_nested_resource_keeps_all_its_fields
+    lb = @command.lb_output(read_answer)['loadbalancer']
+    https, http = lb['listeners']
+    web, api = lb['pools']
+    assert_equal listener_https.keys, https.keys
+    assert_equal listener_http.keys, http.keys
+    assert_equal pool_web.keys, web.keys
+    assert_equal pool_api.keys, api.keys
+    assert_equal pool_web['members'].collect(&:keys), web['members'].collect(&:keys)
+    assert_equal pool_web['healthmonitor'].keys, web['healthmonitor'].keys
+    policies = listener_http['l7policies_expanded']
+    assert_equal policies.collect(&:keys), http['l7policies_expanded'].collect(&:keys)
+    assert_equal ['REDIRECT_TO_POOL', 'REDIRECT_TO_URL'], http['l7policies_expanded'].collect {|p| p['action'] }
+    assert_equal policies[0]['rules_expanded'][0].keys, http['l7policies_expanded'][0]['rules_expanded'][0].keys
+    assert_equal pool_web['healthmonitor'].keys + ['pool_id', 'pool_name'], @command.lb_monitors(lb)[0].keys
+  end
+
+  def test_only_the_results_freshness_fields_and_the_rows_provider_are_removed
+    nested = {'id' => 'x', 'action' => 'REJECT', 'source' => 'a', 'fresh' => 1, 'stale' => 2, 'ageMs' => 3,
+              'provider' => 'b', 'success' => true, 'caller' => 'c', 'permissionSource' => 'd'}
+    answer = {'success' => true, 'action' => 'list', 'caller' => {'userId' => 7}, 'permissionSource' => 'task-access',
+              'result' => {'loadbalancers' => [list_row('extra' => nested)], 'total' => 1, 'canManage' => true,
+                           'fresh' => true, 'stale' => false, 'ageMs' => 5, 'source' => 'stored'}}
+    out = @command.lb_output(answer)
+    assert_equal %w[loadbalancers total canManage], out.keys
+    row = out['loadbalancers'][0]
+    assert !row.key?('provider')
+    assert_equal list_row.keys - ['provider'] + ['extra'], row.keys
+    assert_equal nested, row['extra'], "fields inside a resource are kept, whatever their name"
+  end
+
   ## not available yet
 
   def test_unavailable_sends_nothing_and_says_so

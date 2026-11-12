@@ -16,8 +16,11 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     klass.send :include, MtnCloud::Cli::PrintHelper
   end
 
-  # Answer fields about the run itself, not the load balancers: never shown.
-  LB_HIDDEN_FIELDS = %w[success action caller permissionSource fresh stale ageMs source provider]
+  # Fields of the result itself that say how fresh a stored list is: never shown. Only the top
+  # level of the result is checked; the resources inside keep every field (an L7 policy's action).
+  LB_RESULT_HIDDEN_FIELDS = %w[fresh stale ageMs source]
+  # The field of a list row that names the cloud provider: never shown.
+  LB_ROW_HIDDEN_FIELDS = %w[provider]
   # Tags the plugin adds for itself: never shown.
   LB_REQUEST_TAG_PREFIX = 'mtncloud-req-'
   LB_GROUP_TAG_PREFIX = 'morpheus:group:' # mtncloud:allow-upstream-name (the plugin's member group tag, removed from output)
@@ -124,19 +127,27 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     @lb_reads[key] = answer
   end
 
-  # The answer's result made fit to show: the run's details, freshness details and plugin tags removed.
-  # networkAccess (owner or shared) comes from the answer around the result.
+  # The answer's result made fit to show. The run's details (success, action, caller,
+  # permissionSource) are in the answer around the result and never copied; the result's freshness
+  # fields, the list rows' provider and the plugin's own tags are removed. networkAccess (owner or
+  # shared) comes from the answer around the result.
   def lb_output(answer)
-    out = lb_clean(answer['result'] || {})
+    result = answer['result'].is_a?(Hash) ? answer['result'] : {}
+    out = lb_clean(result.reject {|k, _v| LB_RESULT_HIDDEN_FIELDS.include?(k.to_s) })
+    if out['loadbalancers'].is_a?(Array)
+      out['loadbalancers'] = out['loadbalancers'].collect do |row|
+        row.is_a?(Hash) ? row.reject {|k, _v| LB_ROW_HIDDEN_FIELDS.include?(k.to_s) } : row
+      end
+    end
     out['networkAccess'] = answer['networkAccess'] if answer.key?('networkAccess')
     out
   end
 
+  # Removes the plugin's own tags at every depth; every other field is kept.
   def lb_clean(obj)
     case obj
     when Hash
       obj.each_with_object({}) do |(k, v), out|
-        next if LB_HIDDEN_FIELDS.include?(k.to_s)
         out[k] = (k.to_s == 'tags' && v.is_a?(Array)) ? lb_user_tags(v) : lb_clean(v)
       end
     when Array

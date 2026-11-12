@@ -112,6 +112,47 @@ class LoadBalancerMembersMonitorsL7Test < Test::Unit::TestCase
     assert_equal 'rule-1', policy['rules_expanded'][0]['id']
   end
 
+  def test_l7_policy_action_is_kept_in_every_format
+    policies = listener_http['l7policies_expanded']
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerL7Policies)[0].get(['web-lb', 'http', 'api', '--network', '114', '-j']) }
+    policy = JSON.parse(output)['l7policy']
+    assert_equal policies[0].keys, policy.keys
+    assert_equal 'REDIRECT_TO_POOL', policy['action']
+    assert_equal policies[0]['rules_expanded'][0].keys, policy['rules_expanded'][0].keys
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerL7Policies)[0].list(['web-lb', 'http', '--network', '114', '-j']) }
+    assert_equal [policies[1].keys, policies[0].keys], JSON.parse(output)['l7policies'].collect(&:keys)
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerL7Policies)[0].get(['web-lb', 'http', 'pol-2', '--network', '114', '-y']) }
+    assert_match(/^  action: REDIRECT_TO_POOL$/, output)
+    assert_match(/compare_type: STARTS_WITH/, output)
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerL7Policies)[0].list(['web-lb', 'http', '--network', '114', '--csv']) }
+    header, *rows = output.strip.lines.collect(&:strip)
+    assert_equal policies[1].keys.join(','), header
+    assert_match(/,REDIRECT_TO_URL,/, rows[0])
+    assert_match(/,REDIRECT_TO_POOL,/, rows[1])
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerL7Policies)[0].list(['web-lb', 'http', '--network', '114']) }
+    text = strip_color(output)
+    assert_match(/pol-1 \| old\s+\| REDIRECT_TO_URL/, text)
+    assert_match(/pol-2 \| api\s+\| REDIRECT_TO_POOL/, text)
+  end
+
+  def test_nested_fields_are_kept_in_json_yaml_and_csv
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerMonitors)[0].list(['web-lb', '--network', '114', '-j']) }
+    assert_equal [pool_web['healthmonitor'].keys + ['pool_id', 'pool_name']], JSON.parse(output)['monitors'].collect(&:keys)
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerMembers)[0].list(['web-lb', 'web', '--network', '114', '--csv']) }
+    assert_equal pool_web['members'][0].keys.join(','), output.lines.first.strip
+    assert_nothing_hidden(output)
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerMembers)[0].get(['web-lb', 'web', 'mem-1', '--network', '114', '-y']) }
+    pool_web['members'][1].keys.each {|k| assert_match(/^  #{k}:/, output) }
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerListeners)[0].list(['web-lb', '--network', '114', '-y']) }
+    assert_match(/action: REDIRECT_TO_POOL/, output)
+    assert_match(/default_tls_container_ref: #{Regexp.escape(CERT_REF)}/, output)
+    assert_nothing_hidden(output)
+    output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerPools)[0].get(['web-lb', 'web', '--network', '114', '-j']) }
+    pool = JSON.parse(output)['pool']
+    assert_equal pool_web['members'].collect(&:keys), pool['members'].collect(&:keys)
+    assert_equal pool_web['healthmonitor'].keys, pool['healthmonitor'].keys
+  end
+
   def test_l7_policies_that_could_not_be_read_are_an_error
     answer = read_answer
     answer['result']['loadbalancer']['listeners'][1]['l7policies_error'] = 'timed out'
