@@ -46,7 +46,7 @@ class LoadBalancerOperationsHelperTest < Test::Unit::TestCase
 
   def test_dry_run_does_not_look_up_a_network_name
     network = @command.lb_network!({network: 'app-net', dry_run: true})
-    assert_equal '{MTN Network app-net}', network[:id]
+    assert_equal '<unresolved network name: app-net>', network[:id]
     assert_empty @nets.list_calls
   end
 

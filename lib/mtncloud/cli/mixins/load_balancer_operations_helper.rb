@@ -80,8 +80,9 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
       return {id: val, label: val}
     end
     if options[:dry_run]
-      # a dry run sends nothing, not even the network lookup
-      return {id: "{MTN Network #{val}}", label: val}
+      # a dry run sends nothing, not even the network lookup, so the request it shows names the
+      # network as unresolved rather than with a made-up ID
+      return {id: "<unresolved network name: #{val}>", label: val}
     end
     networks = (@networks_interface.list({name: val})['networks'] || []).select {|it| it['name'] == val }
     if networks.empty?

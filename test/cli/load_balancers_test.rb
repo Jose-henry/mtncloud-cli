@@ -93,7 +93,7 @@ class LoadBalancersCommandTest < Test::Unit::TestCase
     command, ops, nets = command_with('list' => list_answer)
     output, = capture_output { command.list(['--network', 'app-net', '-d']) }
     assert_match(%r{/api/tasks/\{lboperate\.terraform\}/execute}, output)
-    assert_match(/MTN[+ ]Network[+ ]app-net/, output)
+    assert_equal [['list', {'networkId' => '<unresolved network name: app-net>'}]], ops.runs
     assert_empty nets.list_calls
     assert_equal true, ops.setopts_calls.last[:dry_run]
   end
