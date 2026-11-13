@@ -1,70 +1,97 @@
 require 'mtncloud/cli/cli_command'
 
+# The health monitors of a load balancer: each checks the members of one pool.
 class MtnCloud::Cli::LoadBalancerMonitors
   include MtnCloud::Cli::CliCommand
-  include MtnCloud::Cli::RestCommand
-  include MtnCloud::Cli::SecondaryRestCommand
-  include MtnCloud::Cli::LoadBalancersHelper
+  include MtnCloud::Cli::LoadBalancerOperationsHelper
 
-  set_command_description "View and manage load balancer monitors."
+  set_command_description "View the health monitors of a load balancer: each checks the members of one pool."
   set_command_name :'load-balancer-monitors'
   register_subcommands :list, :get, :add, :update, :remove
-  register_interfaces :load_balancer_monitors,
-                      :load_balancers, :load_balancer_types
 
-  set_rest_parent_name :load_balancers
+  set_subcommand_descriptions({
+    'list' => "List a load balancer's health monitors.",
+    'get' => "Show one health monitor.",
+    'add' => "Not available yet.",
+    'update' => "Not available yet.",
+    'remove' => "Not available yet.",
+  })
 
-  # set_rest_interface_name :load_balancer_monitors
-  # set_parent_rest_interface_name :load_balancers
-  
-  # todo: a configurable way to load the optionTypes
-  # option_types = loadBalancer['monitorOptionTypes']
-  # set_rest_has_type true
-  # set_rest_type :load_balancer_virtual_server_types
+  def connect(options)
+    lb_connect(options)
+  end
+
+  def handle(args)
+    handle_subcommand(args)
+  end
+
+  def list(args)
+    options, network = lb_piece_parse(args, subcommand_usage("[load balancer] --network NETWORK"), 1, <<-EOT)
+List a load balancer's health monitors (one per pool at most), sorted by pool name.
+#{lb_piece_footer}
+EOT
+    output, lb = lb_piece_read(network, args[0], options)
+    return 0, nil if output.nil?
+    lb_render_list('monitors', lb_monitors(lb), "Health Monitors", monitor_list_columns, output, network, options,
+                   "No health monitors.")
+  end
+
+  def get(args)
+    options, network = lb_piece_parse(args, subcommand_usage("[load balancer] [monitor] --network NETWORK"), 2, <<-EOT)
+Show one health monitor of a load balancer.
+#{lb_piece_footer}
+[monitor] is required. This is the ID or the exact name of the health monitor.
+EOT
+    output, lb = lb_piece_read(network, args[0], options)
+    return 0, nil if output.nil?
+    monitor = lb_pick(lb_monitors(lb), args[1], 'health monitor')
+    lb_render_one('monitor', monitor, "Health Monitor Details", monitor_columns, output, network, options)
+  end
+
+  def add(args)
+    lb_unavailable(args, 'add', "Adding a health monitor isn't available in the CLI yet. Use the MTN Cloud console.")
+  end
+
+  def update(args)
+    lb_unavailable(args, 'update', "Changing a health monitor isn't available in the CLI yet. Use the MTN Cloud console.")
+  end
+
+  def remove(args)
+    lb_unavailable(args, 'remove', "Deleting a health monitor isn't available in the CLI yet. Use the MTN Cloud console.")
+  end
 
   protected
 
-  def load_balancer_monitor_list_column_definitions(options)
+  def monitor_pool(it)
+    it['pool_name'].to_s.empty? ? it['pool_id'].to_s : "#{it['pool_name']} (#{it['pool_id']})"
+  end
+
+  def monitor_list_columns
     {
       "ID" => 'id',
       "Name" => 'name',
-      "Monitor Type" => lambda {|it| it['monitorTypeDisplay'] || it['monitorType'] },
-    }
+      "Pool" => lambda {|it| monitor_pool(it) },
+      "Type" => 'type',
+      "Delay" => 'delay',
+      "Timeout" => 'timeout',
+      "Max Retries" => 'max_retries',
+    }.merge(lb_status_columns)
   end
 
-  def load_balancer_monitor_column_definitions(options)
+  def monitor_columns
     {
       "ID" => 'id',
       "Name" => 'name',
-      "Load Balancer" => lambda {|it| it['loadBalancer'] ? it['loadBalancer']['name'] : '' },
-      "Description" => 'description',
-      "Monitor Type" => lambda {|it| it['monitorTypeDisplay'] || it['monitorType'] },
-      "Created" => lambda {|it| format_local_dt(it['dateCreated']) },
-      "Updated" => lambda {|it| format_local_dt(it['lastUpdated']) }
-    }
-  end
-
-  def load_balancer_monitor_object_key
-    'loadBalancerMonitor'
-  end
-
-  def load_balancer_monitor_list_key
-    'loadBalancerMonitors'
-  end
-
-  def load_balancer_monitor_label
-    'Load Balancer Monitor'
-  end
-
-  def load_balancer_monitor_label_plural
-    'Load Balancer Monitors'
-  end
-
-  def load_option_types_for_load_balancer_monitor(type_record, parent_record)
-    load_balancer = parent_record
-    load_balancer_type_id = load_balancer['type']['id']
-    load_balancer_type = find_by_id(:load_balancer_type, load_balancer_type_id)
-    load_balancer_type['monitorOptionTypes']
+      "Pool" => lambda {|it| monitor_pool(it) },
+      "Type" => 'type',
+      "Delay (s)" => 'delay',
+      "Timeout (s)" => 'timeout',
+      "Max Retries" => 'max_retries',
+      "Max Retries Down" => 'max_retries_down',
+      "HTTP Method" => 'http_method',
+      "URL Path" => 'url_path',
+      "Expected Codes" => 'expected_codes',
+    }.merge(lb_enabled_columns)
   end
 
 end

@@ -5,10 +5,26 @@ class MtnCloud::Cli::LoadBalancerVirtualServers
   include MtnCloud::Cli::RestCommand
   include MtnCloud::Cli::SecondaryRestCommand
   include MtnCloud::Cli::LoadBalancersHelper
+  include MtnCloud::Cli::LoadBalancerOperationsHelper
 
   set_command_description "View and manage load balancer virtual servers."
   set_command_name :'load-balancer-virtual-servers'
   register_subcommands :list, :get, :add, :update, :remove
+
+  set_subcommand_descriptions({'add' => "Not available yet.", 'update' => "Not available yet.", 'remove' => "Not available yet."})
+
+  # This REST endpoint holds no load balancers on MTN Cloud: its writes say so and send nothing.
+  def add(args)
+    lb_unavailable(args, 'add', "Adding a virtual server isn't available in the CLI yet. Use the MTN Cloud console; `#{prog_name} load-balancer-listeners` shows a load balancer's listeners.")
+  end
+
+  def update(args)
+    lb_unavailable(args, 'update', "Changing a virtual server isn't available in the CLI yet. Use the MTN Cloud console; `#{prog_name} load-balancer-listeners` shows a load balancer's listeners.")
+  end
+
+  def remove(args)
+    lb_unavailable(args, 'remove', "Deleting a virtual server isn't available in the CLI yet. Use the MTN Cloud console; `#{prog_name} load-balancer-listeners` shows a load balancer's listeners.")
+  end
   register_interfaces :load_balancer_virtual_servers,
                       :load_balancers, :load_balancer_types
 
