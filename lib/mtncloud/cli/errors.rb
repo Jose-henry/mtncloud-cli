@@ -58,6 +58,8 @@ module MtnCloud::Cli
   #   :timed_out      the operation did not finish in time
   #   :job_not_found  the operation's job execution could not be read
   #   :unexpected     the answer is not what the protocol promises
+  #   :not_found      no such MTN Network, load balancer or piece, or a name that matches several
+  #   :unavailable    the command is not available yet; nothing was sent
   # details keeps what was seen, for diagnosis: HTTP status, job execution id and status, the raw error.
   class LoadBalancerError < CommandError
 

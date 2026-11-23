@@ -88,6 +88,26 @@ mcs instances list --help
 
 `mtncloud shell` starts an interactive shell. `mtncloud man` opens the full manual, which includes the help for every command.
 
+### Load balancers
+
+Load balancers belong to an MTN Network, so every load balancer command needs `--network` with the network's name or ID. A network shared with your tenant works too; its load balancers are read only.
+
+```shell
+mtncloud load-balancers list --network app-net
+mtncloud load-balancers get web-lb --network app-net
+mtncloud load-balancers floating-ip-options --network app-net
+mtncloud load-balancer-listeners list web-lb --network app-net
+mtncloud load-balancer-pools get web-lb web-pool --network app-net
+mtncloud load-balancer-members list web-lb web-pool --network app-net
+mtncloud load-balancer-monitors list web-lb --network app-net
+mtncloud load-balancer-l7-policies list web-lb http-listener --network app-net
+```
+
+- A load balancer, listener, pool, member, monitor or L7 policy can be named by its ID or its exact name.
+- `load-balancers list` shows the list the console shows on the network's Load Balancers tab. `get` and the other commands read the load balancer live.
+- Each command runs the Load Balancer Operations task, which takes a few seconds and leaves a job record in the console. If your role may not run that task, ask your administrator for access.
+- Creating, changing and deleting load balancers is not available in the CLI yet: use the MTN Cloud console.
+
 ## Configuration
 
 The CLI keeps its configuration in `~/.mtncloud`. Set `MTNCLOUD_CLI_HOME` to use a different directory, for example to keep separate configurations:

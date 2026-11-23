@@ -149,8 +149,8 @@ EOT
       MtnCloud::Cli::NetworkDomainsCommand
     when "virtualimage"
       MtnCloud::Cli::VirtualImages
-    when "loadbalancer"
-      MtnCloud::Cli::LoadBalancers
+    # a "loadbalancer" result is not opened: load balancers are read per MTN Network with
+    # `load-balancers get --network`, and a search result carries no network
     # when "virtualserver","loadbalancerinstance"
     #   MtnCloud::Cli::LoadBalancerInstances
     when "instancetype"
