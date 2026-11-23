@@ -117,7 +117,7 @@ class LoadBalancerListenersPoolsTest < Test::Unit::TestCase
     output, = capture_output { pools[0].get(['web-lb', 'pool-web', '--network', '114', '--json']) }
     pool = JSON.parse(output)['pool']
     assert_equal pool_web.keys, pool.keys
-    assert_equal [[], ['blue']], pool['members'].collect {|m| m['tags'] }
+    assert_equal [[], ['blue'], []], pool['members'].collect {|m| m['tags'] }
     assert_equal 'mon-web', pool['healthmonitor']['id']
     assert_nothing_hidden(output)
   end

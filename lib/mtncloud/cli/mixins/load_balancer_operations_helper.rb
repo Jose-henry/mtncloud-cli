@@ -16,14 +16,20 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     klass.send :include, MtnCloud::Cli::PrintHelper
   end
 
-  # Fields of the result itself that say how fresh a stored list is: never shown. Only the top
-  # level of the result is checked; the resources inside keep every field (an L7 policy's action).
-  LB_RESULT_HIDDEN_FIELDS = %w[fresh stale ageMs source]
-  # The field of a list row that names the cloud provider: never shown.
-  LB_ROW_HIDDEN_FIELDS = %w[provider]
-  # Tags the plugin adds for itself: never shown.
+  # Fields of the result itself rather than of a load balancer: the route's own success flag and
+  # how fresh a stored list is. Only the top level of the result is checked, so a resource keeps
+  # every field of its own (an L7 policy's action, say).
+  LB_RESULT_HIDDEN_FIELDS = %w[success fresh stale ageMs source]
+  # The cloud provider behind a load balancer, on a list row and on a read load balancer.
+  LB_LOAD_BALANCER_HIDDEN_FIELDS = %w[provider]
+  # Fields kept for the plugin's or the cloud's own use, removed at every depth: the cloud project
+  # (project_id, tenant_id), how a member was added (it is in the member's tags too), and the
+  # plugin's status diagnostics.
+  LB_PLUGIN_FIELDS = %w[project_id tenant_id morpheus_origin health_checked health_error] # mtncloud:allow-upstream-name (plugin member field removed from output)
+  # Tags the plugin adds for itself: its request tag, and every tag in its own namespace (the
+  # instance, external, group and group-weight markers on members).
   LB_REQUEST_TAG_PREFIX = 'mtncloud-req-'
-  LB_GROUP_TAG_PREFIX = 'morpheus:group:' # mtncloud:allow-upstream-name (the plugin's member group tag, removed from output)
+  LB_PLUGIN_TAG_PREFIX = 'morpheus:' # mtncloud:allow-upstream-name (prefix of the plugin's own tags, removed from output)
   LB_UUID = /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
   LB_PAGE_SIZE_MAX = 500
 
@@ -129,27 +135,39 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
   end
 
   # The answer's result made fit to show. The run's details (success, action, caller,
-  # permissionSource) are in the answer around the result and never copied; the result's freshness
-  # fields, the list rows' provider and the plugin's own tags are removed. networkAccess (owner or
-  # shared) comes from the answer around the result.
+  # permissionSource) are in the answer around the result and never copied. From the result go its
+  # own success and freshness fields, the load balancers' provider, the plugin's and the cloud's
+  # own fields, and the plugin's own tags. networkAccess (owner or shared) comes from the answer
+  # around the result.
   def lb_output(answer)
     result = answer['result'].is_a?(Hash) ? answer['result'] : {}
     out = lb_clean(result.reject {|k, _v| LB_RESULT_HIDDEN_FIELDS.include?(k.to_s) })
     if out['loadbalancers'].is_a?(Array)
-      out['loadbalancers'] = out['loadbalancers'].collect do |row|
-        row.is_a?(Hash) ? row.reject {|k, _v| LB_ROW_HIDDEN_FIELDS.include?(k.to_s) } : row
-      end
+      out['loadbalancers'] = out['loadbalancers'].collect {|row| lb_without(row, LB_LOAD_BALANCER_HIDDEN_FIELDS) }
+    end
+    if out['loadbalancer'].is_a?(Hash)
+      out['loadbalancer'] = lb_without(out['loadbalancer'], LB_LOAD_BALANCER_HIDDEN_FIELDS)
     end
     out['networkAccess'] = answer['networkAccess'] if answer.key?('networkAccess')
     out
   end
 
-  # Removes the plugin's own tags at every depth; every other field is kept.
+  # At every depth: removes the plugin's and the cloud's own fields and the plugin's own tags, and
+  # says a part's read error (listeners_error, members_error...) in MTN Cloud terms. Every other
+  # field is kept as it is.
   def lb_clean(obj)
     case obj
     when Hash
       obj.each_with_object({}) do |(k, v), out|
-        out[k] = (k.to_s == 'tags' && v.is_a?(Array)) ? lb_user_tags(v) : lb_clean(v)
+        key = k.to_s
+        next if LB_PLUGIN_FIELDS.include?(key)
+        out[k] = if key == 'tags' && v.is_a?(Array)
+          lb_user_tags(v)
+        elsif key.end_with?('_error') && v.is_a?(String)
+          lb_text(v)
+        else
+          lb_clean(v)
+        end
       end
     when Array
       obj.collect {|it| lb_clean(it) }
@@ -158,8 +176,12 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     end
   end
 
+  def lb_without(obj, keys)
+    obj.is_a?(Hash) ? obj.reject {|k, _v| keys.include?(k.to_s) } : obj
+  end
+
   def lb_user_tags(tags)
-    tags.reject {|t| t.to_s.start_with?(LB_REQUEST_TAG_PREFIX) || t.to_s.start_with?(LB_GROUP_TAG_PREFIX) }
+    tags.reject {|t| t.to_s.start_with?(LB_REQUEST_TAG_PREFIX) || t.to_s.start_with?(LB_PLUGIN_TAG_PREFIX) }
   end
 
   # Picks one piece by ID, else by exact name. None, or several with that name, is an error.
@@ -244,9 +266,19 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     ["Load Balancer: #{lb['name'].to_s.empty? ? lb['id'] : lb['name']}"] + lb_access_subtitles(output, network)
   end
 
+  # CSV takes its columns from the first row, so a field only some rows have (an instance-backed
+  # member's instanceId, say) would be lost. For CSV, every row gets every row's fields, null where
+  # it has none (the CLI writes null as null). Other formats are left as they are.
+  def lb_csv_rows(items, options)
+    return items unless options[:csv] && items.is_a?(Array)
+    keys = []
+    items.each {|it| it.keys.each {|k| keys << k unless keys.include?(k) } if it.is_a?(Hash) }
+    items.collect {|it| it.is_a?(Hash) ? keys.each_with_object({}) {|k, row| row[k] = it[k] } : it }
+  end
+
   # Prints a list of pieces, or renders it as {key => items}.
   def lb_render_list(key, items, title, columns, output, network, options, empty_text)
-    render_response({key => items}, options, key) do
+    render_response({key => lb_csv_rows(items, options)}, options, key) do
       print_h1 title, lb_piece_subtitles(output, network), options
       if items.empty?
         print cyan, empty_text, reset, "\n"

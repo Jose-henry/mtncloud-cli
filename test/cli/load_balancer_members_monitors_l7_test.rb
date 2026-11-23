@@ -25,7 +25,7 @@ class LoadBalancerMembersMonitorsL7Test < Test::Unit::TestCase
     command, = command_for(MtnCloud::Cli::LoadBalancerMembers)
     output, = capture_output { command.list(['web-lb', 'pool-web', '--network', '114', '-j']) }
     members = JSON.parse(output)['members']
-    assert_equal ['mem-1', 'mem-2'], members.collect {|m| m['id'] }
+    assert_equal ['mem-1', 'mem-2', 'mem-3'], members.collect {|m| m['id'] }
     assert_equal pool_web['members'][1].keys, members[0].keys
     assert_equal [], members[1]['tags']
     assert_nothing_hidden(output)
@@ -139,7 +139,10 @@ class LoadBalancerMembersMonitorsL7Test < Test::Unit::TestCase
     output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerMonitors)[0].list(['web-lb', '--network', '114', '-j']) }
     assert_equal [pool_web['healthmonitor'].keys + ['pool_id', 'pool_name']], JSON.parse(output)['monitors'].collect(&:keys)
     output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerMembers)[0].list(['web-lb', 'web', '--network', '114', '--csv']) }
-    assert_equal pool_web['members'][0].keys.join(','), output.lines.first.strip
+    # every row has every field, so an instance-backed member keeps its instanceId in CSV too
+    header, *rows = output.strip.lines.collect(&:strip)
+    assert_equal (pool_web['members'][1].keys + ['instanceId']).join(','), header
+    assert_equal ['null', '41', 'null'], rows.collect {|r| r.split(',', -1).last }
     assert_nothing_hidden(output)
     output, = capture_output { command_for(MtnCloud::Cli::LoadBalancerMembers)[0].get(['web-lb', 'web', 'mem-1', '--network', '114', '-y']) }
     pool_web['members'][1].keys.each {|k| assert_match(/^  #{k}:/, output) }

@@ -167,9 +167,9 @@ class LoadBalancerOperationsHelperTest < Test::Unit::TestCase
     out = @command.lb_output(read_answer)
     lb = out['loadbalancer']
     assert_equal ['prod'], lb['tags']
-    assert_equal read_answer['result']['loadbalancer'].keys, lb.keys
+    assert_equal visible_load_balancer.keys, lb.keys
     member_tags = lb['pools'][0]['members'].collect {|m| m['tags'] }
-    assert_equal [[], ['blue']], member_tags
+    assert_equal [[], ['blue'], []], member_tags
     assert_equal ['team-web'], lb['listeners'][1]['tags']
     assert_equal CERT_REF, lb['listeners'][0]['default_tls_container_ref']
     assert_equal [SNI_REF], lb['listeners'][0]['sni_container_refs']
@@ -177,13 +177,51 @@ class LoadBalancerOperationsHelperTest < Test::Unit::TestCase
     assert_nothing_hidden(JSON.generate(out))
   end
 
-  def test_read_output_is_the_whole_result_with_only_plugin_tags_removed
-    expected = JSON.parse(JSON.generate(read_answer['result']))
-    lb = expected['loadbalancer']
-    lb['tags'] = ['prod']
-    lb['listeners'][1]['tags'] = ['team-web']
-    lb['pools'][0]['members'][0]['tags'] = []
-    assert_equal expected.merge('networkAccess' => 'owner'), @command.lb_output(read_answer)
+  # The whole read, field for field: what the plugin sends, less exactly what customers must not see.
+  def test_read_output_is_exactly_what_customers_may_see
+    assert_equal visible_read_result, @command.lb_output(read_answer)
+    assert_equal visible_read_result(can_manage: false, network_access: 'shared'),
+                 @command.lb_output(read_answer(can_manage: false, network_access: 'shared'))
+  end
+
+  def test_the_plugins_own_fields_are_removed_at_every_depth
+    sent = read_answer
+    lb = sent['result']['loadbalancer']
+    assert_equal PROVIDER_LIVE, lb['provider'], "the fixture sends what the plugin sends"
+    assert_equal PROJECT_ID, lb['pools'][0]['members'][0]['project_id']
+    assert_equal 'instance', lb['pools'][0]['members'][0][ORIGIN_FIELD]
+    assert_include lb['pools'][0]['members'][2]['tags'], CLUSTER_MEMBER_TAGS[1]
+    out = @command.lb_output(sent)
+    json = JSON.generate(out)
+    assert_nothing_hidden(json)
+    assert !out.key?('success')
+    assert !out['loadbalancer'].key?('provider')
+    %w[project_id tenant_id health_checked health_error].each {|k| assert_no_match(/"#{k}"/, json) }
+    member = out['loadbalancer']['pools'][0]['members'][0]
+    assert !member.key?(ORIGIN_FIELD)
+    assert_equal [false, 41], [member['orphaned'], member['instanceId']], "orphaned and instanceId are kept"
+    assert_equal ['flv-small', 'az-1'], [out['loadbalancer']['flavor_id'], out['loadbalancer']['availability_zone']]
+    assert_equal 'ERROR', out['loadbalancer']['health_problems'][0]['operating_status']
+  end
+
+  def test_every_tag_in_the_plugins_namespace_is_removed_and_user_tags_stay
+    tags = INSTANCE_MEMBER_TAGS + CLUSTER_MEMBER_TAGS + [EXTERNAL_MEMBER_TAG, 'mtncloud-req-cliabc', 'blue', 'team:web', 'prod']
+    assert_equal ['blue', 'team:web', 'prod'], @command.lb_user_tags(tags)
+  end
+
+  def test_a_parts_read_error_is_said_in_mtn_cloud_terms
+    sent = read_answer
+    pool = sent['result']['loadbalancer']['pools'][0]
+    pool.delete('members')
+    pool['members_error'] = CLOUD_ERROR
+    out = @command.lb_output(sent)
+    assert_equal 'List members failed: the load balancer service returned 503', out['loadbalancer']['pools'][0]['members_error']
+    assert_nothing_hidden(JSON.generate(out))
+  end
+
+  def test_a_live_lists_partial_markers_are_kept
+    out = @command.lb_output(list_answer(nil, {'fresh' => true, 'source' => 'octavia', 'partial' => true, 'unresolvedCount' => 1})) # mtncloud:allow-cloud-name (the live list's source value)
+    assert_equal %w[loadbalancers total canManage partial unresolvedCount networkAccess], out.keys
   end
 
   def test_every_nested_resource_keeps_all_its_fields

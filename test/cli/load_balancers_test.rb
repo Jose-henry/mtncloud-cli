@@ -118,9 +118,30 @@ class LoadBalancersCommandTest < Test::Unit::TestCase
     output, = capture_output { command.get(['web-lb', '--network', '114', '-j']) }
     json = JSON.parse(output)
     assert_equal %w[loadbalancer canManage networkAccess], json.keys
-    assert_equal read_answer['result']['loadbalancer'].keys, json['loadbalancer'].keys
+    assert_equal visible_load_balancer.keys, json['loadbalancer'].keys
     assert_equal CERT_REF, json['loadbalancer']['listeners'][0]['default_tls_container_ref']
     assert_nothing_hidden(output)
+  end
+
+  def test_no_format_shows_what_the_plugin_keeps_for_itself
+    commands = [[MtnCloud::Cli::LoadBalancers, :get, ['web-lb']], [MtnCloud::Cli::LoadBalancers, :list, []],
+                [MtnCloud::Cli::LoadBalancerPools, :get, ['web-lb', 'web']], [MtnCloud::Cli::LoadBalancerMembers, :list, ['web-lb', 'web']],
+                [MtnCloud::Cli::LoadBalancerMembers, :get, ['web-lb', 'web', 'mem-3']], [MtnCloud::Cli::LoadBalancerListeners, :list, ['web-lb']]]
+    commands.each do |klass, sub, args|
+      [[], ['-j'], ['-y'], ['--csv']].each do |format|
+        command, = build_lb_command(klass, {'read' => read_answer, 'list' => list_answer})
+        output, = capture_output { command.send(sub, args + ['--network', '114'] + format) }
+        assert_not_empty output, "#{klass} #{sub} #{format}"
+        HIDDEN.each {|re| assert_no_match(re, output, "#{klass} #{sub} #{format.join}") }
+      end
+    end
+  end
+
+  def test_get_json_yaml_and_csv_keep_the_load_balancers_own_fields
+    output, = capture_output { command_with('read' => read_answer)[0].get(['web-lb', '--network', '114', '-y']) }
+    %w[flavor_id availability_zone health_problems vip_subnet_display].each {|k| assert_match(/^  #{k}:/, output) }
+    output, = capture_output { command_with('read' => read_answer)[0].get(['web-lb', '--network', '114', '--csv']) }
+    assert_equal visible_load_balancer.keys.join(','), output.lines.first.strip
   end
 
   def test_get_needs_one_load_balancer

@@ -74,7 +74,7 @@ EOT
       raise lb_error("The load balancer list answered without a list of load balancers. Try again.", :unexpected, 'list')
     end
     rows = output['loadbalancers'] = lb_sort(output['loadbalancers'])
-    render_response(output, options, 'loadbalancers') do
+    render_response(output.merge('loadbalancers' => lb_csv_rows(rows, options)), options, 'loadbalancers') do
       print_h1 "Load Balancers", lb_access_subtitles(output, network), options
       if rows.empty?
         print cyan, (output['total'].to_i > 0 ? "No load balancers on this page." : "No load balancers found on MTN Network #{network[:label]}."), reset, "\n"
