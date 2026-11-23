@@ -29,7 +29,7 @@ List a load balancer's listeners, sorted by name.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    lb_render_list('listeners', lb_sort(lb['listeners']), "Listeners", lb_listener_list_columns(lb), output, network, options,
+    lb_render_list('listeners', lb_sort(lb_listeners!(lb)), "Listeners", lb_listener_list_columns(lb), output, network, options,
                    "No listeners.")
   end
 
@@ -43,7 +43,7 @@ certificate uploaded in the MTN Cloud console, as the listener form shows it.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    listener = lb_pick(lb['listeners'], args[1], 'listener')
+    listener = lb_pick(lb_listeners!(lb), args[1], 'listener')
     lb_render_one('listener', listener, "Listener Details", listener_columns(lb), output, network, options) do
       if !listener['l7policies_error'].to_s.empty?
         print_h2 "L7 Policies", options

@@ -30,7 +30,7 @@ List a listener's L7 policies, in the order they are applied.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    listener = lb_pick(lb['listeners'], args[1], 'listener')
+    listener = lb_pick(lb_listeners!(lb), args[1], 'listener')
     policies = lb_l7_policies(listener)
     lb_render_list('l7policies', policies, "L7 Policies of Listener #{listener['name'].to_s.empty? ? listener['id'] : listener['name']}",
                    policy_list_columns(lb), output, network, options, "No L7 policies.")
@@ -45,7 +45,7 @@ Show one L7 policy of a listener, with its rules.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    listener = lb_pick(lb['listeners'], args[1], 'listener')
+    listener = lb_pick(lb_listeners!(lb), args[1], 'listener')
     policy = lb_pick(lb_l7_policies(listener), args[2], 'L7 policy')
     lb_render_one('l7policy', policy, "L7 Policy Details", policy_columns(lb, listener), output, network, options) do
       lb_print_section("Rules", policy['rules_expanded'], rule_columns, options, "No rules.")

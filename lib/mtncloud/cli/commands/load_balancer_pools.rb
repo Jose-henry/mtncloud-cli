@@ -32,7 +32,7 @@ List a load balancer's pools, sorted by name.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    lb_render_list('pools', lb_sort(lb['pools']), "Pools", lb_pool_list_columns, output, network, options, "No pools.")
+    lb_render_list('pools', lb_sort(lb_pools!(lb)), "Pools", lb_pool_list_columns, output, network, options, "No pools.")
   end
 
   def get(args)
@@ -43,13 +43,21 @@ Show one pool of a load balancer, with its members and health monitor.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    pool = lb_pick(lb['pools'], args[1], 'pool')
+    pool = lb_pick(lb_pools!(lb), args[1], 'pool')
     lb_render_one('pool', pool, "Pool Details", pool_columns, output, network, options) do
-      lb_print_section("Members", lb_sort(pool['members'], 'address'), lb_member_list_columns, options, "No members.")
+      if !pool['members_error'].to_s.empty?
+        lb_print_unread("Members", pool['members_error'], options)
+      else
+        lb_print_section("Members", lb_sort(pool['members'], 'address'), lb_member_list_columns, options, "No members.")
+      end
       monitor = pool['healthmonitor']
-      lb_print_section("Health Monitor", monitor.is_a?(Hash) && !monitor['id'].to_s.empty? ? [monitor] : [],
-                       {"ID" => 'id', "Name" => 'name', "Type" => 'type', "Delay" => 'delay', "Timeout" => 'timeout',
-                        "Max Retries" => 'max_retries'}.merge(lb_status_columns), options, "No health monitor.")
+      if !pool['healthmonitor_error'].to_s.empty?
+        lb_print_unread("Health Monitor", pool['healthmonitor_error'], options)
+      else
+        lb_print_section("Health Monitor", monitor.is_a?(Hash) && !monitor['id'].to_s.empty? ? [monitor] : [],
+                         {"ID" => 'id', "Name" => 'name', "Type" => 'type', "Delay" => 'delay', "Timeout" => 'timeout',
+                          "Max Retries" => 'max_retries'}.merge(lb_status_columns), options, "No health monitor.")
+      end
     end
   end
 

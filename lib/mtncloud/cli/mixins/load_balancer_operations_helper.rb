@@ -199,15 +199,57 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
     found[0]
   end
 
-  # The health monitors of a load balancer: each pool's monitor, with that pool's ID and name.
+  ## parts the plugin could not read
+  #
+  # A read the plugin could only partly finish still answers, with the unread part marked rather
+  # than empty: listeners_error or pools_error (the listeners or pools are then only their IDs),
+  # members_error on a pool (members absent), healthmonitor_error on a pool (monitor absent),
+  # l7policies_error on a listener and rules_error on an L7 policy. A command whose answer depends
+  # on such a part is an error, never an empty list.
+
+  def lb_unread_error(what, why)
+    lb_error("The #{what} could not be read: #{lb_text(why)}. Run the command again.", :unexpected, 'read')
+  end
+
+  # The load balancer's listeners, or an error when they could not be read.
+  def lb_listeners!(loadbalancer)
+    raise lb_unread_error("load balancer's listeners", loadbalancer['listeners_error']) unless loadbalancer['listeners_error'].to_s.empty?
+    loadbalancer['listeners'] || []
+  end
+
+  # The load balancer's pools, or an error when they could not be read.
+  def lb_pools!(loadbalancer)
+    raise lb_unread_error("load balancer's pools", loadbalancer['pools_error']) unless loadbalancer['pools_error'].to_s.empty?
+    loadbalancer['pools'] || []
+  end
+
+  # A pool's members, or an error when they could not be read.
+  def lb_pool_members!(pool)
+    raise lb_unread_error("members of pool #{lb_label(pool)}", pool['members_error']) unless pool['members_error'].to_s.empty?
+    pool['members'] || []
+  end
+
+  def lb_label(item)
+    item['name'].to_s.empty? ? item['id'].to_s : item['name'].to_s
+  end
+
+  # The health monitors of a load balancer: each pool's monitor, with that pool's ID and name. A
+  # monitor that could not be read is an error: listing the rest would hide it.
   def lb_monitors(loadbalancer)
     out = []
-    (loadbalancer['pools'] || []).each do |pool|
+    lb_pools!(loadbalancer).each do |pool|
+      raise lb_unread_error("health monitor of pool #{lb_label(pool)}", pool['healthmonitor_error']) unless pool['healthmonitor_error'].to_s.empty?
       m = pool['healthmonitor']
       next unless m.is_a?(Hash) && !m['id'].to_s.empty?
       out << m.merge('pool_id' => pool['id'], 'pool_name' => pool['name'])
     end
     lb_sort(out, 'pool_name')
+  end
+
+  # In an overview (load-balancers get, pool get): a section that could not be read says so.
+  def lb_print_unread(title, why, options)
+    print_h2 title, options
+    print yellow, "The #{title.downcase} could not be read: #{lb_text(why)}. Run the command again.", reset, "\n"
   end
 
   # A listener's L7 policies. When they or their rules could not be read, that is an error, never
@@ -406,9 +448,27 @@ module MtnCloud::Cli::LoadBalancerOperationsHelper
       "Name" => 'name',
       "Protocol" => 'protocol',
       "Algorithm" => 'lb_algorithm',
-      "Members" => lambda {|it| (it['members'] || []).size },
-      "Monitor" => lambda {|it| it['healthmonitor'].is_a?(Hash) ? (it['healthmonitor']['type'] || 'Yes') : '' },
+      "Members" => lambda {|it| format_lb_member_count(it) },
+      "Monitor" => lambda {|it| format_lb_pool_monitor(it) },
     }.merge(lb_status_columns)
+  end
+
+  # A pool's member count. Members that could not be read are not none: the count of their IDs is
+  # shown when the plugin has it, marked as not read, else Unknown.
+  def format_lb_member_count(pool)
+    return pool['members'].size if pool['members'].is_a?(Array)
+    return "#{pool['member_count']} (not read)" if !pool['members_error'].to_s.empty? && pool['member_count']
+    'Unknown'
+  end
+
+  def format_lb_pool_monitor(pool)
+    return 'Unknown' unless pool['healthmonitor_error'].to_s.empty?
+    pool['healthmonitor'].is_a?(Hash) ? (pool['healthmonitor']['type'] || 'Yes') : ''
+  end
+
+  # Whether some pools' members or monitors could not be read, for a note under a pools table.
+  def lb_pools_partly_unread?(pools)
+    (pools || []).any? {|p| !p['members_error'].to_s.empty? || !p['healthmonitor_error'].to_s.empty? }
   end
 
   def lb_member_list_columns

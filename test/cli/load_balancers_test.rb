@@ -18,11 +18,62 @@ class LoadBalancersCommandTest < Test::Unit::TestCase
     text = strip_color(output)
     assert_match(/Load Balancers/, text)
     assert_match(/MTN Network: 114/, text)
-    assert_operator text.index('api-lb'), :<, text.index('web-lb'), "sorted by name"
+    assert_operator text.index('web-lb'), :<, text.index('api-lb'), "the plugin's order: oldest first"
     assert_match(/198\.51\.100\.7/, text)
     assert_match(/Unknown/, text)
     assert_no_match(/Read only/, text)
     assert_nothing_hidden(output)
+  end
+
+  def test_list_keeps_the_plugins_order_in_every_format
+    rows = [list_row('id' => 'c', 'name' => 'zeta', 'created_at' => '2026-10-01T00:00:00'),
+            list_row('id' => 'a', 'name' => 'alpha', 'created_at' => '2026-10-02T00:00:00'),
+            list_row('id' => 'b', 'name' => 'mid', 'created_at' => '2026-10-03T00:00:00')]
+    output, = capture_output { command_with('list' => list_answer(rows))[0].list(['--network', '114', '-j']) }
+    assert_equal ['c', 'a', 'b'], JSON.parse(output)['loadbalancers'].collect {|r| r['id'] }
+    output, = capture_output { command_with('list' => list_answer(rows))[0].list(['--network', '114', '--csv']) }
+    assert_equal ['c', 'a', 'b'], output.strip.lines[1..].collect {|l| l.split(',').first }
+    output, = capture_output { command_with('list' => list_answer(rows))[0].list(['--network', '114']) }
+    text = strip_color(output)
+    assert_operator text.index('zeta'), :<, text.index('alpha')
+    assert_operator text.index('alpha'), :<, text.index('mid')
+  end
+
+  def test_list_vip_column_is_the_vip_address
+    output, = capture_output { command_with('list' => list_answer)[0].list(['--network', '114']) }
+    text = strip_color(output)
+    assert_match(/\| web-lb \| 10\.0\.0\.5\s+\| 198\.51\.100\.7\s+\|/, text)
+    assert_no_match(%r{10\.0\.0\.5/198}, text, "the VIP column does not repeat the floating IP")
+    output, = capture_output { command_with('list' => list_answer)[0].list(['--network', '114', '-j']) }
+    assert_equal '10.0.0.5/198.51.100.7', JSON.parse(output)['loadbalancers'][0]['vip_display'], "JSON keeps the field"
+  end
+
+  def test_a_live_list_says_when_member_counts_could_not_be_checked
+    output, = capture_output do
+      command_with('list' => list_answer(nil, {'partial' => true, 'unresolvedCount' => 1}))[0].list(['--network', '114'])
+    end
+    assert_match(/The members of 1 load balancer could not be counted\./, strip_color(output))
+    output, = capture_output { command_with('list' => list_answer)[0].list(['--network', '114']) }
+    assert_no_match(/could not be counted/, strip_color(output))
+  end
+
+  def test_get_shows_the_load_balancers_problems
+    output, = capture_output { command_with('read' => read_answer)[0].get(['web-lb', '--network', '114']) }
+    text = strip_color(output)
+    assert_match(/Problems/, text)
+    assert_match(/member\s+\| 10\.0\.0\.11:8080 \| web\s+\| ACTIVE\s+\| ERROR/, text)
+    output, = capture_output { command_with('read' => read_answer({'health_problems' => []}))[0].get(['web-lb', '--network', '114']) }
+    assert_no_match(/Problems/, strip_color(output))
+  end
+
+  def test_floating_ip_options_help_says_only_the_owner_may
+    command, = command_with
+    output, = capture_output do
+      err = assert_raise(SystemExit) { command.floating_ip_options(['--help']) }
+      assert_equal 0, err.status
+    end
+    assert_match(/Only the network's owner may attach floating IPs/, output)
+    assert_match(/floating-ip-options\tList the floating IP pools and free floating IPs of an MTN Network you own\./, command.full_command_usage)
   end
 
   def test_list_filters_and_paging_are_sent_as_strings_by_the_interface

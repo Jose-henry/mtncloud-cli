@@ -16,7 +16,7 @@ class MtnCloud::Cli::LoadBalancers
   set_subcommand_descriptions({
     'list' => "List the load balancers on an MTN Network.",
     'get' => "Show a load balancer with its listeners and pools.",
-    'floating-ip-options' => "List the floating IP pools and free floating IPs of an MTN Network.",
+    'floating-ip-options' => "List the floating IP pools and free floating IPs of an MTN Network you own.",
     'add' => "Not available yet.",
     'update' => "Not available yet.",
     'remove' => "Not available yet.",
@@ -52,7 +52,7 @@ class MtnCloud::Cli::LoadBalancers
       end
       build_lb_output_options(opts, options)
       opts.footer = <<-EOT
-List the load balancers on an MTN Network, sorted by name.
+List the load balancers on an MTN Network, oldest first, as the console lists them.
 #{lb_network_footer}
 This is the list the console shows on the network's Load Balancers tab. To see a load balancer's
 current state, use `#{prog_name} #{command_name} get`, which reads it live.
@@ -73,7 +73,8 @@ EOT
     if !output['loadbalancers'].is_a?(Array)
       raise lb_error("The load balancer list answered without a list of load balancers. Try again.", :unexpected, 'list')
     end
-    rows = output['loadbalancers'] = lb_sort(output['loadbalancers'])
+    # the plugin's own order (oldest first), which its paging follows: never re-sorted
+    rows = output['loadbalancers']
     render_response(output.merge('loadbalancers' => lb_csv_rows(rows, options)), options, 'loadbalancers') do
       print_h1 "Load Balancers", lb_access_subtitles(output, network), options
       if rows.empty?
@@ -82,6 +83,10 @@ EOT
         print cyan
         print as_pretty_table(rows, load_balancer_list_columns, options)
         print_lb_page_footer(output, rows)
+        if output['partial']
+          n = output['unresolvedCount']
+          print yellow, "The members of #{n ? "#{n} load balancer#{n.to_i == 1 ? '' : 's'}" : 'some load balancers'} could not be counted.", reset, "\n"
+        end
       end
       print reset, "\n"
     end
@@ -112,19 +117,23 @@ EOT
       print_h1 "Load Balancer Details", lb_access_subtitles(output, network), options
       print cyan
       print_description_list(load_balancer_columns, lb, options)
-      listeners = lb_sort(lb['listeners'])
-      print_h2 "Listeners", options
-      if listeners.empty?
-        print cyan, "No listeners.", reset, "\n"
+      if !lb['listeners_error'].to_s.empty?
+        lb_print_unread("Listeners", lb['listeners_error'], options)
       else
-        print cyan, as_pretty_table(listeners, lb_listener_list_columns(lb), options)
+        lb_print_section("Listeners", lb_sort(lb['listeners']), lb_listener_list_columns(lb), options, "No listeners.")
       end
-      pools = lb_sort(lb['pools'])
-      print_h2 "Pools", options
-      if pools.empty?
-        print cyan, "No pools.", reset, "\n"
+      if !lb['pools_error'].to_s.empty?
+        lb_print_unread("Pools", lb['pools_error'], options)
       else
-        print cyan, as_pretty_table(pools, lb_pool_list_columns, options)
+        pools = lb_sort(lb['pools'])
+        lb_print_section("Pools", pools, lb_pool_list_columns, options, "No pools.")
+        if lb_pools_partly_unread?(pools)
+          print yellow, "The members or health monitors of some pools could not be read. Run the command again.", reset, "\n"
+        end
+      end
+      problems = lb['health_problems']
+      if problems.is_a?(Array) && !problems.empty?
+        lb_print_section("Problems", problems, {"Kind" => 'kind', "Name" => 'name', "In" => 'parent'}.merge(lb_status_columns), options, "")
       end
       print reset, "\n"
     end
@@ -140,6 +149,8 @@ EOT
 List where a load balancer on an MTN Network can get a public IP: the floating IP pools,
 and the floating IPs your project holds that are not attached to anything.
 #{lb_network_footer}
+Only the network's owner may attach floating IPs, so on an MTN Network shared with your
+tenant this is refused.
 EOT
     end
     optparse.parse!(args)
@@ -199,7 +210,7 @@ EOT
     {
       "ID" => 'id',
       "Name" => 'name',
-      "VIP" => lambda {|it| it['vip_display'].to_s.empty? ? it['vip_address'] : it['vip_display'] },
+      "VIP" => 'vip_address',
       "Floating IP" => lambda {|it| format_lb_known(it['vip_floating'], it['vip_floating_known']) },
       "Members" => lambda {|it| format_lb_known(it['membersCount'], it['membersKnown']) },
     }.merge(lb_status_columns).merge({

@@ -211,6 +211,41 @@ module LbTestSupport
                   'canManage' => can_manage}}
   end
 
+  # A read the plugin could only partly finish, marked as its expandTopology marks it:
+  #   :listeners  listeners unread - only their IDs, and listeners_error
+  #   :pools      pools unread - only their IDs, and pools_error
+  #   :members    pool web's members unread - members gone, member_count and member_ids, members_error
+  #   :monitor    pool web's health monitor unread - healthmonitor gone, healthmonitor_error
+  # with the plugin's own health_error beside it, as it sets it.
+  def partial_read_answer(part)
+    answer = read_answer
+    lb = answer['result']['loadbalancer']
+    case part
+    when :listeners
+      lb['listeners'] = [{'id' => 'lis-443'}, {'id' => 'lis-80'}]
+      lb['listeners_error'] = 'could not list listeners'
+      lb['health_error'] = 'the listeners could not be read, so their status is unknown'
+    when :pools
+      lb['pools'] = [{'id' => 'pool-web'}, {'id' => 'pool-api'}]
+      lb['pools_error'] = 'could not list pools'
+      lb['health_error'] = 'the pools could not be read, so their status is unknown'
+    when :members
+      pool = lb['pools'][0]
+      pool['member_ids'] = pool.delete('members').collect {|m| m['id'] }
+      pool['member_count'] = pool['member_ids'].size
+      pool['members_error'] = CLOUD_ERROR
+      lb['health_error'] = 'the members of some pools could not be read, so their status is unknown'
+    when :monitor
+      pool = lb['pools'][0]
+      pool.delete('healthmonitor')
+      pool['healthmonitor_error'] = 'Get HealthMonitor failed: timed out'
+      lb['health_error'] = 'the health monitors of some pools could not be read, so their status is unknown'
+    else
+      raise ArgumentError, "unknown part #{part}"
+    end
+    answer
+  end
+
   # What `get --json` must show for that answer.
   def visible_read_result(lb_overrides = {}, can_manage: true, network_access: 'owner')
     {'loadbalancer' => visible_load_balancer(lb_overrides), 'canManage' => can_manage, 'networkAccess' => network_access}

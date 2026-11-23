@@ -30,8 +30,8 @@ List the members of a pool, sorted by address.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    pool = lb_pick(lb['pools'], args[1], 'pool')
-    lb_render_list('members', lb_sort(pool['members'], 'address'), "Members of Pool #{pool['name'].to_s.empty? ? pool['id'] : pool['name']}",
+    pool = lb_pick(lb_pools!(lb), args[1], 'pool')
+    lb_render_list('members', lb_sort(lb_pool_members!(pool), 'address'), "Members of Pool #{pool['name'].to_s.empty? ? pool['id'] : pool['name']}",
                    lb_member_list_columns, output, network, options, "No members.")
   end
 
@@ -45,8 +45,8 @@ often empty: use its ID then, or list the pool's members.
 EOT
     output, lb = lb_piece_read(network, args[0], options)
     return 0, nil if output.nil?
-    pool = lb_pick(lb['pools'], args[1], 'pool')
-    member = lb_pick(pool['members'], args[2], 'member')
+    pool = lb_pick(lb_pools!(lb), args[1], 'pool')
+    member = lb_pick(lb_pool_members!(pool), args[2], 'member')
     lb_render_one('member', member, "Member Details", member_columns(pool), output, network, options)
   end
 
