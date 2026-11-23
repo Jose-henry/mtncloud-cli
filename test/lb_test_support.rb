@@ -162,6 +162,9 @@ module LbTestSupport
     ops = FakeOperations.new(answers)
     nets = FakeNetworks.new(networks)
     command = klass.new
+    # tables drop the columns that do not fit the console, and a CI runner has none (width 0):
+    # give every command a wide one, so table tests see every column wherever they run
+    command.define_singleton_method(:current_terminal_width) { 300 }
     command.define_singleton_method(:lb_connect) do |_options|
       @load_balancer_operations_interface = ops
       @networks_interface = nets
